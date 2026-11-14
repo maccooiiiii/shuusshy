@@ -1,0 +1,13 @@
+[package]
+name = "shuusshy-license-keygen"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Offline tool to create the Shuusshy license signing key and issue Pro license keys."
+
+# Not part of the app or its workspace.
+[workspace]
+
+[dependencies]
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+rand_core = { version = "0.6", features = ["getrandom"] }

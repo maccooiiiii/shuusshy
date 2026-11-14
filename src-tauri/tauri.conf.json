@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Shuusshy",
+  "version": "0.1.0",
+  "identifier": "com.shuusshy.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Shuusshy",
+        "width": 360,
+        "height": 176,
+        "resizable": true,
+        "maximizable": false,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "center": true,
+        "backgroundColor": "#06080c",
+        "minWidth": 340,
+        "maxWidth": 560,
+        "transparent": true,
+        "shadow": false,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "publisher": "Ian Musa",
+    "copyright": "© 2026 Ian Musa",
+    "category": "Utility",
+    "shortDescription": "Local, offline microphone noise cancellation",
+    "longDescription": "Shuusshy removes background noise from your microphone on your PC and passes the clean voice to Teams, Discord, Zoom and other apps through a virtual microphone (VB-CABLE, installed separately).",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "installer/header.bmp",
+        "sidebarImage": "installer/sidebar.bmp",
+        "installerHooks": "installer/hooks.nsh",
+        "languages": [
+          "English"
+        ],
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}

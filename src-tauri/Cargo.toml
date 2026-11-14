@@ -1,0 +1,87 @@
+[package]
+name = "shuusshy"
+version = "0.1.0"
+description = "Shuusshy - local, offline microphone noise suppression. Less Noise. More Voice."
+authors = ["Ian Musa"]
+edition = "2024"
+publish = false
+
+[lib]
+# The `_lib` suffix avoids a lib/bin name clash on Windows
+# (https://github.com/rust-lang/cargo/issues/8519).
+name = "shuusshy_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# `bundled` compiles SQLite from source with the MSVC toolchain, so users need no system SQLite.
+rusqlite = { version = "0.42", features = ["bundled"] }
+thiserror = "2"
+# Audio streams (WASAPI backend on Windows).
+cpal = "0.18"
+# Sample-rate conversion with adjustable ratio (used for clock-drift compensation).
+rubato = "5.1"
+# Lock-free single-producer/single-consumer ring buffers for real-time audio callbacks.
+rtrb = "0.4"
+# RNNoise noise suppression, pure-Rust port (BSD-3-Clause). CLI extras disabled.
+nnnoiseless = { version = "0.5", default-features = false }
+# DeepFilterNet3 inference with the model embedded (MIT OR Apache-2.0, code and weights).
+# Chosen over the tract-based port after a spike: 0.2 ms/frame, no allocations while processing,
+# output within -57 dB of the official implementation (see docs/AUDIO_ENGINE.md).
+dfn3_rs = "0.1"
+ed25519-dalek = "2"
+tauri-plugin-single-instance = "2"
+
+[dev-dependencies]
+# Evaluation only (examples/isolation_bench.rs); not shipped in the app.
+hush-vani = { version = "0.1", default-features = false }
+
+# WASAPI / MMDevice API for device enumeration and hot-plug notifications.
+# Same major version as cpal's dependency so types are shared when streams are added (M3).
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = [
+    "Wdk_System_SystemServices",
+    "Win32_Foundation",
+    "Win32_Graphics_Dwm",
+    "Win32_System_Registry",
+    "Win32_System_SystemInformation",
+    "Win32_Media_Audio",
+    "Win32_Media_Audio_Endpoints",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_Threading",
+    "Win32_System_Variant",
+    "Win32_UI_Shell",
+    "Win32_UI_Shell_PropertiesSystem",
+    "Win32_UI_WindowsAndMessaging",
+] }
+windows-core = "0.62"
+
+# Optimize the heavy audio libraries even in development builds. Unoptimized, DeepFilterNet is
+# far slower than real time (its overload watchdog trips) and RNNoise/resampling can drop audio
+# under load. Shuusshy's own code stays unoptimized for debugging.
+[profile.dev.package.dfn3_rs]
+opt-level = 3
+[profile.dev.package.nnnoiseless]
+opt-level = 3
+[profile.dev.package.rubato]
+opt-level = 3
+[profile.dev.package.realfft]
+opt-level = 3
+[profile.dev.package.rustfft]
+opt-level = 3
+[profile.dev.package.easyfft]
+opt-level = 3
+
+# https://tauri.app/concept/size/#cargo-configuration
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true
