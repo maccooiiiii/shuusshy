@@ -14,8 +14,8 @@ _Last updated: 2026-11-13_
 | 7 — Live test & meters | ✅ Complete |
 | 8 — UI/UX polish, tray | ✅ Complete (tray confirmed by the user) |
 | 8b — Design refresh, Pro licensing, mic name, glass redesign, credits | ✅ Complete (mic rename used by the user) |
-| 9 — Installer & portable | ✅ Implemented; install, upgrade, uninstall and portable verified on the dev PC; awaiting review |
-| 10 — GitHub, updates, expiration | Not started |
+| 9 — Installer & portable | ✅ Complete |
+| 10 — GitHub, updates, expiration | ✅ Implemented and verified locally; workflows not yet run on GitHub (no repository yet); awaiting review |
 | 11 — QA | Not started |
 | 12 — 1.0.0 release | Not started |
 
@@ -73,6 +73,33 @@ _Last updated: 2026-11-13_
 
 - **DeepFilterNet (Milestone 5):** selectable engine with real strength control (attenuation
   limit), exact bypass, and an overload watchdog. Switching engines restarts audio briefly.
+
+## Milestone 10 verification (2026-11-14)
+
+- **Repository files:**
+  - LICENSE: source-available, all rights reserved;
+  - PRIVACY, SECURITY, CONTRIBUTING, INSTALLATION;
+  - docs/RELEASES.md, `.gitattributes`.
+  - First local commit `79ba528` (not pushed; no remote yet).
+- **Workflows:**
+  - `ci.yml`: checks plus an unofficial installer/ZIP build;
+  - `release.yml`: on tag `v*`, checks, signed release metadata, signed updater artifacts,
+    `latest.json`, SHA256SUMS, **draft** GitHub release.
+- **App features:**
+  - signed release metadata with a two-year validity period and reminder, warning and expired
+    states;
+  - update checks, download and install, with optional automatic checking and downloading;
+  - settings export and import.
+- **Installer:** a terms page discloses the validity period and licence before installation.
+
+| Check | Result |
+|---|---|
+| Unit tests | Validity countdown on the spec's example dates (30/31/7/1/0 days); forged date, version or key and malformed signatures → unofficial; 29 Feb; repository-name validation; no update endpoint without a repository. 78 Rust + 24 frontend tests |
+| Real app, signed metadata (0.1.0, released 2026-11-14), clock at 2028-11-10 | "Update soon" card: expires in 4 days |
+| Same, clock at 2028-11-14 | "This version has expired" card. Pipeline not started, so **nothing is playing into CABLE Input**; status "Unavailable"; settings intact. "Export settings" wrote `Documents\Shuusshy\shuusshy-settings-….json` without the Pro key or device IDs (the test file was deleted afterwards) |
+| Normal dev build | "Unofficial build: no validity period"; "Update checks are not set up… no network connections" |
+| Release workflow scripts | Changelog extraction and `latest.json` generation run locally on sample files (this caught an awk bug, now fixed) |
+| **Not verified** | The workflows on GitHub (no repository yet); a real update download/install from a published release; the secrets setup |
 
 ## Milestone 9 verification (2026-11-14)
 
@@ -259,8 +286,11 @@ docs/AUDIO_ENGINE.md.
 - **Silent uninstall leaves the virtual mic named "Shuusshy Microphone"** (renaming back needs
   an admin prompt, which silent mode must not show). The interactive uninstaller offers it, and
   Settings → Audio Output can restore it before uninstalling.
-- The installer and executable are **not code-signed** yet, so Windows SmartScreen may warn on
-  first run (signing belongs to Milestone 10 / release).
+- The installer and executable are **not Authenticode code-signed** (that needs a paid
+  certificate), so Windows SmartScreen may warn on first run. Update installers *are*
+  signature-checked by the updater.
+- **Before the first public release:** create the GitHub repository and add the two secrets
+  (docs/RELEASES.md). Have LICENSE and the installer terms reviewed by a lawyer.
 - Upgrades of the portable ZIP are manual: replace `shuusshy.exe` and keep the `data` folder.
 
 - Update checks show "not available in this build" until Milestone 10.

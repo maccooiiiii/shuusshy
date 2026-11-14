@@ -42,6 +42,12 @@ pub struct AppSettings {
     /// How much of the dark tint covers the blurred desktop (0.35 = most see-through).
     pub glass_tint: f32,
     pub accent: Accent,
+    /// Look for a new release on GitHub at start-up (at most daily). Off = no network use.
+    pub check_updates: bool,
+    /// Download a found update in the background (installing always needs a click).
+    pub auto_download_updates: bool,
+    /// Unix time of the last update check (set by the backend).
+    pub last_update_check: i64,
 }
 
 /// Accent colour for highlights, the emblem and the tray icon.
@@ -70,6 +76,9 @@ impl Default for AppSettings {
             glass: true,
             glass_tint: 0.6,
             accent: Accent::Cyan,
+            check_updates: true,
+            auto_download_updates: false,
+            last_update_check: 0,
         }
     }
 }

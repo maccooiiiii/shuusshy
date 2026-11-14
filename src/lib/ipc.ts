@@ -19,6 +19,12 @@ export interface AppSettings {
   /** Strength of the dark tint over the blurred desktop, 0.35–0.95. */
   glassTint: number;
   accent: Accent;
+  /** Look for a new release on GitHub at start-up (at most daily). */
+  checkUpdates: boolean;
+  /** Download a found update in the background (installing needs a click). */
+  autoDownloadUpdates: boolean;
+  /** Unix seconds of the last update check (set by the backend). */
+  lastUpdateCheck: number;
 }
 
 export type Accent = "cyan" | "violet" | "mint" | "amber" | "rose" | "ice" | "system";
@@ -131,3 +137,36 @@ export const setStartWithWindows = (enabled: boolean) =>
   invoke<boolean>("set_start_with_windows", { enabled });
 /** Opens the official VB-CABLE page in the browser. */
 export const openVbCableSite = () => invoke<void>("open_vb_cable_site");
+
+export interface ReleaseInfo {
+  version: string;
+  channel: string | null;
+  releaseDate: string | null;
+  expires: string | null;
+  daysLeft: number | null;
+  validity: "unofficial" | "valid" | "reminder" | "warning" | "expired";
+  repo: string | null;
+  releasesUrl: string | null;
+}
+
+export interface UpdateInfo {
+  version: string;
+  currentVersion: string;
+  date: string | null;
+  notes: string | null;
+  ready: boolean;
+  /** Portable edition: update by downloading the new ZIP, not via the installer. */
+  portable: boolean;
+}
+
+export const getReleaseInfo = () => invoke<ReleaseInfo>("get_release_info");
+export const openReleasesPage = () => invoke<void>("open_releases_page");
+export const exportSettings = () => invoke<string>("export_settings");
+export const importSettings = (json: string) => invoke<Settings>("import_settings", { json });
+export const checkForUpdates = () => invoke<UpdateInfo | null>("check_for_updates");
+export const downloadUpdate = () => invoke<UpdateInfo>("download_update");
+export const installUpdate = () => invoke<void>("install_update");
+export const onUpdateAvailable = (cb: (u: UpdateInfo) => void) =>
+  listen<UpdateInfo>("update-available", (e) => cb(e.payload));
+export const onUpdateProgress = (cb: (p: { downloaded: number; total: number | null }) => void) =>
+  listen<{ downloaded: number; total: number | null }>("update-progress", (e) => cb(e.payload));

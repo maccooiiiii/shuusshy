@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Emblem } from "./components/Emblem";
+import { BackupControls, ExpiryNotice, UpdatePanel } from "./components/Updates";
 import { Logo } from "./components/Logo";
 import { MicPicker } from "./components/MicPicker";
 import { RangeSlider, Slider, formatDb } from "./components/Slider";
@@ -36,6 +37,11 @@ import {
   type Engine,
   type LicenseStatus,
   activateLicense,
+  type ReleaseInfo,
+  type UpdateInfo,
+  exportSettings,
+  getReleaseInfo,
+  onUpdateAvailable,
   getAccentColor,
   getLicense,
   getStartWithWindows,
@@ -112,6 +118,9 @@ export default function App() {
   const [testOpen, setTestOpen] = useState(false);
   const [license, setLicense] = useState<LicenseStatus | null>(null);
   const [focusLicense, setFocusLicense] = useState(false);
+  const [release, setRelease] = useState<ReleaseInfo | null>(null);
+  const [update, setUpdate] = useState<UpdateInfo | null>(null);
+  const [note, setNote] = useState<string | null>(null);
 
   useEffect(() => {
     if (!desktop) return;
@@ -129,13 +138,19 @@ export default function App() {
       onDevicesChanged(setDevices),
       onRoutingChanged(setRouting),
       onSettingsChanged(setSettings),
+      onUpdateAvailable(setUpdate),
       onOpenSettings(() => setView("settings")),
     ];
+    // Release validity can change while the app runs (midnight): re-read it hourly.
+    const readRelease = () => getReleaseInfo().then(setRelease).catch(() => {});
+    readRelease();
+    const releaseTimer = window.setInterval(readRelease, 3_600_000);
     const poll = () => getRoutingStatus().then(setRouting).catch(() => {});
     poll();
     const timer = window.setInterval(poll, 1000);
     return () => {
       window.clearInterval(timer);
+      window.clearInterval(releaseTimer);
       unlisten.forEach((u) => u.then((f) => f()));
     };
   }, [desktop]);
@@ -303,11 +318,33 @@ export default function App() {
           {error}
         </Notice>
       )}
+      {note && (
+        <Notice tone="info" onDismiss={() => setNote(null)}>
+          {note}
+        </Notice>
+      )}
       {devices?.error && <Notice tone="error">Audio devices: {devices.error}</Notice>}
       {info && !info.settingsPersistent && (
         <Notice tone="warning">Settings storage unavailable — changes won't be saved.</Notice>
       )}
 
+      {view === "main" && (
+        <div className="px-3 pt-2 empty:hidden">
+          <ExpiryNotice
+            release={release}
+            onExport={() => run(exportSettings, (p) => setNote(`Settings saved to ${p}`))}
+          />
+          {update && release?.validity !== "expired" && (
+            <button
+              type="button"
+              onClick={() => setView("settings")}
+              className="press glass-btn-accent reveal mt-1 rounded-full px-3 py-1 text-[11px]"
+            >
+              Shuusshy {update.version} is available{update.ready ? ", ready to install" : ""} →
+            </button>
+          )}
+        </div>
+      )}
       {view === "main" ? (
         <MainView
           dc={deviceControls}
@@ -344,6 +381,9 @@ export default function App() {
           onLicenseFocused={() => setFocusLicense(false)}
           onActivate={(key) => run(() => activateLicense(key), setLicense)}
           onRemoveLicense={() => run(removeLicense, setLicense)}
+          release={release}
+          update={update}
+          onImported={setSettings}
         />
       )}
     </div>
@@ -670,7 +710,13 @@ function SettingsView({
   onLicenseFocused,
   onActivate,
   onRemoveLicense,
+  release,
+  update,
+  onImported,
 }: {
+  release: ReleaseInfo | null;
+  update: UpdateInfo | null;
+  onImported: (s: Settings) => void;
   license: LicenseStatus | null;
   focusLicense: boolean;
   onLicenseFocused: () => void;
@@ -858,9 +904,8 @@ function SettingsView({
             {info?.version ?? "—"}
           </span>
         </Row>
-        <span className="text-[10.5px] leading-snug text-muted">
-          Update checks are not available in this build yet.
-        </span>
+        <UpdatePanel release={release} settings={settings} onChange={onChange} announced={update} />
+        <BackupControls onImported={onImported} />
         {info && (
           <p className="select-text break-all text-[11px] leading-snug text-muted/70" title="Settings folder">
             Settings: {info.dataDir}
@@ -899,7 +944,8 @@ function AboutCard({ version }: { version: string | null }) {
       <p className="text-[11px] leading-snug text-muted">
         Shuusshy removes background noise from your microphone and passes your clean voice to
         Teams, Discord, Zoom and other apps through a virtual microphone. All processing happens
-        on this PC: no account, no network connections, no audio recorded or uploaded.
+        on this PC: no account, no audio recorded or uploaded. The only network use is the optional
+        update check (release information from GitHub).
       </p>
 
       <div className="flex flex-col gap-1">
@@ -1488,12 +1534,16 @@ function Notice({
   children,
   onDismiss,
 }: {
-  tone: "warning" | "error";
+  tone: "warning" | "error" | "info";
   children: React.ReactNode;
   onDismiss?: () => void;
 }) {
   const color =
-    tone === "error" ? "border-danger/40 bg-danger/10 text-danger" : "border-warn/40 bg-warn/10 text-warn";
+    tone === "error"
+      ? "border-danger/40 bg-danger/10 text-danger"
+      : tone === "info"
+        ? "border-accent/40 bg-accent/10 text-ink"
+        : "border-warn/40 bg-warn/10 text-warn";
   return (
     <div
       role={tone === "error" ? "alert" : "status"}

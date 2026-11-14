@@ -6,6 +6,20 @@ versions: [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Milestone 10: **releases, updates and validity period**.
+  - Signed release metadata (Ed25519, verified offline). Each official release is valid for
+    two years: a reminder 30 days before, a warning 7 days before, and on expiry processing
+    and the virtual microphone stop (settings kept, download page and settings export
+    available). Builds without metadata show as "Unofficial build".
+  - Update system: check GitHub Releases (on start-up at most daily, or manually), release
+    notes, download with progress, updater-signature verification, install on click; optional
+    automatic checking and downloading; the portable edition links to the Releases page.
+  - Settings export and import (JSON, without the Pro key or device IDs).
+  - GitHub Actions: CI with build validation; tag-triggered release workflow producing a
+    draft release with the installer, updater signature, `latest.json`, the portable ZIP and
+    SHA256SUMS.
+  - LICENSE (source-available), PRIVACY, SECURITY, CONTRIBUTING, INSTALLATION,
+    docs/RELEASES.md; an installer terms page discloses the validity period.
 - Milestone 9: **installer and portable edition**.
   - NSIS installer: per-user, no admin rights; Start menu shortcut, optional desktop shortcut,
     upgrades over a running copy (settings, Pro key and Start with Windows kept), uninstaller

@@ -54,3 +54,43 @@ jobs:
 
       - name: Rust tests
         run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  build:
+    # Build validation: release build, Windows installer and portable ZIP (unsigned, no
+    # release metadata, so the artifacts are "unofficial builds").
+    needs: check
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - name: Build installer
+        run: npm run tauri build
+
+      - name: Package portable ZIP
+        shell: pwsh
+        run: ./scripts/package-portable.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shuusshy-unofficial-${{ github.sha }}
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/portable/*.zip
+            src-tauri/target/release/bundle/portable/*.sha256
+          retention-days: 14

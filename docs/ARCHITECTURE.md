@@ -181,7 +181,9 @@ and the hardware verification tools. In short:
 
 ## Open decisions
 
-1. **License.** MIT or Apache-2.0 for source is recommended. The two-year expiry (spec Part 10)
-   can only bind official binaries, as a transparent build feature. Legal review is needed if
-   binary terms are wanted.
-2. **GitHub repository URL.** Needed before configuring `origin`.
+1. **License.** Decided: source-available, all rights reserved (LICENSE). Having the LICENSE
+   text and the expiration/Pro terms reviewed by a lawyer before the first public release is
+   still recommended.
+2. **GitHub repository URL.** Not created yet. It is set in one place
+   (`src-tauri/src/release.rs::GITHUB_REPO` / env `SHUUSSHY_GITHUB_REPO` at build time); update
+   checks stay off until it is set.

@@ -1,0 +1,40 @@
+Shuusshy — Source-Available License
+
+Copyright (c) 2026 Ian Musa. All rights reserved.
+
+The source code of Shuusshy is published so that people can read it, review how it handles
+audio and privacy, and report problems. Publishing it does not grant an open-source license.
+
+1. Permitted without further permission
+   - Viewing and reading the source code.
+   - Building and running it on your own computer for personal evaluation, security review or
+     to prepare a contribution to the official repository.
+   - Using the official binary releases under the terms shown with each release, including the
+     Shuusshy Pro license terms and the release validity period described in the documentation.
+
+2. Not permitted without the copyright holder's written permission
+   - Copying, modifying, merging, publishing, distributing, sublicensing or selling the source
+     code or binaries built from it, in whole or in part.
+   - Removing or circumventing the license-key check or the release validity (expiration)
+     mechanism in any copy you distribute.
+   - Using the names "Shuusshy", the Shuusshy emblem or icons for other products.
+
+3. Contributions
+   By submitting a contribution (for example a pull request), you agree that it may be used,
+   modified and distributed as part of Shuusshy under this license or any later license chosen
+   by the copyright holder.
+
+4. Third-party components
+   Shuusshy includes third-party software under its own licenses (see THIRD_PARTY_LICENSES.md).
+   Those licenses apply to those components and are not restricted by this license.
+
+5. No warranty
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+   PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES
+   OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+Note: on GitHub, the platform's Terms of Service also let GitHub users view and fork public
+repositories within GitHub. This license does not grant any rights beyond that.
+
+For permissions, contact the author through the official repository.

@@ -87,6 +87,7 @@ pub fn update_settings(
         next.audio.virtual_device_id = current.audio.virtual_device_id.clone();
         // The license key is set only by activate_license (verified) / remove_license.
         next.app.license_key = current.app.license_key.clone();
+        next.app.last_update_check = current.app.last_update_check;
         *current = next;
     })?;
     apply_window_settings(&app, &saved);
@@ -300,6 +301,14 @@ pub fn desired_routing(app: &AppHandle) -> Desired {
         .unwrap_or(false);
     if !enabled {
         return Desired::Off;
+    }
+    // An expired release stops processing and the virtual microphone (spec Part 10.3).
+    let release = crate::release::current(&app.package_info().version.to_string());
+    if release.expired() {
+        return Desired::Waiting(format!(
+            "This version of Shuusshy expired on {}. Update to keep using it",
+            release.expires.as_deref().unwrap_or("its expiry date")
+        ));
     }
     let state = current_device_state(app, false);
     if let Some(e) = state.error {
@@ -594,4 +603,108 @@ pub fn set_start_with_windows(enabled: bool) -> Result<bool, String> {
 #[tauri::command]
 pub fn open_vb_cable_site() -> Result<(), String> {
     crate::install::open_vb_cable_site()
+}
+
+#[tauri::command]
+pub fn get_release_info(app: AppHandle) -> crate::release::ReleaseInfo {
+    crate::release::current(&app.package_info().version.to_string())
+}
+
+/// Opens the official GitHub Releases page (address fixed at build time).
+#[tauri::command]
+pub fn open_releases_page(app: AppHandle) -> Result<(), String> {
+    let info = crate::release::current(&app.package_info().version.to_string());
+    let url = info
+        .releases_url
+        .ok_or("This build does not know its GitHub repository yet.")?;
+    crate::install::open_url(&url)
+}
+
+/// Settings file format for export/import (spec 8.3). The Pro key and device IDs are not
+/// included: keys are personal, and device IDs differ between PCs.
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ExportFile {
+    format: String,
+    app_version: String,
+    exported: String,
+    settings: Settings,
+}
+
+const EXPORT_FORMAT: &str = "shuusshy-settings-v1";
+
+/// Writes the settings as JSON to Documents\Shuusshy and returns the file path.
+#[tauri::command]
+pub fn export_settings(app: AppHandle, state: State<'_, AppState>) -> Result<String, String> {
+    let mut settings = state.settings.lock().map_err(|e| e.to_string())?.clone();
+    settings.app.license_key = None;
+    settings.audio.input_device_id = None;
+    settings.audio.virtual_device_id = None;
+    let today = crate::release::date_string(crate::release::today());
+    let file = ExportFile {
+        format: EXPORT_FORMAT.into(),
+        app_version: app.package_info().version.to_string(),
+        exported: today.clone(),
+        settings,
+    };
+    let dir = app
+        .path()
+        .document_dir()
+        .map_err(|e| e.to_string())?
+        .join("Shuusshy");
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let path = dir.join(format!("shuusshy-settings-{today}.json"));
+    let json = serde_json::to_string_pretty(&file).map_err(|e| e.to_string())?;
+    std::fs::write(&path, json).map_err(|e| e.to_string())?;
+    Ok(path.display().to_string())
+}
+
+/// Applies settings from an exported file's text. Validated like any settings update; the
+/// selected microphone and the Pro key on this PC are kept.
+#[tauri::command]
+pub fn import_settings(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    json: String,
+) -> Result<Settings, String> {
+    if json.len() > 256 * 1024 {
+        return Err("That file is too large to be a Shuusshy settings file.".into());
+    }
+    let file: ExportFile = serde_json::from_str(&json)
+        .map_err(|_| "That is not a Shuusshy settings file.".to_string())?;
+    if file.format != EXPORT_FORMAT {
+        return Err("That settings file comes from an unsupported version.".into());
+    }
+    let imported = file.settings;
+    imported.validate().map_err(|e| e.to_string())?;
+    let saved = persist(&state, |current| {
+        let mut next = imported;
+        next.audio.input_device_id = current.audio.input_device_id.clone();
+        next.audio.input_device_name = current.audio.input_device_name.clone();
+        next.audio.virtual_device_id = current.audio.virtual_device_id.clone();
+        next.app.license_key = current.app.license_key.clone();
+        *current = next;
+    })?;
+    apply_window_settings(&app, &saved);
+    apply_processing(&app, &saved);
+    reconcile_audio(&app);
+    Ok(saved)
+}
+
+#[tauri::command]
+pub async fn check_for_updates(
+    app: AppHandle,
+) -> Result<Option<crate::updates::UpdateInfo>, String> {
+    crate::updates::check(&app).await
+}
+
+#[tauri::command]
+pub async fn download_update(app: AppHandle) -> Result<crate::updates::UpdateInfo, String> {
+    crate::updates::download(&app).await
+}
+
+/// Installs the downloaded, signature-checked update (Shuusshy closes and restarts).
+#[tauri::command]
+pub fn install_update(app: AppHandle) -> Result<(), String> {
+    crate::updates::install(&app)
 }

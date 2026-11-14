@@ -12,8 +12,13 @@ mod license;
 // Shared with tools/license-keygen, which uses the signing-side helpers.
 #[allow(dead_code)]
 mod license_format;
+mod release;
+// Shared with tools/license-keygen (release signing).
+#[allow(dead_code)]
+mod release_format;
 mod settings;
 mod tray;
+mod updates;
 
 use std::sync::Mutex;
 
@@ -40,7 +45,9 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
             tray::show_banner(app);
         }))
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
+            app.manage(updates::Updates::default());
             let state = init_state(app.handle());
             let settings = state.settings.lock().map(|s| s.clone()).unwrap_or_default();
             app.manage(state);
@@ -83,6 +90,7 @@ pub fn run() {
             );
             app.manage(Audio(controller));
             // Without a tray icon the banner must never hide (it could not be brought back).
+            updates::spawn_startup_check(app.handle().clone());
             let tray_ok = match tray::create(app.handle()) {
                 Ok(()) => true,
                 Err(e) => {
@@ -139,6 +147,13 @@ pub fn run() {
             commands::set_virtual_mic_name,
             commands::get_accent_color,
             commands::get_license,
+            commands::get_release_info,
+            commands::check_for_updates,
+            commands::download_update,
+            commands::install_update,
+            commands::open_releases_page,
+            commands::export_settings,
+            commands::import_settings,
             commands::get_start_with_windows,
             commands::set_start_with_windows,
             commands::open_vb_cable_site,

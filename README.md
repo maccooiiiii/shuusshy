@@ -37,7 +37,7 @@ npm run tauri build    # release build + NSIS installer (src-tauri/target/releas
 npm run package:portable   # portable ZIP from the release build
 ```
 
-Installing and the portable edition for users: [docs/INSTALL.md](docs/INSTALL.md).
+Installing and the portable edition for users: [INSTALLATION.md](INSTALLATION.md).
 
 ## Layout
 
@@ -60,5 +60,12 @@ Rust. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
 
 ## License
 
-Not chosen yet. The choice is pending a decision on the release-expiration policy. See
-docs/ARCHITECTURE.md § Open decisions.
+**Source-available, all rights reserved** © 2026 Ian Musa. See [LICENSE](LICENSE). You may
+read, build and evaluate the code; copying, modifying or redistributing it needs permission.
+Third-party components keep their own licenses ([THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)).
+
+Official releases are valid for two years from their release date and Pro features need a
+license key; see [docs/RELEASES.md](docs/RELEASES.md) and [docs/LICENSING.md](docs/LICENSING.md).
+
+More: [INSTALLATION.md](INSTALLATION.md) · [PRIVACY.md](PRIVACY.md) · [SECURITY.md](SECURITY.md) ·
+[CONTRIBUTING.md](CONTRIBUTING.md)

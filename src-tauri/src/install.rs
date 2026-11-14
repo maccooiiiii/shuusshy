@@ -116,7 +116,15 @@ pub fn set_autostart(on: bool) -> Result<(), String> {
 /// Opens the official VB-CABLE page in the default browser. The URL is fixed: the frontend
 /// cannot make Shuusshy open anything else.
 pub fn open_vb_cable_site() -> Result<(), String> {
-    let url = HSTRING::from(VB_CABLE_URL);
+    open_url(VB_CABLE_URL)
+}
+
+/// Opens an https URL that Shuusshy itself chose (never one from the frontend).
+pub fn open_url(url: &str) -> Result<(), String> {
+    if !url.starts_with("https://") {
+        return Err("refusing to open a non-https address".into());
+    }
+    let url = HSTRING::from(url);
     // SAFETY: all strings are valid for the call.
     let h = unsafe {
         ShellExecuteW(

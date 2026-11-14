@@ -1,0 +1,168 @@
+name: Release
+
+# Official releases. Push a tag `vX.Y.Z` (or `vX.Y.Z-beta.N` for the beta channel) that matches
+# the version in src-tauri/tauri.conf.json and has a `## [X.Y.Z]` section in CHANGELOG.md.
+# The workflow runs every check, then builds a signed, dated release and creates a DRAFT
+# GitHub release for review. Nothing is published until a maintainer publishes the draft.
+#
+# Required repository secrets (see docs/RELEASES.md):
+#   TAURI_SIGNING_PRIVATE_KEY         contents of updater.key (signs updater artifacts)
+#   SHUUSSHY_RELEASE_SIGNING_KEY      hex contents of release-signing.key (release metadata)
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  release:
+    needs: checks
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src-tauri
+            tools/license-keygen
+
+      - run: npm ci
+
+      - name: Release metadata
+        id: meta
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          CONF_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          if [ "$VERSION" != "$CONF_VERSION" ]; then
+            echo "::error::Tag $TAG does not match tauri.conf.json version $CONF_VERSION"; exit 1
+          fi
+          case "$VERSION" in *-*) CHANNEL=beta ;; *) CHANNEL=stable ;; esac
+          DATE=$(date -u +%F)
+          # Release notes: the CHANGELOG section for this version (required).
+          awk -v h="## [$VERSION]" '
+            index($0, h) == 1 {on=1; next}
+            on && index($0, "## [") == 1 {exit}
+            on {print}
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "::error::CHANGELOG.md has no '## [$VERSION]' section"; exit 1
+          fi
+          {
+            echo "version=$VERSION"
+            echo "channel=$CHANNEL"
+            echo "date=$DATE"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Sign release metadata
+        id: sign
+        env:
+          RELEASE_KEY: ${{ secrets.SHUUSSHY_RELEASE_SIGNING_KEY }}
+        run: |
+          if [ -z "$RELEASE_KEY" ]; then
+            echo "::error::Secret SHUUSSHY_RELEASE_SIGNING_KEY is not set"; exit 1
+          fi
+          KEYFILE="$RUNNER_TEMP/release-signing.key"
+          printf '%s' "$RELEASE_KEY" > "$KEYFILE"
+          SIG=$(SHUUSSHY_RELEASE_KEY="$KEYFILE" cargo run --quiet --release \
+            --manifest-path tools/license-keygen/Cargo.toml -- \
+            release-sign "${{ steps.meta.outputs.version }}" "${{ steps.meta.outputs.channel }}" "${{ steps.meta.outputs.date }}")
+          rm -f "$KEYFILE"
+          echo "sig=$SIG" >> "$GITHUB_OUTPUT"
+
+      - name: Build signed installer
+        env:
+          SHUUSSHY_GITHUB_REPO: ${{ github.repository }}
+          SHUUSSHY_RELEASE_CHANNEL: ${{ steps.meta.outputs.channel }}
+          SHUUSSHY_RELEASE_DATE: ${{ steps.meta.outputs.date }}
+          SHUUSSHY_RELEASE_SIG: ${{ steps.sign.outputs.sig }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        run: npx tauri build --config '{"bundle":{"createUpdaterArtifacts":true}}'
+
+      - name: Package portable ZIP
+        shell: pwsh
+        run: ./scripts/package-portable.ps1
+
+      - name: Updater manifest and checksums
+        run: |
+          V="${{ steps.meta.outputs.version }}"
+          NSIS=src-tauri/target/release/bundle/nsis
+          SETUP="Shuusshy_${V}_x64-setup.exe"
+          OUT=dist-release
+          mkdir -p "$OUT"
+          cp "$NSIS/$SETUP" "$NSIS/$SETUP.sig" "$OUT/"
+          cp src-tauri/target/release/bundle/portable/Shuusshy_${V}_x64_portable.zip "$OUT/"
+          node -e '
+            const fs = require("fs");
+            const [v, setup, repo, notesFile, out] = process.argv.slice(1);
+            const manifest = {
+              version: v,
+              notes: fs.readFileSync(notesFile, "utf8").trim(),
+              pub_date: new Date().toISOString(),
+              platforms: {
+                "windows-x86_64": {
+                  signature: fs.readFileSync(`${out}/${setup}.sig`, "utf8").trim(),
+                  url: `https://github.com/${repo}/releases/download/v${v}/${setup}`,
+                },
+              },
+            };
+            fs.writeFileSync(`${out}/latest.json`, JSON.stringify(manifest, null, 2));
+          ' "$V" "$SETUP" "${{ github.repository }}" release-notes.md "$OUT"
+          (cd "$OUT" && sha256sum "$SETUP" "Shuusshy_${V}_x64_portable.zip" latest.json > SHA256SUMS.txt)
+          cat "$OUT/SHA256SUMS.txt"
+
+      - name: Create draft GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V="${{ steps.meta.outputs.version }}"
+          {
+            cat release-notes.md
+            echo
+            echo "---"
+            echo "Released ${{ steps.meta.outputs.date }} (${{ steps.meta.outputs.channel }}). Valid for two years, until the same date two years later; see docs/RELEASES.md."
+            echo "Verify downloads with SHA256SUMS.txt."
+          } > body.md
+          PRERELEASE=""
+          [ "${{ steps.meta.outputs.channel }}" = "beta" ] && PRERELEASE="--prerelease"
+          gh release create "v$V" --draft $PRERELEASE --title "Shuusshy $V" --notes-file body.md dist-release/*

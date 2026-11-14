@@ -1,0 +1,9 @@
+# Normalise text to LF in the repository; Windows checkouts may use CRLF.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.nsh text eol=crlf
+*.png binary
+*.bmp binary
+*.ico binary
+*.icns binary
+*.wav binary
