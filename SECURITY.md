@@ -14,8 +14,8 @@ Each official release is supported for its validity period of two years from its
 
 ## How Shuusshy protects you
 
-- **Local processing.** No account; the only network use is the optional update check
-  ([PRIVACY.md](PRIVACY.md)).
+- **Local processing.** No account; Shuusshy's only network use is the optional update check.
+  The WebView2 runtime may contact Microsoft on its own ([PRIVACY.md](PRIVACY.md)).
 - **Restricted app permissions.** Tauri capabilities allow only the window controls the banner
   needs. Every command argument is validated in Rust. There is no shell access and no arbitrary
   file access. The only links Shuusshy opens are fixed (VB-CABLE site, GitHub Releases).

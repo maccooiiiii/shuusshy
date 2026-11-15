@@ -40,8 +40,20 @@ export function ExpiryNotice({
 }) {
   if (!release) return null;
   const open = () => openReleasesPage().catch(() => {});
+  // Builds without an update channel cannot link to a download page: say where to look.
+  const hasPage = !!release.releasesUrl;
+  const getLatest = (className: string) =>
+    hasPage ? (
+      <button type="button" onClick={open} className={className}>
+        Get the latest version
+      </button>
+    ) : (
+      <span className="text-[11px] leading-snug text-muted">
+        Get the latest version from where you downloaded Shuusshy.
+      </span>
+    );
   if (release.validity === "reminder") {
-    return (
+    return hasPage ? (
       <button
         type="button"
         onClick={open}
@@ -49,6 +61,10 @@ export function ExpiryNotice({
       >
         This version is valid until {release.expires}. Update when convenient →
       </button>
+    ) : (
+      <span className="reveal px-1 text-[11px] text-muted">
+        This version is valid until {release.expires}. Install a newer version when convenient.
+      </span>
     );
   }
   if (release.validity === "warning") {
@@ -60,9 +76,7 @@ export function ExpiryNotice({
           {release.daysLeft === 1 ? "" : "s"} ({release.expires}). Afterwards, noise cancellation
           and the virtual microphone stop until you update.
         </span>
-        <button type="button" onClick={open} className="press glass-btn-accent self-start rounded-full px-3 py-1 text-[11.5px]">
-          Get the latest version
-        </button>
+        {getLatest("press glass-btn-accent self-start rounded-full px-3 py-1 text-[11.5px]")}
       </div>
     );
   }
@@ -76,9 +90,7 @@ export function ExpiryNotice({
           version restores everything.
         </span>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={open} className="press glass-btn-accent rounded-full px-3 py-1 text-[11.5px]">
-            Get the latest version
-          </button>
+          {getLatest("press glass-btn-accent rounded-full px-3 py-1 text-[11.5px]")}
           <button type="button" onClick={onExport} className="press glass-btn rounded-full px-3 py-1 text-[11.5px]">
             Export settings
           </button>
@@ -153,8 +165,9 @@ export function UpdatePanel({
       </span>
       {!configured ? (
         <span className="text-[10.5px] leading-snug text-muted">
-          Update checks are not set up in this build (no repository address), so Shuusshy makes
-          no network connections.
+          {release?.validity === "unofficial"
+            ? "Update checks are not set up in this build, so Shuusshy itself makes no network connections."
+            : "This release has no automatic update channel; Shuusshy itself makes no network connections. Install newer versions from where you downloaded Shuusshy; your settings are kept."}
         </span>
       ) : (
         <>

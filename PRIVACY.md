@@ -11,7 +11,8 @@ Shuusshy processes your microphone **only on your PC**.
 
 ## Network connections
 
-Only one feature connects to the internet: **update checks**.
+Shuusshy's own code connects to the internet for one feature only: **update checks**.
+Release 1.0.0 has no update channel, so Shuusshy itself makes no connections there.
 
 - What: Shuusshy downloads the release information file (`latest.json`) from the official
   GitHub repository and, if you install an update, the signed installer.
@@ -22,6 +23,15 @@ Only one feature connects to the internet: **update checks**.
 - If the repository address is not configured (development builds), no connection is made.
 
 Opening the VB-CABLE or GitHub Releases pages uses your web browser, and only when you click.
+
+**Microsoft WebView2.**
+- Shuusshy's window is drawn by Microsoft Edge WebView2, a component of Windows.
+- WebView2 can contact Microsoft services on its own: on the test PC, two HTTPS connections to
+  Microsoft servers were open after start-up.
+- Shuusshy starts WebView2 with background networking, component updates, SmartScreen, sync and
+  pings turned off, which reduces this but does not remove it entirely.
+- These connections carry no audio and no Shuusshy settings: the audio never enters WebView2,
+  and Shuusshy sends nothing through it.
 
 ## What is stored on your PC
 

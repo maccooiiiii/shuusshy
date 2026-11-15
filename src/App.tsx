@@ -945,8 +945,10 @@ function AboutCard({ version }: { version: string | null }) {
       <p className="text-[11px] leading-snug text-muted">
         Shuusshy removes background noise from your microphone and passes your clean voice to
         Teams, Discord, Zoom and other apps through a virtual microphone. All processing happens
-        on this PC: no account, no audio recorded or uploaded. The only network use is the optional
-        update check (release information from GitHub).
+        on this PC: no account, no audio recorded or uploaded. Shuusshy's own network use is limited
+        to the optional update check (release information from GitHub). Windows' WebView2
+        component, which draws this window, may contact Microsoft services on its own; it receives
+        no audio or settings.
       </p>
 
       <div className="flex flex-col gap-1">

@@ -5,6 +5,22 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-14
+
+First stable release. Valid until 2028-11-14. Release notes: docs/RELEASE_NOTES_1.0.0.md;
+known limitations: docs/KNOWN_LIMITATIONS.md.
+
+### Highlights
+- Local, offline noise cancellation for any microphone, through a virtual microphone (VB-CABLE).
+- RNNoise (free) and DeepFilterNet (Pro) with adjustable strength and a genuine bypass; voice
+  isolation (Pro); presets.
+- Live test with real meters and headphone monitoring (nothing recorded).
+- Liquid-glass banner, accent colours, animated tray icon, start with Windows.
+- Per-user installer, portable ZIP, signed two-year validity metadata, settings export/import.
+- This release has no automatic update channel (no repository configured).
+
+### Development history (milestones 0–11)
+
 ### Added
 - QA tools: `tools/qa-record` (records mic and virtual mic together, with a channel phase
   check) and `examples/voice_variants` (replays a recording through the chain in several

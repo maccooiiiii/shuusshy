@@ -16,8 +16,8 @@ _Last updated: 2026-11-13_
 | 8b — Design refresh, Pro licensing, mic name, glass redesign, credits | ✅ Complete (mic rename used by the user) |
 | 9 — Installer & portable | ✅ Complete |
 | 10 — GitHub, updates, expiration | ✅ Implemented and verified locally; workflows not yet run on GitHub (no repository yet); awaiting review |
-| 11 — QA | ✅ Done ([report](docs/QA_REPORT.md)): 5 issues found and fixed; distortion traced to setup (loose headset, +10 dB gains) and resolved; awaiting review |
-| 12 — 1.0.0 release | Not started |
+| 11 — QA | ✅ Complete ([report](docs/QA_REPORT.md)) |
+| 12 — 1.0.0 release | ✅ **1.0.0 stable built and verified** (2026-11-14, valid until 2028-11-14); [acceptance checklist](docs/RELEASE_1.0.0_CHECKLIST.md); not published (no GitHub repository); awaiting review |
 
 ## What works today
 
