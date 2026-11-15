@@ -47,8 +47,21 @@ pub struct Updates {
     busy: AtomicBool,
 }
 
+/// QA only: a build made with `SHUUSSHY_UPDATE_ENDPOINT=http://127.0.0.1:<port>/latest.json`
+/// checks that local address instead of GitHub (used to test updates end to end without
+/// publishing). Only loopback addresses are accepted; official builds never set it.
+const QA_ENDPOINT: Option<&str> = option_env!("SHUUSSHY_UPDATE_ENDPOINT");
+
+fn qa_endpoint() -> Option<Url> {
+    let url: Url = QA_ENDPOINT?.parse().ok()?;
+    matches!(url.host_str(), Some("127.0.0.1" | "localhost")).then_some(url)
+}
+
 /// `latest.json` of the official repository, if this build knows it.
 pub fn endpoint() -> Option<Url> {
+    if let Some(url) = qa_endpoint() {
+        return Some(url);
+    }
     let repo = crate::release::GITHUB_REPO.filter(|r| crate::release::valid_repo(r))?;
     format!("https://github.com/{repo}/releases/latest/download/latest.json")
         .parse()

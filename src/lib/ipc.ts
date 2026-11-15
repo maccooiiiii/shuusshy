@@ -147,6 +147,8 @@ export interface ReleaseInfo {
   validity: "unofficial" | "valid" | "reminder" | "warning" | "expired";
   repo: string | null;
   releasesUrl: string | null;
+  /** Update checks are possible in this build. */
+  updatesEnabled: boolean;
 }
 
 export interface UpdateInfo {

@@ -133,7 +133,7 @@ input gain → engine → noise gate → output gain → safety limiter → clam
 |---|---|
 | Input / output gain | −24…+24 dB; a change ramps linearly over one frame (no zipper noise). Input gain sits before the engine so a quiet mic is raised before suppression |
 | Noise gate (optional) | Per 10 ms frame on the engine output: opens above the threshold; closes only after 200 ms (hold) at least 4 dB below it (hysteresis). Gain glides: ~2 ms to open, ~50 ms to close, floor −80 dB. Disabled = exactly transparent |
-| Safety limiter | Peak limiter at −0.5 dBFS, instant attack, 100 ms release; exactly transparent below the threshold. Frames limited by more than 1 dB are counted and shown in Settings |
+| Safety limiter | Peak limiter at −1.0 dBFS (1 dB headroom for the output resampler), instant attack, 100 ms release; exactly transparent below the threshold. Frames limited by more than 1 dB are counted and shown in Settings |
 
 Noise cancellation on/off still bypasses only the engine; gains and the gate are separate,
 explicitly enabled controls. All are live (atomics), with no audio restart.
@@ -141,7 +141,7 @@ explicitly enabled controls. All are live (atomics), with no audio restart.
 **Unit tests**: neutral chain is bit-exact; gains measure within 0.05 dB; gain changes have no
 steps; the gate mutes −66 dBFS noise by more than 60 dB and leaves −23 dBFS untouched; the gate
 does not close during 100 ms pauses or chatter inside the hysteresis band; open/close are smooth;
-the limiter keeps +12 dB output gain at or below −0.5 dBFS and counts it.
+the limiter keeps +12 dB output gain at or below its ceiling (−0.5 dBFS then; −1.0 dBFS since Milestone 11) and counts it.
 
 **Hardware check** (`examples/levels_check.rs`, real pipeline, room noise as signal, each setting
 vs a neutral control): input +6 → **+6.0 dB**; output −10 → **−9.8 dB**; +12/−6 → **+6.0 dB**;

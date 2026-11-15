@@ -607,7 +607,9 @@ pub fn open_vb_cable_site() -> Result<(), String> {
 
 #[tauri::command]
 pub fn get_release_info(app: AppHandle) -> crate::release::ReleaseInfo {
-    crate::release::current(&app.package_info().version.to_string())
+    let mut info = crate::release::current(&app.package_info().version.to_string());
+    info.updates_enabled = crate::updates::endpoint().is_some();
+    info
 }
 
 /// Opens the official GitHub Releases page (address fixed at build time).

@@ -12,6 +12,7 @@ node_modules
 # License signing keys never belong in the repository
 *.key
 tools/license-keygen/target
+tools/qa-record/target
 dist
 dist-ssr
 *.local

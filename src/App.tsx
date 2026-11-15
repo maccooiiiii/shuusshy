@@ -75,7 +75,7 @@ import {
   routingSummary,
 } from "./lib/routing";
 import { ENGINE_LOADING, errorText, presentStatus, type Tone } from "./lib/status";
-import { ACCENTS, accentFilter, glassPointer } from "./lib/appearance";
+import { ACCENTS, accentFilter, glassPointer, watchBannerVisibility } from "./lib/appearance";
 
 type View = "main" | "settings";
 
@@ -139,6 +139,7 @@ export default function App() {
       onRoutingChanged(setRouting),
       onSettingsChanged(setSettings),
       onUpdateAvailable(setUpdate),
+      watchBannerVisibility(),
       onOpenSettings(() => setView("settings")),
     ];
     // Release validity can change while the app runs (midnight): re-read it hourly.

@@ -70,7 +70,8 @@ html.glass-on .app-shell {
   border-radius: 0;
 }
 
-/* Soft accent light drifting behind the glass: it gives the panels something to refract. */
+/* Soft accent light behind the glass: it gives the panels something to refract. Static on
+ * purpose: animating these large blurred shapes cost ~14 % of a CPU core (Milestone 11). */
 .ambient {
   position: absolute;
   inset: 0;
@@ -85,7 +86,6 @@ html.glass-on .app-shell {
   border-radius: 9999px;
   filter: blur(48px);
   opacity: 0.32;
-  animation: drift 22s ease-in-out infinite alternate;
 }
 .ambient > span:nth-child(1) {
   left: -25%;
@@ -97,32 +97,16 @@ html.glass-on .app-shell {
   top: 25%;
   background: var(--color-accent-2);
   opacity: 0.18;
-  animation-duration: 28s;
-  animation-delay: -9s;
 }
 .ambient > span:nth-child(3) {
   left: 10%;
   bottom: -45%;
   background: color-mix(in oklab, var(--color-accent) 60%, white);
   opacity: 0.12;
-  animation-duration: 34s;
-  animation-delay: -17s;
 }
 html.glass-on .ambient > span {
   opacity: 0.16;
 }
-@keyframes drift {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(12%, 8%) scale(1.12);
-  }
-  100% {
-    transform: translate(-8%, 14%) scale(0.94);
-  }
-}
-
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
@@ -367,51 +351,51 @@ button:disabled {
 
 /* ---- Emblem (rendered in Blender: tools/blender/render_emblem.py) ------------------------- */
 
-/* 36-frame horizontal strip; recoloured to the accent with a hue shift. */
+/*
+ * 36-frame horizontal strip; recoloured to the accent with a hue shift.
+ * Performance: Emblem.tsx steps the strip (transform) inside a clipping box 18 times a second;
+ * see the measurements there.
+ */
 .emblem {
   --size: 56px;
+  position: relative;
   width: var(--size);
   height: var(--size);
   flex-shrink: 0;
+  overflow: hidden;
+  transition: opacity 300ms;
+}
+.emblem-strip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--size) * 36);
   background-repeat: no-repeat;
-  background-size: calc(var(--size) * 36) var(--size);
-  transition:
-    opacity 300ms,
-    filter 400ms;
+  background-size: 100% 100%;
+  will-change: transform;
+}
+.emblem-on .emblem-strip {
+  background-image: url("./assets/emblem-on.png");
 }
 .emblem-on {
-  background-image: url("./assets/emblem-on.png");
-  animation: emblem 2s steps(36) infinite;
-  filter: hue-rotate(var(--accent-shift)) saturate(var(--accent-sat))
-    drop-shadow(0 0 10px color-mix(in srgb, var(--color-accent) 45%, transparent));
+  filter: hue-rotate(var(--accent-shift)) saturate(var(--accent-sat));
+}
+.emblem-off .emblem-strip {
+  width: var(--size);
+  background-image: url("./assets/emblem-off.png");
 }
 .emblem-off {
-  background-image: url("./assets/emblem-off.png");
-  background-size: var(--size) var(--size);
   opacity: 0.8;
   filter: saturate(0.4);
 }
-@keyframes emblem {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: calc(var(--size) * -36) 0;
-  }
-}
 
-/* Breathing status dot for real activity. */
+
+/*
+ * Live status dot: a static accent glow. (A pulsing ring was measured at ~17 % of a CPU core:
+ * every animated frame of the transparent glass window is expensive, so the Blender emblem is
+ * the only continuously moving element.)
+ */
 .dot-live {
-  animation: dot-live 2s ease-in-out infinite;
-}
-@keyframes dot-live {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 60%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 5px transparent;
-  }
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--color-accent) 70%, transparent);
 }
 
 /* ---- Entrances ---------------------------------------------------------------------------- */
@@ -491,16 +475,11 @@ button:disabled {
   .enter-right,
   .enter-left,
   .stagger > *,
-  .dot-live,
-  .ambient > span,
   .scan-beam::before {
     animation: none;
   }
   .scan-beam {
     display: none;
-  }
-  .emblem-on {
-    animation: none;
   }
   * {
     transition-duration: 0ms !important;

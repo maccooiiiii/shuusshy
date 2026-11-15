@@ -24,9 +24,12 @@
 //!   after a pause are not clipped while keyboard clicks and fan noise in the raw input cannot
 //!   open it. The detector only runs while the gate or voice isolation is enabled. Closing
 //!   still follows the cleaned output.
-//! - **Safety limiter**: a peak limiter at −0.5 dBFS (instant attack, 100 ms release) so a high
+//! - **Safety limiter**: a peak limiter at −1.0 dBFS (instant attack, 100 ms release) so a high
 //!   output gain cannot clip the virtual microphone. Below the threshold it is exactly
-//!   transparent. Frames where it reduces gain by more than 1 dB are counted.
+//!   transparent. Frames where it reduces gain by more than 1 dB are counted. The ceiling
+//!   leaves 1 dB for the output resampler (clock-drift correction), whose interpolation can
+//!   overshoot a limited peak by a few tenths of a dB: with −0.5 dBFS, peaks of −0.1 dBFS
+//!   were measured on the virtual microphone (Milestone 11).
 //!
 //! **Meters and monitoring (Milestone 7).** The chain measures real RMS and peak levels of the
 //! audio *before* suppression (after input gain) and of the final output, every frame, with
@@ -53,7 +56,7 @@ const GATE_HOLD_FRAMES: u32 = 20; // 200 ms
 const GATE_FLOOR: f32 = 1e-4; // -80 dB
 const GATE_ATTACK_S: f32 = 0.002;
 const GATE_RELEASE_S: f32 = 0.050;
-const LIMIT: f32 = 0.944; // -0.5 dBFS
+const LIMIT: f32 = 0.891; // -1.0 dBFS
 /// Monitor sources (what the live test plays to headphones).
 pub const MONITOR_OFF: u8 = 0;
 pub const MONITOR_ORIGINAL: u8 = 1;
@@ -175,6 +178,13 @@ impl ChainShared {
     }
 
     pub fn set(&self, l: Levels) {
+        // A gain change starts a fresh limiter count, so the "limiter is reducing peaks"
+        // warning reflects the new settings instead of everything since start-up (found in
+        // Milestone 11: the warning stayed after the user had already fixed the gain).
+        let old = self.load();
+        if old.input_gain_db != l.input_gain_db || old.output_gain_db != l.output_gain_db {
+            self.limited_frames.store(0, Relaxed);
+        }
         self.input_gain_db_bits
             .store(l.input_gain_db.to_bits(), Relaxed);
         self.output_gain_db_bits
@@ -761,6 +771,19 @@ mod tests {
             .map(|w| (w[1] - w[0]).abs())
             .fold(0.0f32, f32::max);
         assert!(max_step < 0.2, "closing jumped by {max_step}");
+    }
+
+    #[test]
+    fn changing_a_gain_resets_the_limiter_count() {
+        let shared = Arc::new(ChainShared::new(Levels::default()));
+        shared.limited_frames.store(42, Relaxed);
+        shared.set(Levels::default()); // nothing changed: keep the count
+        assert_eq!(shared.telemetry().limited_frames, 42);
+        shared.set(Levels {
+            output_gain_db: 6.0,
+            ..Default::default()
+        });
+        assert_eq!(shared.telemetry().limited_frames, 0);
     }
 
     #[test]

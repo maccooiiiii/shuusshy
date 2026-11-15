@@ -6,6 +6,7 @@ fn main() {
         "SHUUSSHY_RELEASE_DATE",
         "SHUUSSHY_RELEASE_SIG",
         "SHUUSSHY_GITHUB_REPO",
+        "SHUUSSHY_UPDATE_ENDPOINT",
     ] {
         println!("cargo:rerun-if-env-changed={var}");
     }

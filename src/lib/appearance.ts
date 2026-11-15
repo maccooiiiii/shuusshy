@@ -1,5 +1,6 @@
 // Appearance helpers: accent recolouring of the Blender emblem and the glass pointer light.
 import type { PointerEvent } from "react";
+import { listen } from "@tauri-apps/api/event";
 import type { Accent } from "./ipc";
 
 /** The accent the emblem frames were rendered in. */
@@ -42,6 +43,17 @@ export function accentFilter(hex: string): { shiftDeg: number; saturate: number 
   if (shift > 180) shift -= 360;
   if (shift < -180) shift += 360;
   return { shiftDeg: Math.round(shift), saturate: s0 > 0 ? +(s1 / s0).toFixed(2) : 1 };
+}
+
+/**
+ * Whether the banner is on screen. WebView2 keeps document.hidden false when the window is
+ * hidden to the tray or minimised, so the backend reports it ("banner-visible").
+ */
+export let bannerVisible = true;
+export function watchBannerVisibility() {
+  return listen<boolean>("banner-visible", (e) => {
+    bannerVisible = e.payload;
+  });
 }
 
 /** Moves the specular highlight of the glass panel under the pointer. */

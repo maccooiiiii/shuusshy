@@ -74,6 +74,21 @@ and the virtual microphone keeps working. Click the Shuusshy icon in the notific
 bring it back. It may be under the ^ arrow. Right-click the icon for the menu, which also has
 **Exit Shuusshy**.
 
+## My voice sounds distorted, choppy or robotic
+
+Check the raw microphone first: TEST → "Hear original". If that is already bad, the problem is
+before Shuusshy:
+- **Loose or worn plug/cable.** Push the headset plug in firmly, or try another port or headset.
+  A bad contact also causes stretches of silence.
+- **Mic too loud in Windows.** Settings → System → Sound → Input → Device properties: Volume
+  about 60, and in "Additional device properties" → Levels set Microphone Boost to 0–10 dB.
+- **Windows/driver "audio enhancements".** Turn them off: Additional device properties →
+  Advanced, untick "Enable audio enhancements".
+
+Then in Shuusshy keep **Input gain and Output gain near 0 dB**. If Settings shows "The safety
+limiter is reducing peaks", lower the gain: the limiter prevents clipping, but constant
+limiting sounds squashed.
+
 ## Testing the virtual microphone
 
 1. Start Shuusshy and wait for **"Virtual mic live"**.

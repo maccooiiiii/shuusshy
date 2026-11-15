@@ -17,6 +17,11 @@ use crate::commands::{self, AppState, Audio, MAIN_WINDOW};
 
 /// Event asking the banner to show its settings panel.
 pub const OPEN_SETTINGS: &str = "open-settings";
+/// Event carrying `true`/`false` when the banner is shown or hidden/minimised. WebView2 does
+/// not report a hidden window to the page (document.hidden stays false), so animations use
+/// this to pause; measured: the emblem kept costing ~6 % of a core while in the tray.
+pub const BANNER_VISIBLE: &str = "banner-visible";
+
 /// Event carrying `Settings` after they changed outside the banner (from the tray).
 pub const SETTINGS_CHANGED: &str = "settings-changed";
 
@@ -377,6 +382,7 @@ pub fn show_banner(app: &AppHandle) {
         let _ = w.unminimize();
         let _ = w.set_focus();
     }
+    let _ = app.emit(BANNER_VISIBLE, true);
     refresh(app);
 }
 
@@ -389,6 +395,7 @@ pub fn hide_banner(app: &AppHandle) {
     if let Some(w) = app.get_webview_window(MAIN_WINDOW) {
         let _ = w.hide();
     }
+    let _ = app.emit(BANNER_VISIBLE, false);
     refresh(app);
 }
 

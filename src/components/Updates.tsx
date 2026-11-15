@@ -110,7 +110,7 @@ export function UpdatePanel({
     | { kind: "ready"; info: UpdateInfo }
     | { kind: "error"; message: string }
   >({ kind: "idle" });
-  const configured = !!release?.repo;
+  const configured = !!release?.updatesEnabled;
 
   useEffect(() => {
     if (announced) setState({ kind: announced.ready ? "ready" : "available", info: announced });

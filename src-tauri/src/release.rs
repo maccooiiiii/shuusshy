@@ -61,6 +61,8 @@ pub struct ReleaseInfo {
     pub repo: Option<String>,
     /// The official download page (GitHub Releases), when known.
     pub releases_url: Option<String>,
+    /// Update checks are possible in this build (set by the command, see updates.rs).
+    pub updates_enabled: bool,
 }
 
 impl ReleaseInfo {
@@ -96,6 +98,7 @@ pub fn evaluate(
             .as_ref()
             .map(|r| format!("https://github.com/{r}/releases/latest")),
         repo,
+        updates_enabled: false,
     };
     let (Some(channel), Some(date), Some(sig)) = (channel, date, sig) else {
         return info;

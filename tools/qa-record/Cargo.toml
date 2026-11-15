@@ -1,0 +1,12 @@
+[package]
+name = "shuusshy-qa-record"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "QA only: records a microphone and the virtual microphone at the same time to WAV for analysis."
+
+[workspace]
+
+[dependencies]
+cpal = "0.18"
+hound = "3.5"

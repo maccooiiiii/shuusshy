@@ -6,6 +6,9 @@ versions: [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- QA tools: `tools/qa-record` (records mic and virtual mic together, with a channel phase
+  check) and `examples/voice_variants` (replays a recording through the chain in several
+  configurations).
 - Milestone 10: **releases, updates and validity period**.
   - Signed release metadata (Ed25519, verified offline). Each official release is valid for
     two years: a reminder 30 days before, a warning 7 days before, and on expiry processing
@@ -134,6 +137,12 @@ versions: [Semantic Versioning](https://semver.org/).
   (attenuates all speech by ~14 dB, 16 kHz only; dev-dependency for the benchmark, not shipped).
 
 ### Fixed
+- The "safety limiter is reducing peaks" warning now clears after a gain change (it used to
+  count since start-up).
+- Safety limiter ceiling lowered to −1.0 dBFS: the clock-drift resampler after it could push
+  peaks to −0.1 dBFS (Milestone 11 QA).
+- Interface CPU use cut from ~38 % to ~5–7 % of a core while live (frame-efficient emblem,
+  static glow and background light), and to ~0.7 % while hidden in the tray (Milestone 11 QA).
 - Closing the banner to the tray could freeze the app (tray update deadlock found during
   Milestone 8 testing, fixed before release).
 - Settings panel content no longer gets cut off when taller than the banner's maximum height.

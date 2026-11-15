@@ -113,6 +113,12 @@ pub fn run() {
             if let tauri::WindowEvent::Focused(_) = event {
                 tray::refresh(window.app_handle());
             }
+            // Minimise / restore: let the page pause or resume its animations.
+            if let tauri::WindowEvent::Resized(_) = event {
+                let visible =
+                    window.is_visible().unwrap_or(true) && !window.is_minimized().unwrap_or(false);
+                let _ = window.app_handle().emit(tray::BANNER_VISIBLE, visible);
+            }
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 let app = window.app_handle();
                 let keep = app
