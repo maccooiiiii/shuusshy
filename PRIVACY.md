@@ -12,7 +12,6 @@ Shuusshy processes your microphone **only on your PC**.
 ## Network connections
 
 Shuusshy's own code connects to the internet for one feature only: **update checks**.
-Release 1.0.0 has no update channel, so Shuusshy itself makes no connections there.
 
 - What: Shuusshy downloads the release information file (`latest.json`) from the official
   GitHub repository and, if you install an update, the signed installer.

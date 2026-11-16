@@ -5,8 +5,8 @@ Please read these points. Clicking "I Agree" means you accept them.
 1. Local processing
    Shuusshy processes your microphone on this PC only. It records nothing, uploads nothing
    and needs no account. Shuusshy's own network use is limited to the optional update check,
-   which downloads release information from GitHub (you can turn it off; release 1.0.0 has
-   none). Windows' WebView2 component, which draws the window, may contact Microsoft services
+   which downloads release information from GitHub (you can turn it off in Settings).
+   Windows' WebView2 component, which draws the window, may contact Microsoft services
    on its own; it receives no audio or settings from Shuusshy.
 
 2. Two-year validity of each release

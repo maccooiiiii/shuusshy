@@ -78,12 +78,17 @@ jobs:
           fi
           case "$VERSION" in *-*) CHANNEL=beta ;; *) CHANNEL=stable ;; esac
           DATE=$(date -u +%F)
-          # Release notes: the CHANGELOG section for this version (required).
+          # Release notes: docs/RELEASE_NOTES_<version>.md if present (user-facing), otherwise the
+          # CHANGELOG section for this version (one of them is required).
+          if [ -f "docs/RELEASE_NOTES_${VERSION}.md" ]; then
+            cp "docs/RELEASE_NOTES_${VERSION}.md" release-notes.md
+          else
           awk -v h="## [$VERSION]" '
             index($0, h) == 1 {on=1; next}
             on && index($0, "## [") == 1 {exit}
             on {print}
           ' CHANGELOG.md > release-notes.md
+          fi
           if [ ! -s release-notes.md ]; then
             echo "::error::CHANGELOG.md has no '## [$VERSION]' section"; exit 1
           fi

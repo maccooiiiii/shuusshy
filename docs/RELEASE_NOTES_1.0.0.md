@@ -1,6 +1,6 @@
 # Shuusshy 1.0.0
 
-_Released 2026-11-14 · stable · valid until 2028-11-14_
+_Released 2026-11-16 · stable · valid until 2028-11-16_
 
 **Less Noise. More Voice.** Shuusshy removes background noise from your microphone on your PC
 and passes your clean voice to Teams, Discord, Zoom and any other app through a virtual
@@ -23,9 +23,11 @@ microphone.
   - Start with Windows: Shuusshy starts quietly in the tray.
 - **Presets:** Balanced, Strong Noise Reduction, Speech Priority, Low CPU Usage.
 - **Settings backup:** export and import as a file.
+- **Updates.** An optional, daily update check against this GitHub repository. Updates are
+  signature-checked, and installing always needs your click.
 - **Private by design.** Everything runs on your PC. No account, no recordings, no uploads.
-  Shuusshy itself makes no network connections in this release; Windows' WebView2 component
-  that draws the window may contact Microsoft on its own (see PRIVACY.md).
+  Shuusshy's only network use is the optional update check. Windows' WebView2 component that
+  draws the window may contact Microsoft on its own (see PRIVACY.md).
 
 ## Install
 
@@ -38,11 +40,12 @@ See [INSTALLATION.md](../INSTALLATION.md).
 
 ## Good to know
 
-- **Validity.** This release is valid for two years, until **2028-11-14**. You get a reminder 30
+- **Validity.** This release is valid for two years, until **2028-11-16**. You get a reminder 30
   days before and a warning 7 days before. After that date, noise cancellation and the virtual
   mic stop until you install a newer version; your settings are kept.
-- **Updates.** This release has **no automatic update channel**. Install newer versions from
-  where you downloaded Shuusshy; installing over the old version keeps your settings.
+- **Updates.** Settings → Application and Updates checks GitHub for new versions (at most
+  daily; you can turn it off). The portable edition links to the Releases page instead.
+  Installing a newer version keeps your settings.
 - **Gain.** For the cleanest sound, keep Shuusshy's input and output gain near 0 dB and set the
   microphone level in Windows instead (see TROUBLESHOOTING.md).
 - **SmartScreen.** The installer is not code-signed yet, so Windows SmartScreen may warn: choose

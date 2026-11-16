@@ -38,11 +38,11 @@ These are known and accepted for 1.0.0. They are documented so that nothing is h
 - **WebView2 may contact Microsoft.** The window is drawn by Microsoft Edge WebView2. Even with
   background networking, component updates, SmartScreen, sync and pings turned off, it opened
   two HTTPS connections to Microsoft servers on the test PC. They carry no audio or Shuusshy
-  data. Shuusshy's own code makes no connections in 1.0.0.
+  data. Shuusshy's own network use is the optional update check (GitHub).
 
 ## Distribution, updates, licensing
 
-- **No automatic update channel in 1.0.0.** Install newer versions manually; settings are kept.
+- Updates are installed only on the user's click (no silent automatic install).
 - **Not Authenticode code-signed:** Windows SmartScreen may warn on first run.
 - **The validity period uses the PC clock** and is best-effort by design. So are the offline
   Pro keys, which cannot be revoked. Shuusshy uses no anti-tampering.

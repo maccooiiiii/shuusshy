@@ -5,9 +5,9 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-11-14
+## [1.0.0] - 2026-11-16
 
-First stable release. Valid until 2028-11-14. Release notes: docs/RELEASE_NOTES_1.0.0.md;
+First stable release. Valid until 2028-11-16. Release notes: docs/RELEASE_NOTES_1.0.0.md;
 known limitations: docs/KNOWN_LIMITATIONS.md.
 
 ### Highlights
@@ -17,7 +17,7 @@ known limitations: docs/KNOWN_LIMITATIONS.md.
 - Live test with real meters and headphone monitoring (nothing recorded).
 - Liquid-glass banner, accent colours, animated tray icon, start with Windows.
 - Per-user installer, portable ZIP, signed two-year validity metadata, settings export/import.
-- This release has no automatic update channel (no repository configured).
+- Update checks against the official GitHub repository (optional, signed updates).
 
 ### Development history (milestones 0–11)
 

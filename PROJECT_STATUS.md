@@ -17,7 +17,7 @@ _Last updated: 2026-11-13_
 | 9 — Installer & portable | ✅ Complete |
 | 10 — GitHub, updates, expiration | ✅ Implemented and verified locally; workflows not yet run on GitHub (no repository yet); awaiting review |
 | 11 — QA | ✅ Complete ([report](docs/QA_REPORT.md)) |
-| 12 — 1.0.0 release | ✅ **1.0.0 stable built and verified** (2026-11-14, valid until 2028-11-14); [acceptance checklist](docs/RELEASE_1.0.0_CHECKLIST.md); not published (no GitHub repository); awaiting review |
+| 12 — 1.0.0 release | ✅ 1.0.0 stable ([acceptance checklist](docs/RELEASE_1.0.0_CHECKLIST.md)); published on GitHub as maccooiiiii/shuusshy, built by the Release workflow (2026-11-16, valid until 2028-11-16) |
 
 ## What works today
 

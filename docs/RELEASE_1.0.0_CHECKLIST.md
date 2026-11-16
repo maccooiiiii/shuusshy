@@ -59,7 +59,16 @@ Each criterion with the evidence it rests on. "QA" refers to [QA_REPORT.md](QA_R
 | Expiration metadata is valid | ✅ | Signed release metadata verified by the app: see below |
 | Expired versions stop processing safely | ✅ | M10: at the simulated expiry date the pipeline stopped and nothing played into the cable; settings and export kept |
 
-## Final 1.0.0 artifacts
+## Published 1.0.0 (GitHub)
+
+The release published on GitHub is built by the Release workflow from tag `v1.0.0`.
+- Dated on publication (2026-11-16, valid until 2028-11-16).
+- Signed with the release key, with signed updater artifacts.
+- It knows its repository (`maccooiiiii/shuusshy`), so update checks work.
+- It supersedes the local pre-publication build described below (dated 2026-11-14, no update
+  channel), which was never distributed.
+
+## Local pre-publication build (superseded)
 
 Built locally on 2026-11-14 in `release/1.0.0/` (not committed):
 
