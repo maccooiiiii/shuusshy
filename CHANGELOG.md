@@ -5,6 +5,14 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-16
+
+### Changed
+- New app icon: Ian Musa's "silent sushi" design. It is now used for the program, Start menu
+  and desktop shortcuts, the taskbar, the Windows Apps list, the installer and the uninstaller.
+  The uninstaller previously showed a generic icon.
+- Installer artwork updated to the new icon.
+
 ## [1.0.0] - 2026-11-16
 
 First stable release. Valid until 2028-11-16. Release notes: docs/RELEASE_NOTES_1.0.0.md;

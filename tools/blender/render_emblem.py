@@ -290,8 +290,9 @@ def main():
 
 
 def render_icon():
-    """1024 px app icon (taskbar, Start menu, installer): the emblem lit, without the ripple.
-    Turned into every icon size with `npm run tauri icon src-tauri/icons/source/app-icon.png`."""
+    """1024 px emblem icon: the emblem lit, without the ripple. (The app icon itself is Ian
+    Musa's "silent sushi" design, src-tauri/icons/source/app-icon.svg; this writes a separate
+    file so it never replaces it.)"""
     out = os.path.join(ROOT, "src-tauri", "icons", "source")
     os.makedirs(out, exist_ok=True)
     s, bars, mats, ring, ring_mat = build(top_down=True)
@@ -300,7 +301,7 @@ def render_icon():
     pose(0.15, True, bars, mats, ring, ring_mat)
     ring.hide_render = True
     a = render_to_array(s, 1024, os.path.join(tempfile.mkdtemp(), "icon.png"))
-    save(bloom(a, 18.0, 0.9), os.path.join(out, "app-icon.png"))
+    save(bloom(a, 18.0, 0.9), os.path.join(out, "emblem-icon.png"))
 
 
 if "--icon" in sys.argv:

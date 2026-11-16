@@ -6,7 +6,7 @@ Shuusshy is a local, offline microphone noise-suppression utility for Windows 10
 your microphone on your PC (RNNoise, free; DeepFilterNet and voice isolation with Shuusshy Pro)
 and passes it to Teams, Zoom, Discord and other apps through a virtual microphone (VB-CABLE).
 
-> **Status: version 1.0.0 (stable), released 2026-11-16, valid until 2028-11-16.**
+> **Status: version 1.0.1 (stable), released 2026-11-16, valid until 2028-11-16.**
 > Download: [Releases](https://github.com/maccooiiiii/shuusshy/releases/latest)
 > - [Release notes](docs/RELEASE_NOTES_1.0.0.md)
 > - [Known limitations](docs/KNOWN_LIMITATIONS.md)
