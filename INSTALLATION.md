@@ -6,6 +6,8 @@ Shuusshy runs on Windows 10 and 11 (64-bit). It needs two things:
 2. **VB-CABLE**, the free virtual audio driver that carries the cleaned voice to other apps.
    Shuusshy never installs or modifies drivers itself.
 
+A macOS test build also exists: see [docs/MACOS.md](docs/MACOS.md).
+
 ## Option A: installer (recommended)
 
 `Shuusshy_<version>_x64-setup.exe`

@@ -187,7 +187,12 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     )?;
     let visibility = MenuItem::with_id(app, "visibility", "Hide banner", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, "settings", "Settings…", true, None::<&str>)?;
-    let exit = MenuItem::with_id(app, "exit", "Exit Shuusshy", true, None::<&str>)?;
+    let exit_label = if cfg!(target_os = "macos") {
+        "Quit Shuusshy"
+    } else {
+        "Exit Shuusshy"
+    };
+    let exit = MenuItem::with_id(app, "exit", exit_label, true, None::<&str>)?;
     let menu = Menu::with_items(
         app,
         &[

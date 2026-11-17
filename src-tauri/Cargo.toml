@@ -16,7 +16,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["tray-icon", "image-png"] }
+# macos-private-api: the transparent glass window on macOS (no effect on Windows); must match
+# app.macOSPrivateApi in tauri.conf.json.
+tauri = { version = "2", features = ["tray-icon", "image-png", "macos-private-api"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # `bundled` compiles SQLite from source with the MSVC toolchain, so users need no system SQLite.
@@ -41,11 +43,6 @@ tauri-plugin-updater = "2"
 [dev-dependencies]
 # Evaluation only (examples/isolation_bench.rs); not shipped in the app.
 hush-vani = { version = "0.1", default-features = false }
-
-# macOS: the transparent glass window needs Tauri's private-API feature (tauri.macos.conf.json
-# sets app.macOSPrivateApi to match).
-[target.'cfg(target_os = "macos")'.dependencies]
-tauri = { version = "2", features = ["tray-icon", "image-png", "macos-private-api"] }
 
 # WASAPI / MMDevice API for device enumeration and hot-plug notifications.
 # Same major version as cpal's dependency so types are shared when streams are added (M3).

@@ -1,8 +1,5 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "app": {
-    "macOSPrivateApi": true
-  },
   "bundle": {
     "targets": ["app", "dmg"],
     "longDescription": "Shuusshy removes background noise from your microphone on your Mac and passes the clean voice to Teams, Discord, Zoom and other apps through a virtual microphone (BlackHole, installed separately).",
