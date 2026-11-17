@@ -361,11 +361,22 @@
               <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">Download .dmg</a>
             </article>
           </div>
-          <div class="glass needs">
-            <strong>You also need a free virtual audio cable (once):</strong>
-            <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE for Windows</a>
-            <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch for Mac</a>
-            <a href="https://github.com/maccooiiiii/shuusshy/releases" rel="noopener">All releases and checksums</a>
+          <div class="glass needs cable-box">
+            <div class="cable-row">
+              <span class="chip new">Coming in 1.1.0</span>
+              <p>
+                <strong>VB-CABLE included in the Windows installer.</strong> The next Windows release
+                brings the free virtual cable inside the installer: one click at the end of setup
+                installs it (Windows asks for permission). No separate download.
+              </p>
+            </div>
+            <p class="muted">
+              Version 1.1.0 is not out yet. With today's version 1.0.1, install
+              <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a> once yourself.
+              On a Mac, install <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a>.
+              <a href="https://github.com/maccooiiiii/shuusshy/releases" rel="noopener">All releases and checksums</a>.
+            </p>
+            <p class="credit">VB-CABLE is made by VB-Audio Software (<a href="https://vb-audio.com/Cable/" rel="noopener">www.vb-cable.com</a>). VB-CABLE is a donationware, all participations are welcome.</p>
           </div>
           <p class="footnote">
             The installers are not code-signed yet, so Windows SmartScreen or macOS Gatekeeper warns
@@ -402,7 +413,7 @@
                 <div class="text">
                   <ol>
                     <li><strong>Install the virtual cable.</strong>
-                      <span class="os-win">Download <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a>, extract the ZIP and run <code>VBCABLE_Setup_x64.exe</code> as administrator. Restart if asked.</span>
+                      <span class="os-win">Download <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a>, extract the ZIP and run <code>VBCABLE_Setup_x64.exe</code> as administrator. Restart if asked. From version 1.1.0 the installer includes it: just say Yes at the end of setup.</span>
                       <span class="os-mac">Download <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a> (free) and run its installer once.</span>
                     </li>
                     <li><strong>Choose your microphone.</strong> Tap the microphone line at the top of the banner and pick your headset or built-in mic.</li>
@@ -436,6 +447,7 @@
                     <li>If SmartScreen warns (the installer is not code-signed yet), choose <strong>More info → Run anyway</strong>.</li>
                     <li>Install <strong>VB-CABLE</strong> as administrator and restart if asked. Shuusshy finds it by itself.</li>
                   </ol>
+                  <p class="tip os-win"><strong>Coming in 1.1.0:</strong> VB-CABLE comes inside the installer. At the end of setup Shuusshy asks “Install VB-CABLE now?”; say Yes, click <strong>Install Driver</strong> in VB-Audio's window, and restart if asked. Skipped it? Settings → Audio Output → <strong>Install VB-CABLE</strong>. VB-CABLE is made by VB-Audio Software (<a href="https://vb-audio.com/Cable/" rel="noopener">www.vb-cable.com</a>). VB-CABLE is a donationware, all participations are welcome.</p>
                   <p class="tip os-win">Prefer no installation? The portable ZIP runs from any folder and keeps settings in a <code>data</code> folder beside <code>shuusshy.exe</code>.</p>
                   <ol class="os-mac">
                     <li>Open the <strong>.dmg</strong> and drag <strong>Shuusshy</strong> onto <strong>Applications</strong>.</li>
@@ -632,7 +644,7 @@
                     <li>Windows Settings → Apps → Shuusshy → Uninstall.</li>
                     <li>Tick “Delete the application data” to remove your settings too.</li>
                     <li>If you renamed the virtual mic, the uninstaller offers to rename it back.</li>
-                    <li>VB-CABLE has its own uninstaller in its download.</li>
+                    <li>VB-CABLE stays installed for other apps. To remove it, run <code>VBCABLE_Setup_x64.exe</code> → <strong>Remove Driver</strong> (in its download, or from 1.1.0 in Shuusshy's <code>vbcable</code> folder).</li>
                   </ol>
                   <ol class="os-mac">
                     <li>Quit Shuusshy (menu bar icon → Quit Shuusshy).</li>
@@ -668,8 +680,12 @@
               <summary>Why do I need VB-CABLE or BlackHole?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Apps can only record from a microphone device. The free virtual cable gives Shuusshy a
-                microphone device to deliver your cleaned voice to. Shuusshy never installs drivers itself,
-                so you install the cable once from its official site.
+                microphone device to deliver your cleaned voice to. You install it once.
+                <span class="os-win">From version 1.1.0 the Windows installer includes VB-CABLE and offers to
+                install it (nothing is installed without your OK). Until then, get it from
+                <a href="https://vb-audio.com/Cable/" rel="noopener">vb-audio.com</a>.</span>
+                <span class="os-mac">On a Mac, get BlackHole 2ch from
+                <a href="https://existential.audio/blackhole/" rel="noopener">existential.audio</a>.</span>
               </div>
             </details>
             <details class="glass">

@@ -1051,6 +1051,47 @@ section.block {
   margin-top: auto;
 }
 
+.needs.cable-box {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cable-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cable-row p {
+  color: var(--ink-2);
+}
+
+.cable-box .muted,
+.cable-box .credit {
+  font-size: 0.92rem;
+}
+
+.cable-box .credit {
+  color: var(--muted);
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  width: 100%;
+}
+
+.chip.new {
+  flex: none;
+  color: var(--accent);
+  border-color: rgb(57 213 255 / 0.45);
+  background: rgb(57 213 255 / 0.08);
+}
+
+@media (max-width: 560px) {
+  .cable-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
 .needs {
   margin-top: 20px;
   padding: 22px 28px;
