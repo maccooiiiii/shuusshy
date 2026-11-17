@@ -29,12 +29,26 @@ tight tracking; small uppercase "tech" labels with wide tracking (as in the app)
 line height 1.6.
 
 ## Shape and depth
-Radius 14 px for panels, 999 px for buttons and chips. Depth comes from rims and one soft
-shadow, not stacked shadows.
+Radius 14 px for panels, 999 px for buttons and chips. Depth comes from a light top rim and a
+pointer-following glow, not shadows: large soft shadows and backdrop blur on every panel cost
+dropped frames while scrolling (measured), so only the sticky header blurs.
 
 ## Motion
-Short fades and lifts on hover; the emblem animates like the app's. Everything stops for
-`prefers-reduced-motion`.
+Fluid but cheap: only `transform`, `translate` and `opacity` are animated, so motion keeps up
+with 60/120/144 Hz displays.
+- Sections rise into view with CSS scroll-driven animations (run by the compositor, tied to
+  the scroll position). Unsupported browsers show the content directly.
+- The hero enters once on load; the banner screenshot floats and tilts toward the pointer.
+- Panels lift and light up under the pointer; buttons press with a spring.
+- The manual's platform switch slides; manual topics and FAQ answers open with a height
+  animation; the nav underlines the section you are reading; a progress line runs under the
+  header.
+- Pointer and scroll handlers only record values; one `requestAnimationFrame` applies them.
+- No `content-visibility`: it made jump links land in the wrong place.
+- Everything stops for `prefers-reduced-motion`.
+
+Measured with headless Edge, scrolling the whole page in 5 s: 59.8 fps with no long frames, and
+58 fps with the CPU slowed 4× (the first version: 55 fps, frames up to 133 ms).
 
 ## Components
 Glass panel · primary (accent) and secondary (glass) pill buttons · chip · platform switch ·

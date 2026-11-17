@@ -41,6 +41,7 @@
           </ul>
         </nav>
       </div>
+      <div class="progress" aria-hidden="true"></div>
     </header>
 
     <main tabindex="-1" id="main">
@@ -71,10 +72,12 @@
             </p>
           </div>
           <figure class="hero-shot">
+            <div class="float"><div class="tilt">
             <img class="os-win" src="assets/shots/win-main.webp" width="720" height="599"
               alt="The Shuusshy banner: microphone, virtual mic live, noise cancellation on with the DeepFilterNet engine at 80% strength" />
             <img class="os-mac" src="assets/shots/mac-main.webp" width="720" height="599"
               alt="The Shuusshy banner on a Mac: MacBook Pro microphone, virtual mic live, noise cancellation on" />
+            </div></div>
             <figcaption>The real Shuusshy banner while noise cancellation is active.</figcaption>
           </figure>
         </div>
@@ -288,6 +291,7 @@
           </div>
 
           <div class="switch" role="group" aria-label="Show the manual for">
+            <span class="pill" aria-hidden="true"></span>
             <button type="button" data-set-os="windows" aria-pressed="true">Windows</button>
             <button type="button" data-set-os="mac" aria-pressed="false">macOS</button>
           </div>
