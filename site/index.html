@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shuusshy — Less Noise. More Voice. Offline noise cancellation for Windows and Mac</title>
+    <meta
+      name="description"
+      content="Shuusshy removes background noise from your microphone on your own computer and passes your clean voice to Teams, Discord, Zoom and other apps. Free, offline, no account."
+    />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:title" content="Shuusshy — Less Noise. More Voice." />
+    <meta
+      property="og:description"
+      content="Offline microphone noise cancellation for Windows and macOS. Nothing recorded, nothing uploaded."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://maccooiiiii.github.io/shuusshy/assets/icon-256.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="site.js" defer></script>
+  </head>
+  <body data-os="windows">
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="Shuusshy home">
+          <img src="assets/icon-256.png" alt="" width="32" height="32" />
+          Shuusshy
+        </a>
+        <nav aria-label="Main">
+          <ul class="nav">
+            <li><a href="#what">What it is</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pro">Pro</a></li>
+            <li><a href="#manual">Manual</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li class="keep"><a class="btn btn-primary header-cta" href="#download">Download</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main tabindex="-1" id="main">
+      <!-- ============================================================ HERO -->
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="wrap">
+          <div>
+            <div class="emblem" role="img" aria-label="Shuusshy emblem"></div>
+            <h1 id="hero-title">Less noise.<br /><span>More voice.</span></h1>
+            <p class="lead">
+              Shuusshy removes background noise from your microphone on your own computer and passes
+              your clean voice to Teams, Discord, Zoom and every other app. Free, offline, no account.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-primary os-win" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64-setup.exe">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13 7.5 1.1v-7H3v5.9Zm8.4 1.2L21 21v-8.4h-9.6v7.1Zm0-15.4v7.2H21V3l-9.6 1.3Z"/></svg>
+                Download for Windows <small>v1.0.1</small>
+              </a>
+              <a class="btn btn-primary os-mac" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8s-1.9-.8-3-.8C6.9 7.2 5.4 8.1 4.6 9.6c-1.7 2.9-.4 7.3 1.2 9.6.8 1.1 1.7 2.4 3 2.4 1.2-.1 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.8-4ZM14.1 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4Z"/></svg>
+                Download for Mac <small>beta</small>
+              </a>
+              <a class="btn" href="#manual">Read the manual</a>
+            </div>
+            <p class="cta-note">
+              <span class="os-win">Windows 10 and 11 (64-bit). Also for <a href="#download">macOS (beta)</a>.</span>
+              <span class="os-mac">macOS 11 or later, Apple Silicon and Intel — test build. Also for <a href="#download">Windows</a>.</span>
+            </p>
+          </div>
+          <figure class="hero-shot">
+            <img class="os-win" src="assets/shots/win-main.webp" width="720" height="599"
+              alt="The Shuusshy banner: microphone, virtual mic live, noise cancellation on with the DeepFilterNet engine at 80% strength" />
+            <img class="os-mac" src="assets/shots/mac-main.webp" width="720" height="599"
+              alt="The Shuusshy banner on a Mac: MacBook Pro microphone, virtual mic live, noise cancellation on" />
+            <figcaption>The real Shuusshy banner while noise cancellation is active.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============================================================ WHAT -->
+      <section class="block" id="what" aria-labelledby="what-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">What it is</span>
+            <h2 id="what-title">A quiet room for your microphone, wherever you are.</h2>
+            <p>
+              Keyboards, fans, traffic, the café next door: Shuusshy filters them out before anyone
+              hears them, and it does it entirely on your computer.
+            </p>
+          </div>
+          <div class="grid-3">
+            <article class="glass card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5"/></svg>
+              </div>
+              <h3>Removes background noise</h3>
+              <p>Two noise-cancellation engines clean your voice in real time: RNNoise (free) and DeepFilterNet (Pro).</p>
+            </article>
+            <article class="glass card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+              </div>
+              <h3>Works in every app</h3>
+              <p>Your clean voice arrives through a virtual microphone, so Teams, Discord, Zoom, Meet and OBS just see another mic.</p>
+            </article>
+            <article class="glass card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              </div>
+              <h3>Private by design</h3>
+              <p>All processing happens on your computer. No account, nothing recorded, nothing uploaded, no analytics.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ HOW -->
+      <section class="block" id="how" aria-labelledby="how-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">How it works</span>
+            <h2 id="how-title">Your mic in, your clean voice out.</h2>
+            <p>
+              Shuusshy sits between your microphone and your apps. A free virtual audio cable
+              (<span class="os-win">VB-CABLE on Windows</span><span class="os-mac">BlackHole on Mac</span>)
+              carries the cleaned voice to them.
+            </p>
+          </div>
+          <ol class="flow" aria-label="Signal path">
+            <li class="glass step"><strong>Your microphone</strong><span>Headset, USB or built-in</span></li>
+            <li class="arrow" aria-hidden="true">→</li>
+            <li class="glass step accent"><strong>Shuusshy</strong><span>Removes the noise, on your computer</span></li>
+            <li class="arrow" aria-hidden="true">→</li>
+            <li class="glass step"><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span></li>
+            <li class="arrow" aria-hidden="true">→</li>
+            <li class="glass step"><strong>Your call app</strong><span>Teams, Discord, Zoom, Meet…</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============================================================ FEATURES -->
+      <section class="block" id="features" aria-labelledby="features-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">Features</span>
+            <h2 id="features-title">Small banner. Everything you need during a call.</h2>
+          </div>
+          <div class="features">
+            <article class="glass feature">
+              <div>
+                <h3>Live test with real meters</h3>
+                <p>Hear yourself before and after on your headphones, with level meters measured from the real audio. Nothing is recorded.</p>
+              </div>
+              <img src="assets/shots/win-test.webp" width="720" height="1276" loading="lazy" alt="Live test panel with microphone and cleaned output meters" />
+            </article>
+            <article class="glass feature">
+              <div>
+                <h3>Presets and fine control</h3>
+                <p>Balanced, Strong Noise Reduction, Speech Priority and Low CPU Usage — or set the engine, strength, noise gate and voice isolation (Pro: mutes quieter background talkers while you pause) yourself.</p>
+              </div>
+              <img src="assets/shots/win-noise.webp" width="720" height="1190" loading="lazy" alt="Noise Suppression settings with presets and engine choice" />
+            </article>
+            <article class="glass feature">
+              <div>
+                <h3>A compact mode for calls</h3>
+                <p>Shrink the banner to the essentials: your microphone, the on/off switch and Test. It stays on top, out of the way.</p>
+              </div>
+              <img src="assets/shots/win-compact.webp" width="720" height="380" loading="lazy" alt="The compact banner" />
+            </article>
+            <article class="glass feature">
+              <div>
+                <h3>Glass themes, tray and start at login</h3>
+                <p>See-through glass with seven accent colours, an animated tray or menu-bar icon while it works, and a quiet start when you sign in.</p>
+              </div>
+              <img src="assets/shots/win-appearance.webp" width="720" height="612" loading="lazy" alt="Appearance settings with glass and accent colours" />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ PRO -->
+      <section class="block" id="pro" aria-labelledby="pro-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">Free and Pro</span>
+            <h2 id="pro-title">Free forever. Pro when you want the strongest engine.</h2>
+            <p>Pro keys are checked offline on your computer — no account and no internet needed.</p>
+          </div>
+          <div class="plans">
+            <article class="glass plan">
+              <h3>Free</h3>
+              <div class="price">Free</div>
+              <ul>
+                <li>RNNoise noise cancellation</li>
+                <li>Virtual microphone, live test, level meters</li>
+                <li>Input and output gain, noise gate, safety limiter</li>
+                <li>Low CPU Usage preset</li>
+              </ul>
+              <a class="btn" href="#download">Download</a>
+            </article>
+            <article class="glass plan pro">
+              <h3>Pro <span class="chip pro">Key</span></h3>
+              <div class="price">Pro key</div>
+              <ul>
+                <li>Everything in Free</li>
+                <li>DeepFilterNet, the strongest engine</li>
+                <li>Voice isolation</li>
+                <li>Balanced, Strong Noise Reduction and Speech Priority presets</li>
+              </ul>
+              <a class="btn btn-pro" href="mailto:shush_support@ianmusa.com?subject=Shuusshy%20Pro%20key">Get Pro — email us</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ MEASURED -->
+      <section class="block" id="measured" aria-labelledby="measured-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">Measured, not claimed</span>
+            <h2 id="measured-title">Light on your computer, quick in your ear.</h2>
+          </div>
+          <div class="stats">
+            <div class="glass stat"><b>≈ 1 %</b><span>of one CPU core with RNNoise · 10 ms delay</span></div>
+            <div class="glass stat"><b>≈ 3 %</b><span>of one CPU core with DeepFilterNet · 30 ms delay</span></div>
+            <div class="glass stat"><b>≈ 45 ms</b><span>Shuusshy's own share of the delay</span></div>
+            <div class="glass stat"><b>≈ 125 ms</b><span>total, microphone to app, including VB-CABLE (≈ 80 ms)</span></div>
+          </div>
+          <p class="footnote">
+            Measured on the development PC (Windows 10) during release testing. Your figures depend on
+            your computer and microphone. Not yet measured on a Mac.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================ DOWNLOAD -->
+      <section class="block" id="download" aria-labelledby="download-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">Download</span>
+            <h2 id="download-title">Get Shuusshy.</h2>
+            <p>Installs without an internet connection once downloaded. Settings are kept when you update.</p>
+          </div>
+          <div class="downloads">
+            <article class="glass dl recommended">
+              <h3>Windows installer</h3>
+              <p class="meta">Version 1.0.1 · Windows 10 and 11 (64-bit) · no administrator rights needed</p>
+              <p class="muted">Recommended. Checks for updates (you can turn it off).</p>
+              <a class="btn btn-primary" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64-setup.exe">Download .exe</a>
+            </article>
+            <article class="glass dl">
+              <h3>Windows portable</h3>
+              <p class="meta">Version 1.0.1 · ZIP · runs from any folder</p>
+              <p class="muted">No installation; settings stay in a <code>data</code> folder next to the app.</p>
+              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64_portable.zip">Download .zip</a>
+            </article>
+            <article class="glass dl">
+              <h3>macOS <span class="chip beta">Beta</span></h3>
+              <p class="meta">Test build · macOS 11+ · Apple Silicon and Intel · .dmg</p>
+              <p class="muted">Built and tested automatically, but not yet tried on a real Mac. Please tell us how it goes.</p>
+              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">Download .dmg</a>
+            </article>
+          </div>
+          <div class="glass needs">
+            <strong>You also need a free virtual audio cable (once):</strong>
+            <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE for Windows</a>
+            <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch for Mac</a>
+            <a href="https://github.com/maccooiiiii/shuusshy/releases" rel="noopener">All releases and checksums</a>
+          </div>
+          <p class="footnote">
+            The installers are not code-signed yet, so Windows SmartScreen or macOS Gatekeeper warns
+            the first time. The <a href="#manual">manual</a> shows how to continue. Verify downloads with
+            the SHA256SUMS.txt file on the release page.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================ MANUAL -->
+      <section class="block" id="manual" aria-labelledby="manual-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">Manual</span>
+            <h2 id="manual-title">The user guide.</h2>
+            <p>The same guide is built into the app: press the <strong>?</strong> button on the banner.</p>
+          </div>
+
+          <div class="switch" role="group" aria-label="Show the manual for">
+            <button type="button" data-set-os="windows" aria-pressed="true">Windows</button>
+            <button type="button" data-set-os="mac" aria-pressed="false">macOS</button>
+          </div>
+
+          <div class="topics">
+            <!-- 1 -->
+            <details class="glass topic" open>
+              <summary>
+                <span class="num">1</span>
+                <span class="topic-title"><strong>Getting started</strong><span>Five steps from installing to your first clean call</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <ol>
+                    <li><strong>Install the virtual cable.</strong>
+                      <span class="os-win">Download <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a>, extract the ZIP and run <code>VBCABLE_Setup_x64.exe</code> as administrator. Restart if asked.</span>
+                      <span class="os-mac">Download <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a> (free) and run its installer once.</span>
+                    </li>
+                    <li><strong>Choose your microphone.</strong> Tap the microphone line at the top of the banner and pick your headset or built-in mic.</li>
+                    <li><strong>Turn on noise cancellation.</strong> The emblem glows and the status says Active while it works.</li>
+                    <li><strong>Pick the virtual mic in your call app.</strong>
+                      <span class="os-win">Choose <strong>CABLE Output</strong> (or <strong>Shuusshy Microphone</strong> if you renamed it).</span>
+                      <span class="os-mac">Choose <strong>BlackHole 2ch</strong>.</span>
+                      Keep your speakers on your headphones, not on the cable.</li>
+                    <li><strong>Test it.</strong> Press <strong>Test</strong>, speak and make a noise, then listen to Original and Processed.</li>
+                  </ol>
+                  <p class="tip">In the app, this checklist ticks itself as Shuusshy detects the cable, your microphone and active noise cancellation.</p>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-main.webp" width="720" height="599" loading="lazy" alt="Banner with noise cancellation active" /><figcaption>Ready: Active, virtual mic live</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-main.webp" width="720" height="599" loading="lazy" alt="Banner on a Mac with noise cancellation active" /><figcaption>Ready: Active, virtual mic live</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 2 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">2</span>
+                <span class="topic-title"><strong>Installing</strong><span>Installer, first launch and the virtual cable</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <ol class="os-win">
+                    <li>Run <code>Shuusshy_1.0.1_x64-setup.exe</code>, accept the terms and finish. No administrator rights needed.</li>
+                    <li>If SmartScreen warns (the installer is not code-signed yet), choose <strong>More info → Run anyway</strong>.</li>
+                    <li>Install <strong>VB-CABLE</strong> as administrator and restart if asked. Shuusshy finds it by itself.</li>
+                  </ol>
+                  <p class="tip os-win">Prefer no installation? The portable ZIP runs from any folder and keeps settings in a <code>data</code> folder beside <code>shuusshy.exe</code>.</p>
+                  <ol class="os-mac">
+                    <li>Open the <strong>.dmg</strong> and drag <strong>Shuusshy</strong> onto <strong>Applications</strong>.</li>
+                    <li>First launch: on macOS 15 or later, double-click it, click <strong>Done</strong>, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>. On macOS 11–14, Control-click the app → <strong>Open</strong> → <strong>Open</strong>.</li>
+                    <li><strong>Allow</strong> microphone access when macOS asks.</li>
+                    <li>Install <strong>BlackHole 2ch</strong>. Shuusshy finds it by itself.</li>
+                  </ol>
+                  <p class="tip os-mac">If macOS says the app “is damaged”, run <code>xattr -dr com.apple.quarantine /Applications/Shuusshy.app</code> in Terminal, then open it again.</p>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-setup.webp" width="720" height="872" loading="lazy" alt="Audio Output before VB-CABLE is installed, with setup steps" /><figcaption>Before the cable is installed</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-setup.webp" width="720" height="872" loading="lazy" alt="Audio Output before BlackHole is installed, with setup steps" /><figcaption>Before BlackHole is installed</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 3 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">3</span>
+                <span class="topic-title"><strong>The banner</strong><span>Your microphone, the on/off switch, engine and strength</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <dl>
+                    <dt>Status</dt><dd>Says Active, with a glow, only while noise is really being removed.</dd>
+                    <dt>Microphone</dt><dd>Tap to choose another microphone. A dot shows whether it is connected.</dd>
+                    <dt>Virtual mic line</dt><dd>“Virtual mic live” means apps are receiving your cleaned voice.</dd>
+                    <dt>Noise cancellation</dt><dd>The main switch. Off passes your voice through untouched.</dd>
+                    <dt>Engine</dt><dd>RNNoise (free, lightest) or DeepFilterNet (Pro, strongest).</dd>
+                    <dt>Strength</dt><dd>How much noise to remove. Lower it if your voice sounds thin.</dd>
+                    <dt>Compact / expand</dt><dd>The arrows button shrinks the banner to the essentials.</dd>
+                  </dl>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-compact.webp" width="720" height="380" loading="lazy" alt="Compact banner" /><figcaption>Compact banner</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-compact.webp" width="720" height="380" loading="lazy" alt="Compact banner on a Mac" /><figcaption>Compact banner</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 4 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">4</span>
+                <span class="topic-title"><strong>Live test</strong><span>Hear and measure before and after, on your headphones</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <ol>
+                    <li>Press <strong>Test</strong> on the banner.</li>
+                    <li>Speak, clap or tap your desk: the meters show your real input and output levels.</li>
+                    <li>Pick your <strong>headphones</strong> and press <strong>Hear original</strong> or <strong>Hear processed</strong>.</li>
+                    <li>Press <strong>Stop</strong> or Esc to stop listening. Nothing is ever recorded.</li>
+                  </ol>
+                  <p class="tip">Use headphones, not speakers: speakers feed your own voice back into the microphone.</p>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-test.webp" width="720" height="1276" loading="lazy" alt="Live test with level meters" /><figcaption>Live test</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-test.webp" width="720" height="1276" loading="lazy" alt="Live test with level meters on a Mac" /><figcaption>Live test</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 5 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">5</span>
+                <span class="topic-title"><strong>Using it in your apps</strong><span>Teams, Discord, Zoom, Meet and more</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <dl>
+                    <dt>Choose as microphone</dt>
+                    <dd><span class="os-win">CABLE Output (VB-Audio Virtual Cable) — or Shuusshy Microphone</span><span class="os-mac">BlackHole 2ch</span></dd>
+                    <dt>Keep as speaker</dt>
+                    <dd><span class="os-win">Your headphones (never CABLE Input)</span><span class="os-mac">Your headphones or Mac speakers (never BlackHole)</span></dd>
+                  </dl>
+                  <ul>
+                    <li>Teams: Settings → Devices → Microphone.</li>
+                    <li>Discord: User Settings → Voice &amp; Video → Input Device.</li>
+                    <li>Zoom: Settings → Audio → Microphone.</li>
+                    <li>Google Meet: ⋮ → Settings → Audio → Microphone.</li>
+                  </ul>
+                  <p class="tip os-win">Settings → Audio Output can rename the virtual mic to “Shuusshy Microphone” so it is easy to find (Windows asks for permission).</p>
+                  <p class="tip">Turn off the app’s own noise suppression, or set it to Low, so the two don’t fight.</p>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-output.webp" width="720" height="892" loading="lazy" alt="Audio Output with the virtual mic ready" /><figcaption>Virtual mic ready</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-output.webp" width="720" height="558" loading="lazy" alt="Audio Output with BlackHole ready" /><figcaption>Virtual mic ready</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 6 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">6</span>
+                <span class="topic-title"><strong>Settings tour</strong><span>Microphone, presets, gain, appearance and startup</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <dl>
+                    <dt>Microphone</dt><dd>Choose the microphone and its input gain. Keep gain near 0 dB.</dd>
+                    <dt>Noise Suppression</dt><dd>Presets, engine, strength, noise gate and voice isolation (Pro).</dd>
+                    <dt>Audio Output</dt><dd>The virtual cable's status, sending to the virtual mic on or off, and output gain.</dd>
+                    <dt>Appearance</dt><dd>See-through glass, tint and accent colours.</dd>
+                    <dt>Startup and Behavior</dt><dd><span class="os-win">Start with Windows</span><span class="os-mac">Open at login</span>, keep on top, and keep running in the <span class="os-win">tray</span><span class="os-mac">menu bar</span> when closed.</dd>
+                    <dt>Application and Updates</dt><dd>Your Pro key, update checks, settings backup and the release's validity date.</dd>
+                  </dl>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-mic.webp" width="720" height="510" loading="lazy" alt="Settings: Microphone" /><figcaption>Microphone</figcaption></figure>
+                  <figure class="os-win"><img src="assets/shots/win-startup.webp" width="720" height="634" loading="lazy" alt="Settings: Startup and Behavior" /><figcaption>Startup and Behavior</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-mic.webp" width="720" height="510" loading="lazy" alt="Settings: Microphone on a Mac" /><figcaption>Microphone</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-startup.webp" width="720" height="600" loading="lazy" alt="Settings: Startup and Behavior on a Mac" /><figcaption>Startup and Behavior</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 7 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">7</span>
+                <span class="topic-title"><strong><span class="os-win">System tray</span><span class="os-mac">Menu bar</span></strong><span>Keep Shuusshy running out of the way</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body single">
+                <div class="text">
+                  <p>Shuusshy keeps an animated icon in the <span class="os-win">system tray</span><span class="os-mac">menu bar</span> that moves while noise cancellation is working.</p>
+                  <dl>
+                    <dt>Click the icon</dt><dd>Shows or hides the banner.</dd>
+                    <dt>Right-click<span class="os-mac"> / Control-click</span></dt><dd>Menu: open, noise cancellation on/off, settings, and quit.</dd>
+                    <dt>Close button</dt><dd>With “keep running” on, closing hides the banner; your voice stays clean.</dd>
+                  </dl>
+                  <p class="tip os-mac">Clicking Shuusshy in the Dock also brings the banner back.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 8 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">8</span>
+                <span class="topic-title"><strong>Shuusshy Pro</strong><span>DeepFilterNet and voice isolation</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body">
+                <div class="text">
+                  <ol>
+                    <li><a href="mailto:shush_support@ianmusa.com?subject=Shuusshy%20Pro%20key">Email us</a> for a Pro key.</li>
+                    <li>Open <strong>Settings → Application and Updates</strong>.</li>
+                    <li>Paste your key (it starts with <code>SHUU-</code>) and press <strong>Activate</strong>.</li>
+                    <li>The key is checked offline on your computer: no account, no internet.</li>
+                  </ol>
+                </div>
+                <div class="shots">
+                  <figure class="os-win"><img src="assets/shots/win-app.webp" width="720" height="1020" loading="lazy" alt="Settings: Application and Updates" /><figcaption>Application and Updates</figcaption></figure>
+                  <figure class="os-mac"><img src="assets/shots/mac-app.webp" width="720" height="862" loading="lazy" alt="Settings: Application and Updates on a Mac" /><figcaption>Application and Updates</figcaption></figure>
+                </div>
+              </div>
+            </details>
+
+            <!-- 9 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">9</span>
+                <span class="topic-title"><strong>Updates and validity</strong><span>New versions and the two-year validity</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body single">
+                <div class="text">
+                  <p class="os-win">Shuusshy checks GitHub for a new version at most once a day (you can turn it off). Updates are signature-checked and installed only when you click. Your settings are kept.</p>
+                  <p class="os-mac">The Mac version does not update itself yet: download the new .dmg from this page and drag it to Applications again. Your settings are kept.</p>
+                  <p>Each official release is valid for two years. You get a reminder 30 days before and a warning 7 days before; after that, noise cancellation stops until you install a newer version. Your settings are never lost. Settings → Application and Updates shows the date.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 10 -->
+            <details class="glass topic">
+              <summary>
+                <span class="num">10</span>
+                <span class="topic-title"><strong>Uninstalling</strong><span>Removing Shuusshy and the virtual cable</span></span>
+                <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="topic-body single">
+                <div class="text">
+                  <ol class="os-win">
+                    <li>Windows Settings → Apps → Shuusshy → Uninstall.</li>
+                    <li>Tick “Delete the application data” to remove your settings too.</li>
+                    <li>If you renamed the virtual mic, the uninstaller offers to rename it back.</li>
+                    <li>VB-CABLE has its own uninstaller in its download.</li>
+                  </ol>
+                  <ol class="os-mac">
+                    <li>Quit Shuusshy (menu bar icon → Quit Shuusshy).</li>
+                    <li>Move <strong>Shuusshy.app</strong> from Applications to the Bin.</li>
+                    <li>Optional: delete <code>~/Library/Application Support/com.shuusshy.app</code> (settings) and <code>~/Library/LaunchAgents/com.shuusshy.app.autostart.plist</code> (open at login).</li>
+                    <li>BlackHole has its own uninstaller (see its website).</li>
+                  </ol>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ FAQ -->
+      <section class="block" id="faq" aria-labelledby="faq-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="label">FAQ</span>
+            <h2 id="faq-title">Questions and fixes.</h2>
+          </div>
+          <div class="faq">
+            <details class="glass">
+              <summary>Is it really offline? Does it record me?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Yes. All audio is processed on your computer and nothing is recorded or uploaded. The only
+                connection Shuusshy makes itself is the optional update check on Windows (GitHub). On
+                Windows, the WebView2 component that draws the window may contact Microsoft on its own; it
+                never receives audio. Details in the <a href="privacy.html">privacy policy</a>.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>Why do I need VB-CABLE or BlackHole?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Apps can only record from a microphone device. The free virtual cable gives Shuusshy a
+                microphone device to deliver your cleaned voice to. Shuusshy never installs drivers itself,
+                so you install the cable once from its official site.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>Other apps don't hear me<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Check that the app's microphone is <span class="os-win">CABLE Output / Shuusshy Microphone</span><span class="os-mac">BlackHole 2ch</span>,
+                that “Send microphone to virtual mic” is on (Settings → Audio Output), and that the banner
+                says “Virtual mic live”.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>My voice sounds robotic or choppy<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Lower the strength or try Speech Priority. Keep Shuusshy's gains near 0 dB and set the
+                microphone level in <span class="os-win">Windows Sound settings (and turn off “audio enhancements”)</span><span class="os-mac">System Settings → Sound → Input</span>.
+                A distorted microphone stays distorted after noise removal.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>I hear an echo, or people hear themselves<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                An app is playing into the virtual cable. Set every app's speaker or output to your
+                headphones, never to <span class="os-win">a CABLE device</span><span class="os-mac">BlackHole</span>.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>Why does Windows SmartScreen or macOS Gatekeeper warn me?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Shuusshy is not code-signed with a paid certificate yet, so your system can't confirm the
+                publisher. Check your download against SHA256SUMS.txt on the release page, then follow the
+                first-launch steps in the manual (topic 2).
+              </div>
+            </details>
+            <details class="glass">
+              <summary>What does “valid for two years” mean?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Each official release works for two years from its release date, so old versions don't
+                linger. You are reminded 30 days before; installing a newer release restarts the period.
+                Your settings are always kept. Version 1.0.1 is valid until 16 November 2028.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>Is the Mac version ready?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                It is a beta. It is built and tested automatically on Apple's platform, but has not yet
+                been tried on a real Mac. Please try it and
+                <a href="https://github.com/maccooiiiii/shuusshy/issues" rel="noopener">report what you find</a>.
+              </div>
+            </details>
+            <details class="glass">
+              <summary>How do I get a Pro key?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+              <div class="answer">
+                Email <a href="mailto:shush_support@ianmusa.com?subject=Shuusshy%20Pro%20key">shush_support@ianmusa.com</a>.
+                Keys are checked offline on your computer; you enter yours in Settings → Application and Updates.
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ CREATOR -->
+      <section class="block" id="creator" aria-labelledby="creator-title">
+        <div class="wrap">
+          <div class="glass creator">
+            <img src="assets/icon-256.png" width="120" height="120" alt="The Shuusshy app icon, a silent sushi" />
+            <div>
+              <span class="label">The creator</span>
+              <h2 id="creator-title">Designed and built by Ian Musa.</h2>
+              <p>Shuusshy — its design, its code and its silent-sushi icon — is made by Ian Musa.</p>
+              <div class="cta-row">
+                <a class="btn" href="https://github.com/maccooiiiii" rel="noopener">GitHub profile</a>
+                <a class="btn" href="https://github.com/maccooiiiii/shuusshy" rel="noopener">Source code</a>
+                <a class="btn" href="mailto:shush_support@ianmusa.com">Contact support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <a class="brand" href="#top"><img src="assets/icon-256.png" alt="" width="32" height="32" /> Shuusshy</a>
+            <p style="margin-top: 12px">Less Noise. More Voice. Offline microphone noise cancellation for Windows and macOS.</p>
+          </div>
+          <div>
+            <h3>Product</h3>
+            <ul>
+              <li><a href="#download">Download</a></li>
+              <li><a href="#manual">Manual</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="https://github.com/maccooiiiii/shuusshy/releases" rel="noopener">Releases</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Legal</h3>
+            <ul>
+              <li><a href="terms.html">Terms and conditions</a></li>
+              <li><a href="privacy.html">Privacy policy</a></li>
+              <li><a href="https://github.com/maccooiiiii/shuusshy/blob/main/LICENSE" rel="noopener">Licence</a></li>
+              <li><a href="https://github.com/maccooiiiii/shuusshy/blob/main/THIRD_PARTY_LICENSES.md" rel="noopener">Third-party licences</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Help</h3>
+            <ul>
+              <li><a href="mailto:shush_support@ianmusa.com">shush_support@ianmusa.com</a></li>
+              <li><a href="https://github.com/maccooiiiii/shuusshy/issues" rel="noopener">Report a problem</a></li>
+              <li><a href="https://github.com/maccooiiiii/shuusshy" rel="noopener">GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="bottom">
+          <span>© 2026 Ian Musa. Source-available, all rights reserved.</span>
+          <span>Built on RNNoise, DeepFilterNet, Tauri and Rust. VB-CABLE and BlackHole belong to their makers.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

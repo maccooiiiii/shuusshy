@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy policy — Shuusshy</title>
+    <meta name="description" content="Shuusshy processes your microphone only on your computer. What it stores and the few connections it makes." />
+    <meta name="theme-color" content="#07090d" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-os="windows">
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="./"><img src="assets/icon-256.png" alt="" width="32" height="32" /> Shuusshy</a>
+        <nav aria-label="Main">
+          <ul class="nav">
+            <li class="keep"><a href="./">Home</a></li>
+            <li class="keep"><a href="terms.html">Terms</a></li>
+            <li class="keep"><a class="btn btn-primary header-cta" href="./#download">Download</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main tabindex="-1" id="main" class="legal">
+      <div class="wrap">
+        <article class="glass doc">
+          <span class="label">Legal</span>
+          <h1>Privacy policy</h1>
+          <p class="muted">Shuusshy processes your microphone only on your computer.</p>
+
+          <h2>What Shuusshy does not do</h2>
+          <ul>
+            <li>It does not record or store your microphone audio. The live test plays audio to your headphones in real time and saves nothing.</li>
+            <li>It does not upload audio or send microphone content anywhere.</li>
+            <li>It requires no account and collects no analytics or telemetry.</li>
+          </ul>
+
+          <h2>Network connections</h2>
+          <p>Shuusshy's own code connects to the internet for one feature only: <strong>update checks</strong> (Windows).</p>
+          <ul>
+            <li><strong>What:</strong> Shuusshy downloads the release information file (<code>latest.json</code>) from the official GitHub repository and, if you install an update, the signed installer.</li>
+            <li><strong>When:</strong> at start-up (at most once a day) and when you click “Check for updates”. Turn it off in Settings → Application and Updates.</li>
+            <li><strong>What is sent:</strong> an ordinary HTTPS request to GitHub. GitHub sees your IP address and a standard user agent, as with any download. Shuusshy sends no identifiers, settings or audio.</li>
+            <li>The macOS test build makes no update checks.</li>
+          </ul>
+          <p>Opening the VB-CABLE, BlackHole or GitHub Releases pages uses your web browser, and only when you click.</p>
+
+          <h2>Microsoft WebView2 (Windows)</h2>
+          <ul>
+            <li>Shuusshy's window on Windows is drawn by Microsoft Edge WebView2, a component of Windows.</li>
+            <li>WebView2 can contact Microsoft services on its own: on the test PC, two HTTPS connections to Microsoft servers were open after start-up.</li>
+            <li>Shuusshy starts WebView2 with background networking, component updates, SmartScreen, sync and pings turned off, which reduces this but does not remove it entirely.</li>
+            <li>These connections carry no audio and no Shuusshy settings: the audio never enters WebView2, and Shuusshy sends nothing through it.</li>
+          </ul>
+          <p>On macOS the window is drawn by WebKit, which is built into macOS.</p>
+
+          <h2>What is stored on your computer</h2>
+          <ul>
+            <li>Settings, including your Pro license key, in a local database:
+              <ul>
+                <li>Windows (installed): <code>%APPDATA%\com.shuusshy.app</code></li>
+                <li>Windows (portable): the <code>data</code> folder beside <code>shuusshy.exe</code></li>
+                <li>macOS: <code>~/Library/Application Support/com.shuusshy.app</code></li>
+              </ul>
+            </li>
+            <li>The embedded browser's cache: <code>%LOCALAPPDATA%\com.shuusshy.app</code> on Windows (or <code>data\webview</code> when portable).</li>
+            <li>If you turn on start at sign-in: one entry in your Windows sign-in list (HKCU Run), or a LaunchAgent file in <code>~/Library/LaunchAgents</code> on macOS.</li>
+            <li>If you rename the virtual mic (Windows): the VB-CABLE recording device's display name.</li>
+          </ul>
+          <p>
+            Uninstalling on Windows removes the program and the sign-in entry; it keeps your settings unless
+            you tick “Delete the application data”. On macOS, see the manual's Uninstalling topic.
+          </p>
+
+          <h2>This website</h2>
+          <p>
+            This website uses no cookies, analytics or third-party scripts. It is hosted on GitHub Pages;
+            GitHub may log visits as described in
+            <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub's privacy statement</a>.
+          </p>
+
+          <h2>Contact</h2>
+          <p><a href="mailto:shush_support@ianmusa.com">shush_support@ianmusa.com</a></p>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap bottom">
+        <span>© 2026 Ian Musa</span>
+        <span><a href="./">Home</a> · <a href="terms.html">Terms and conditions</a></span>
+      </div>
+    </footer>
+  </body>
+</html>
