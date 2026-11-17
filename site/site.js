@@ -176,6 +176,69 @@
     document.querySelectorAll(".hero .cta-row .btn").forEach(magnetic);
   }
 
+
+  // ------------------------------------------------------------ the colour field
+  // One layer glides toward the pointer and with the scroll; a warm layer fades in while the
+  // hero's noise cancellation is off. Transform and opacity only; the loop sleeps once the
+  // springs settle.
+  var setFieldNoise = function () {};
+  (function () {
+    var field = document.querySelector(".field");
+    var warm = document.querySelector(".field-noise");
+    if (!field) return;
+    var px = new Spring(26, 9);
+    var py = new Spring(26, 9);
+    var sc = new Spring(60, 15);
+    var nz = new Spring(40, 12);
+    var lastNoise = -1;
+    if (fine && !reduce) {
+      window.addEventListener(
+        "pointermove",
+        function (e) {
+          px.target = e.clientX / window.innerWidth - 0.5;
+          py.target = e.clientY / window.innerHeight - 0.5;
+          wake();
+        },
+        { passive: true },
+      );
+    }
+    window.addEventListener(
+      "scroll",
+      function () {
+        // Progress through the page, 0 to 1, eased by a spring so the light glides.
+        var max = doc.scrollHeight - window.innerHeight;
+        sc.target = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+        if (reduce) sc.settle();
+        wake();
+      },
+      { passive: true },
+    );
+    setFieldNoise = function (v) {
+      var t = Math.max(0, Math.min(1, v));
+      if (t === nz.target) return;
+      nz.target = t;
+      if (reduce) nz.settle();
+      wake();
+    };
+    jobs.push(function (dt) {
+      var moving = px.step(dt) | py.step(dt) | sc.step(dt) | nz.step(dt);
+      var h = window.innerHeight;
+      var x = px.x * 48;
+      var y = py.x * 36 - sc.x * 0.11 * h;
+      field.style.setProperty("--fx", x.toFixed(1) + "px");
+      field.style.setProperty("--fy", y.toFixed(1) + "px");
+      if (warm) {
+        var o = Math.max(0, Math.min(1, nz.x));
+        if (Math.abs(o - lastNoise) > 0.002) {
+          warm.style.opacity = o.toFixed(3);
+          warm.style.visibility = o < 0.005 ? "hidden" : "visible";
+          lastNoise = o;
+        }
+      }
+      return !!moving;
+    });
+  })();
+
   // ------------------------------------------------------------ hero waveform demo
   (function () {
     var demo = document.querySelector(".demo");
@@ -237,6 +300,7 @@
       var n = Math.floor((w - 16) / (bw + gap));
       var x0 = (w - n * (bw + gap) + gap) / 2;
       var m = Math.max(0, Math.min(1.2, noise.x));
+      setFieldNoise(noise.target);
       var noiseAlpha = 0.18 + 0.5 * Math.min(1, m);
       ctx.globalAlpha = 1;
       ctx.fillStyle = "rgba(255,255,255,0.06)";
@@ -334,6 +398,98 @@
     var b = e.target.closest && e.target.closest("[data-set-os]");
     if (b) setOs(b.getAttribute("data-set-os"), true);
   });
+
+
+  // ------------------------------------------------------------ signal path
+  (function () {
+    var signal = document.querySelector(".signal");
+    if (!signal) return;
+    var steps = signal.querySelectorAll(".flow-step");
+    var panel = signal.querySelector(".flow-panel");
+    function show(btn) {
+      steps.forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      var detail = btn.parentNode.querySelector(".flow-detail");
+      if (panel && detail) {
+        panel.replaceChildren();
+        detail.childNodes.forEach(function (n) {
+          panel.appendChild(n.cloneNode(true));
+        });
+      }
+    }
+    steps.forEach(function (b) {
+      b.addEventListener("click", function () {
+        show(b);
+      });
+      if (fine) {
+        b.addEventListener("pointerenter", function () {
+          show(b);
+        });
+      }
+    });
+    var start = signal.querySelector('.flow-step[aria-pressed="true"]') || steps[0];
+    if (start) show(start);
+    // The pulse runs only while the path is on screen.
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) {
+        signal.style.setProperty("--play", en[0].isIntersecting ? "running" : "paused");
+      }).observe(signal);
+    } else signal.style.setProperty("--play", "running");
+  })();
+
+  // ------------------------------------------------------------ features: tabs and stage
+  (function () {
+    var list = document.querySelector(".sc-tabs");
+    if (!list) return;
+    var tabs = Array.prototype.slice.call(list.querySelectorAll(".sc-tab"));
+    var ink = list.querySelector(".sc-ink");
+    var stage = document.querySelector(".sc-stage");
+    var imgs = stage.querySelectorAll("img[data-shot]");
+    function placeInk() {
+      var on = list.querySelector('[aria-selected="true"]');
+      if (!ink || !on) return;
+      ink.style.setProperty("--iy", on.offsetTop + "px");
+      ink.style.setProperty("--ih", on.offsetHeight + "px");
+    }
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      stage.setAttribute("aria-labelledby", tab.id);
+      var shot = tab.getAttribute("data-shot");
+      imgs.forEach(function (img) {
+        var on = img.getAttribute("data-shot") === shot;
+        img.classList.toggle("on", on);
+        if (on) img.removeAttribute("aria-hidden");
+        else img.setAttribute("aria-hidden", "true");
+      });
+      placeInk();
+      if (focus) tab.focus({ preventScroll: true });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () {
+        select(t, false);
+      });
+      t.addEventListener("keydown", function (e) {
+        var k = e.key;
+        var j = i;
+        if (k === "ArrowDown" || k === "ArrowRight") j = (i + 1) % tabs.length;
+        else if (k === "ArrowUp" || k === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+        else if (k === "Home") j = 0;
+        else if (k === "End") j = tabs.length - 1;
+        else return;
+        e.preventDefault();
+        select(tabs[j], true);
+      });
+    });
+    select(list.querySelector('[aria-selected="true"]') || tabs[0], false);
+    if ("ResizeObserver" in window) new ResizeObserver(placeInk).observe(list);
+    else window.addEventListener("resize", placeInk, { passive: true });
+    if (fine && !reduce) tilt(stage.querySelector(".tilt"), stage, 6);
+  })();
 
   // ------------------------------------------------------------ active nav item
   var navLinks = document.querySelectorAll('.nav a[href^="#"]:not(.header-cta)');

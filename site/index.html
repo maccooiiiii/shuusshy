@@ -108,7 +108,8 @@
     <script src="site.js" defer></script>
   </head>
   <body data-os="windows">
-    <div class="aurora" aria-hidden="true"></div>
+    <div class="field" aria-hidden="true"></div>
+    <div class="field-noise" aria-hidden="true"></div>
     <a class="skip" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -229,12 +230,36 @@
               carries the cleaned voice from Shuusshy to your apps.
             </p>
           </div>
-          <ol class="flow" aria-label="Signal path">
-            <li><span class="flow-n">1</span><strong>Your microphone</strong><span>Headset, USB or built-in</span></li>
-            <li class="hot"><span class="flow-n">2</span><strong>Shuusshy</strong><span>Removes the noise, on your computer</span></li>
-            <li><span class="flow-n">3</span><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span></li>
-            <li><span class="flow-n">4</span><strong>Your call app</strong><span>Teams, Discord, Zoom, Meet…</span></li>
-          </ol>
+          <div class="signal">
+            <ol class="flow" aria-label="Signal path">
+              <li data-step="mic">
+                <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="false">
+                  <span class="flow-n">1</span><strong>Your microphone</strong><span>Headset, USB or built-in</span>
+                </button>
+                <p class="flow-detail">Shuusshy listens to the microphone you choose, or finds your default one. Headsets, USB and built-in microphones all work.</p>
+              </li>
+              <li class="hot" data-step="shuusshy">
+                <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="true">
+                  <span class="flow-n">2</span><strong>Shuusshy</strong><span>Removes the noise, on your computer</span>
+                </button>
+                <p class="flow-detail">RNNoise (free) or DeepFilterNet (Pro) removes keyboards, fans and traffic while you talk, adding about 10 to 30 ms. Nothing is recorded or uploaded.</p>
+              </li>
+              <li data-step="cable">
+                <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="false">
+                  <span class="flow-n">3</span><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span>
+                </button>
+                <p class="flow-detail"><span class="os-win">VB-CABLE hands your clean voice to other apps as a microphone. From version 1.1.0 it comes with the Windows installer.</span><span class="os-mac">BlackHole 2ch hands your clean voice to other apps as a microphone. Install it once from Existential Audio.</span></p>
+              </li>
+              <li data-step="app">
+                <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="false">
+                  <span class="flow-n">4</span><strong>Your call app</strong><span>Teams, Discord, Zoom, Meet…</span>
+                </button>
+                <p class="flow-detail"><span class="os-win">In Teams, Discord or Zoom, choose CABLE Output (or Shuusshy Microphone, if you renamed it) as your microphone. That is the only setting to change.</span><span class="os-mac">In Teams, Discord or Zoom, choose BlackHole 2ch as your microphone. That is the only setting to change.</span></p>
+              </li>
+            </ol>
+            <div class="flow-track" aria-hidden="true"><i class="pulse noisy"></i><i class="pulse clean"></i></div>
+            <p class="flow-panel glass" id="flow-panel" aria-live="polite"></p>
+          </div>
         </div>
       </section>
 
@@ -245,35 +270,38 @@
             <span class="label">Features</span>
             <h2 id="features-title">Small banner. Everything you need during a call.</h2>
           </div>
-          <div class="features">
-            <article class="glass feature">
-              <div>
-                <h3>Live test with real meters</h3>
-                <p>Hear yourself before and after on your headphones, with level meters measured from the real audio. Nothing is recorded.</p>
+          <div class="showcase">
+            <div class="sc-tabs" role="tablist" aria-label="Features" aria-orientation="vertical">
+              <span class="sc-ink" aria-hidden="true"></span>
+              <button class="sc-tab" type="button" role="tab" id="sc-tab-test" aria-controls="sc-stage" aria-selected="true" data-shot="test">
+                <strong>Live test with real meters</strong>
+                <span>Hear yourself before and after on your headphones, with level meters measured from the real audio. Nothing is recorded.</span>
+              </button>
+              <button class="sc-tab" type="button" role="tab" id="sc-tab-noise" aria-controls="sc-stage" aria-selected="false" tabindex="-1" data-shot="noise">
+                <strong>Presets and fine control</strong>
+                <span>Balanced, Strong Noise Reduction, Speech Priority and Low CPU Usage — or set the engine, strength, noise gate and voice isolation (Pro: mutes quieter background talkers while you pause) yourself.</span>
+              </button>
+              <button class="sc-tab" type="button" role="tab" id="sc-tab-compact" aria-controls="sc-stage" aria-selected="false" tabindex="-1" data-shot="compact">
+                <strong>A compact mode for calls</strong>
+                <span>Shrink the banner to the essentials: your microphone, the on/off switch and Test. It stays on top, out of the way.</span>
+              </button>
+              <button class="sc-tab" type="button" role="tab" id="sc-tab-look" aria-controls="sc-stage" aria-selected="false" tabindex="-1" data-shot="look">
+                <strong>Glass themes, tray and start at login</strong>
+                <span>See-through glass with seven accent colours, an animated tray or menu-bar icon while it works, and a quiet start when you sign in.</span>
+              </button>
+            </div>
+            <div class="sc-stage glass" id="sc-stage" role="tabpanel" aria-labelledby="sc-tab-test">
+              <div class="tilt">
+                <img class="os-win on" data-shot="test" src="assets/shots/win-test.webp" width="720" height="1276" loading="lazy" alt="Live test panel with microphone and cleaned output meters" />
+                <img class="os-mac on" data-shot="test" src="assets/shots/mac-test.webp" width="720" height="1276" loading="lazy" alt="Live test panel with microphone and cleaned output meters" />
+                <img class="os-win" data-shot="noise" src="assets/shots/win-noise.webp" width="720" height="1190" loading="lazy" alt="Noise Suppression settings with presets and engine choice" />
+                <img class="os-mac" data-shot="noise" src="assets/shots/mac-noise.webp" width="720" height="1190" loading="lazy" alt="Noise Suppression settings with presets and engine choice" />
+                <img class="os-win" data-shot="compact" src="assets/shots/win-compact.webp" width="720" height="380" loading="lazy" alt="The compact banner" />
+                <img class="os-mac" data-shot="compact" src="assets/shots/mac-compact.webp" width="720" height="380" loading="lazy" alt="The compact banner" />
+                <img class="os-win" data-shot="look" src="assets/shots/win-appearance.webp" width="720" height="612" loading="lazy" alt="Appearance settings with glass and accent colours" />
+                <img class="os-mac" data-shot="look" src="assets/shots/mac-appearance.webp" width="720" height="612" loading="lazy" alt="Appearance settings with glass and accent colours" />
               </div>
-              <img src="assets/shots/win-test.webp" width="720" height="1276" loading="lazy" alt="Live test panel with microphone and cleaned output meters" />
-            </article>
-            <article class="glass feature">
-              <div>
-                <h3>Presets and fine control</h3>
-                <p>Balanced, Strong Noise Reduction, Speech Priority and Low CPU Usage — or set the engine, strength, noise gate and voice isolation (Pro: mutes quieter background talkers while you pause) yourself.</p>
-              </div>
-              <img src="assets/shots/win-noise.webp" width="720" height="1190" loading="lazy" alt="Noise Suppression settings with presets and engine choice" />
-            </article>
-            <article class="glass feature">
-              <div>
-                <h3>A compact mode for calls</h3>
-                <p>Shrink the banner to the essentials: your microphone, the on/off switch and Test. It stays on top, out of the way.</p>
-              </div>
-              <img src="assets/shots/win-compact.webp" width="720" height="380" loading="lazy" alt="The compact banner" />
-            </article>
-            <article class="glass feature">
-              <div>
-                <h3>Glass themes, tray and start at login</h3>
-                <p>See-through glass with seven accent colours, an animated tray or menu-bar icon while it works, and a quiet start when you sign in.</p>
-              </div>
-              <img src="assets/shots/win-appearance.webp" width="720" height="612" loading="lazy" alt="Appearance settings with glass and accent colours" />
-            </article>
+            </div>
           </div>
         </div>
       </section>
