@@ -48,6 +48,13 @@ jobs:
           shasum -a 256 *.dmg | tee SHA256SUMS.txt
           codesign -dv --verbose=2 ../macos/Shuusshy.app 2>&1 | head -n 12 || true
 
+      - name: Check microphone permission setup
+        run: |
+          APP=src-tauri/target/universal-apple-darwin/release/bundle/macos/Shuusshy.app
+          plutil -p "$APP/Contents/Info.plist" | grep -E "NSMicrophoneUsageDescription|LSMinimumSystemVersion"
+          codesign -d --entitlements - "$APP" 2>&1 | tee entitlements.txt
+          grep -q "com.apple.security.device.audio-input" entitlements.txt
+
       - uses: actions/upload-artifact@v4
         with:
           name: Shuusshy-macOS-test
