@@ -416,18 +416,25 @@
 
       <!-- ============================================================ MANUAL -->
       <section class="block" id="manual" aria-labelledby="manual-title">
-        <div class="wrap">
-          <div class="section-head">
-            <span class="label">Manual</span>
-            <h2 id="manual-title">The user guide.</h2>
-            <p>The same guide is built into the app: press the <strong>?</strong> button on the banner.</p>
-          </div>
+        <div class="wrap guide">
+          <aside class="guide-rail">
+            <div class="section-head">
+              <span class="label">Manual</span>
+              <h2 id="manual-title">The user guide.</h2>
+              <p>The same guide is built into the app: press the <strong>?</strong> button on the banner.</p>
+            </div>
 
-          <div class="switch" role="group" aria-label="Show the manual for">
-            <span class="pill" aria-hidden="true"></span>
-            <button type="button" data-set-os="windows" aria-pressed="true">Windows</button>
-            <button type="button" data-set-os="mac" aria-pressed="false">macOS</button>
-          </div>
+            <div class="switch" role="group" aria-label="Show the manual for">
+              <span class="pill" aria-hidden="true"></span>
+              <button type="button" data-set-os="windows" aria-pressed="true">Windows</button>
+              <button type="button" data-set-os="mac" aria-pressed="false">macOS</button>
+            </div>
+
+            <nav class="guide-index" aria-label="Topics in the user guide" hidden>
+              <span class="gi-ink" aria-hidden="true"></span>
+              <ol></ol>
+            </nav>
+          </aside>
 
           <div class="topics">
             <!-- 1 -->

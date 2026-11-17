@@ -491,6 +491,76 @@
     if (fine && !reduce) tilt(stage.querySelector(".tilt"), stage, 6);
   })();
 
+  // ------------------------------------------------------------ user guide index
+  // Built from the topics, so the two never disagree. A link opens its topic and scrolls to it;
+  // the marker follows the topic in view.
+  (function () {
+    var nav = document.querySelector(".guide-index");
+    var topics = document.querySelectorAll(".guide .topics > details.topic");
+    if (!nav || !topics.length) return;
+    var ol = nav.querySelector("ol");
+    var ink = nav.querySelector(".gi-ink");
+    var links = [];
+    topics.forEach(function (d, i) {
+      if (!d.id) d.id = "guide-" + (i + 1);
+      var title = d.querySelector(".topic-title strong");
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "#" + d.id;
+      title.childNodes.forEach(function (n) {
+        a.appendChild(n.cloneNode(true));
+      });
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        d.open = true;
+        d.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        d.querySelector("summary").focus({ preventScroll: true });
+        if (history.replaceState) history.replaceState(null, "", "#" + d.id);
+      });
+      li.appendChild(a);
+      ol.appendChild(li);
+      links.push(a);
+    });
+    nav.hidden = false;
+    var current = -1;
+    function mark(i) {
+      if (i === current) return;
+      current = i;
+      links.forEach(function (a, j) {
+        if (j === i) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+      var a = links[i];
+      if (ink && a) {
+        ink.style.setProperty("--gy", a.offsetTop + "px");
+        ink.style.setProperty("--gh", a.offsetHeight + "px");
+        ink.style.setProperty("--go", "1");
+      }
+    }
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) mark(Array.prototype.indexOf.call(topics, en.target));
+          });
+        },
+        { rootMargin: "-25% 0px -65% 0px" },
+      );
+      topics.forEach(function (d) {
+        io.observe(d);
+      });
+    }
+    window.addEventListener(
+      "resize",
+      function () {
+        var i = current;
+        current = -1;
+        if (i >= 0) mark(i);
+      },
+      { passive: true },
+    );
+  })();
+
   // ------------------------------------------------------------ active nav item
   var navLinks = document.querySelectorAll('.nav a[href^="#"]:not(.header-cta)');
   if ("IntersectionObserver" in window && navLinks.length) {
