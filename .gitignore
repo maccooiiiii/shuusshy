@@ -9,8 +9,20 @@ lerna-debug.log*
 
 node_modules
 
-# License signing keys never belong in the repository
+# Secrets never belong in the repository: signing keys, the issued-keys ledger, databases,
+# certificates and environment files (see SECURITY.md).
 *.key
+*.key.pub
+issued-keys*
+*.pem
+*.pfx
+*.p12
+*.cer
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
 tools/license-keygen/target
 tools/qa-record/target
 dist

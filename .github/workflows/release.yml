@@ -5,7 +5,7 @@ name: Release
 # The workflow runs every check, then builds a signed, dated release and creates a DRAFT
 # GitHub release for review. Nothing is published until a maintainer publishes the draft.
 #
-# Required repository secrets (see docs/RELEASES.md):
+# Required secrets, stored in the `release` environment (see docs/RELEASES.md and SECURITY.md):
 #   TAURI_SIGNING_PRIVATE_KEY         contents of updater.key (signs updater artifacts)
 #   SHUUSSHY_RELEASE_SIGNING_KEY      hex contents of release-signing.key (release metadata)
 
@@ -23,15 +23,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
         with:
+          toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
         with:
           workspaces: src-tauri
       - run: npm ci
@@ -47,26 +50,28 @@ jobs:
   release:
     needs: checks
     runs-on: windows-latest
+    # Signing secrets live in the `release` environment, which only accepts v* tags.
+    environment: release
     permissions:
       contents: write
     defaults:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
 
-      - uses: dtolnay/rust-toolchain@stable
-
-      - uses: Swatinem/rust-cache@v2
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
         with:
-          workspaces: |
-            src-tauri
-            tools/license-keygen
+          toolchain: stable
+
+      # No build cache here: the signing build always starts clean.
 
       - run: npm ci
 
