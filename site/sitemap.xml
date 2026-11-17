@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://maccooiiiii.github.io/shuusshy/</loc>
+    <lastmod>2026-11-17</lastmod>
+    <image:image>
+      <image:loc>https://maccooiiiii.github.io/shuusshy/assets/og-image.png</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://maccooiiiii.github.io/shuusshy/assets/shots/win-main.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://maccooiiiii.github.io/shuusshy/terms.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+  <url>
+    <loc>https://maccooiiiii.github.io/shuusshy/privacy.html</loc>
+    <lastmod>2026-11-17</lastmod>
+  </url>
+</urlset>

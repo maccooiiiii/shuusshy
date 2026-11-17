@@ -2,22 +2,108 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Shuusshy — Less Noise. More Voice. Offline noise cancellation for Windows and Mac</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Shuusshy — Free offline microphone noise cancellation</title>
     <meta
       name="description"
-      content="Shuusshy removes background noise from your microphone on your own computer and passes your clean voice to Teams, Discord, Zoom and other apps. Free, offline, no account."
+      content="Remove background noise from your mic on your own computer, for Teams, Discord and Zoom. Free, offline, no account. For Windows, with a macOS beta."
     />
-    <meta name="theme-color" content="#07090d" />
-    <meta property="og:title" content="Shuusshy — Less Noise. More Voice." />
+    <link rel="canonical" href="https://maccooiiiii.github.io/shuusshy/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Ian Musa" />
+    <meta name="application-name" content="Shuusshy" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#06080c" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Link previews (Open Graph: Facebook, LinkedIn, WhatsApp, Discord, Slack, iMessage) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Shuusshy" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://maccooiiiii.github.io/shuusshy/" />
+    <meta property="og:title" content="Shuusshy — Less noise. More voice." />
     <meta
       property="og:description"
-      content="Offline microphone noise cancellation for Windows and macOS. Nothing recorded, nothing uploaded."
+      content="Free, offline noise cancellation for your microphone. Clean voice in Teams, Discord and Zoom — nothing recorded, nothing uploaded."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://maccooiiiii.github.io/shuusshy/assets/icon-256.png" />
+    <meta property="og:image" content="https://maccooiiiii.github.io/shuusshy/assets/og-image.png" />
+    <meta property="og:image:secure_url" content="https://maccooiiiii.github.io/shuusshy/assets/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Shuusshy: Less noise. More voice. The app's banner with noise cancellation active." />
+
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Shuusshy — Less noise. More voice." />
+    <meta name="twitter:description" content="Free, offline noise cancellation for your microphone. Works in Teams, Discord and Zoom." />
+    <meta name="twitter:image" content="https://maccooiiiii.github.io/shuusshy/assets/og-image.png" />
+    <meta name="twitter:image:alt" content="Shuusshy: Less noise. More voice. The app's banner with noise cancellation active." />
+
+    <!-- Icons and install -->
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="sitemap" type="application/xml" href="sitemap.xml" />
+
+    <!-- Structured data: what search engines show for a downloadable app -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://maccooiiiii.github.io/shuusshy/#app",
+            "name": "Shuusshy",
+            "alternateName": "Shuusshy noise cancellation",
+            "slogan": "Less Noise. More Voice.",
+            "description": "Removes background noise from your microphone on your own computer and passes your clean voice to Teams, Discord, Zoom and other apps through a virtual microphone. Works offline; nothing is recorded or uploaded.",
+            "url": "https://maccooiiiii.github.io/shuusshy/",
+            "applicationCategory": "MultimediaApplication",
+            "applicationSubCategory": "Noise cancellation",
+            "operatingSystem": "Windows 10, Windows 11, macOS 11 or later (beta)",
+            "softwareVersion": "1.0.1",
+            "datePublished": "2026-11-16",
+            "downloadUrl": "https://github.com/maccooiiiii/shuusshy/releases/latest",
+            "installUrl": "https://github.com/maccooiiiii/shuusshy/releases/latest",
+            "releaseNotes": "https://github.com/maccooiiiii/shuusshy/releases/tag/v1.0.1",
+            "screenshot": "https://maccooiiiii.github.io/shuusshy/assets/shots/win-main.webp",
+            "image": "https://maccooiiiii.github.io/shuusshy/assets/og-image.png",
+            "featureList": [
+              "Real-time noise cancellation with RNNoise (free) and DeepFilterNet (Pro)",
+              "Virtual microphone for Teams, Discord, Zoom, Meet and OBS",
+              "Voice isolation (Pro)",
+              "Live test with level meters",
+              "Works offline; no account; nothing recorded or uploaded"
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock"
+            },
+            "isAccessibleForFree": true,
+            "author": { "@id": "https://maccooiiiii.github.io/shuusshy/#creator" },
+            "publisher": { "@id": "https://maccooiiiii.github.io/shuusshy/#creator" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://maccooiiiii.github.io/shuusshy/#creator",
+            "name": "Ian Musa",
+            "url": "https://github.com/maccooiiiii"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://maccooiiiii.github.io/shuusshy/#website",
+            "name": "Shuusshy",
+            "url": "https://maccooiiiii.github.io/shuusshy/",
+            "inLanguage": "en"
+          }
+        ]
+      }
+    </script>
+
     <link rel="stylesheet" href="styles.css" />
     <script src="site.js" defer></script>
   </head>
