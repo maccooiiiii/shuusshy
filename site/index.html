@@ -22,6 +22,7 @@
     <script src="site.js" defer></script>
   </head>
   <body data-os="windows">
+    <div class="aurora" aria-hidden="true"></div>
     <a class="skip" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -48,74 +49,85 @@
       <!-- ============================================================ HERO -->
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="wrap">
-          <div>
-            <div class="emblem" role="img" aria-label="Shuusshy emblem"></div>
+          <div class="hero-copy">
+            <a class="eyebrow" href="#download">
+              <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+              Now on Windows · macOS beta
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+            </a>
             <h1 id="hero-title">Less noise.<br /><span>More voice.</span></h1>
             <p class="lead">
-              Shuusshy removes background noise from your microphone on your own computer and passes
-              your clean voice to Teams, Discord, Zoom and every other app. Free, offline, no account.
+              Shuusshy removes background noise from your microphone, on your own computer, and gives
+              your clean voice to Teams, Discord, Zoom and every other app.
             </p>
             <div class="cta-row">
               <a class="btn btn-primary os-win" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64-setup.exe">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13 7.5 1.1v-7H3v5.9Zm8.4 1.2L21 21v-8.4h-9.6v7.1Zm0-15.4v7.2H21V3l-9.6 1.3Z"/></svg>
-                Download for Windows <small>v1.0.1</small>
+                Download for Windows
               </a>
               <a class="btn btn-primary os-mac" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8s-1.9-.8-3-.8C6.9 7.2 5.4 8.1 4.6 9.6c-1.7 2.9-.4 7.3 1.2 9.6.8 1.1 1.7 2.4 3 2.4 1.2-.1 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.8-4ZM14.1 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4Z"/></svg>
-                Download for Mac <small>beta</small>
+                Download for Mac
               </a>
-              <a class="btn" href="#manual">Read the manual</a>
+              <a class="btn btn-ghost" href="#manual">How it works</a>
             </div>
             <p class="cta-note">
-              <span class="os-win">Windows 10 and 11 (64-bit). Also for <a href="#download">macOS (beta)</a>.</span>
-              <span class="os-mac">macOS 11 or later, Apple Silicon and Intel — test build. Also for <a href="#download">Windows</a>.</span>
+              <span class="os-win">Free · v1.0.1 · Windows 10 and 11 · <a href="#download">macOS beta</a></span>
+              <span class="os-mac">Free · test build · macOS 11+ · <a href="#download">Windows</a></span>
             </p>
           </div>
-          <figure class="hero-shot">
-            <div class="float"><div class="tilt">
-            <img class="os-win" src="assets/shots/win-main.webp" width="720" height="599"
-              alt="The Shuusshy banner: microphone, virtual mic live, noise cancellation on with the DeepFilterNet engine at 80% strength" />
-            <img class="os-mac" src="assets/shots/mac-main.webp" width="720" height="599"
-              alt="The Shuusshy banner on a Mac: MacBook Pro microphone, virtual mic live, noise cancellation on" />
-            </div></div>
-            <figcaption>The real Shuusshy banner while noise cancellation is active.</figcaption>
+
+          <figure class="demo glass" aria-labelledby="demo-caption">
+            <div class="demo-head">
+              <span class="demo-mic">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+                Your microphone
+              </span>
+              <span class="demo-state" aria-live="polite">Clean voice</span>
+            </div>
+            <canvas class="wave" aria-hidden="true"></canvas>
+            <div class="demo-foot">
+              <span id="demo-label">Noise cancellation</span>
+              <button class="toggle" type="button" role="switch" aria-checked="true" aria-labelledby="demo-label">
+                <span class="knob"></span>
+              </button>
+            </div>
+            <figcaption id="demo-caption">An illustration of what Shuusshy does. Flip the switch.</figcaption>
           </figure>
         </div>
       </section>
 
       <!-- ============================================================ WHAT -->
       <section class="block" id="what" aria-labelledby="what-title">
-        <div class="wrap">
-          <div class="section-head">
-            <span class="label">What it is</span>
-            <h2 id="what-title">A quiet room for your microphone, wherever you are.</h2>
-            <p>
-              Keyboards, fans, traffic, the café next door: Shuusshy filters them out before anyone
-              hears them, and it does it entirely on your computer.
-            </p>
-          </div>
-          <div class="grid-3">
-            <article class="glass card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5"/></svg>
-              </div>
-              <h3>Removes background noise</h3>
-              <p>Two noise-cancellation engines clean your voice in real time: RNNoise (free) and DeepFilterNet (Pro).</p>
-            </article>
-            <article class="glass card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-              </div>
-              <h3>Works in every app</h3>
-              <p>Your clean voice arrives through a virtual microphone, so Teams, Discord, Zoom, Meet and OBS just see another mic.</p>
-            </article>
-            <article class="glass card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-              </div>
-              <h3>Private by design</h3>
-              <p>All processing happens on your computer. No account, nothing recorded, nothing uploaded, no analytics.</p>
-            </article>
+        <div class="wrap split">
+          <figure class="shot-tilt">
+            <div class="tilt">
+              <img class="os-win" src="assets/shots/win-main.webp" width="720" height="599" loading="lazy"
+                alt="The Shuusshy banner: microphone, virtual mic live, noise cancellation on with the DeepFilterNet engine at 80% strength" />
+              <img class="os-mac" src="assets/shots/mac-main.webp" width="720" height="599" loading="lazy"
+                alt="The Shuusshy banner on a Mac: MacBook Pro microphone, virtual mic live, noise cancellation on" />
+            </div>
+            <figcaption>The real app, while noise cancellation is active.</figcaption>
+          </figure>
+          <div>
+            <div class="section-head">
+              <span class="label">What it is</span>
+              <h2 id="what-title">A quiet room for your microphone.</h2>
+            </div>
+            <ul class="points">
+              <li>
+                <span class="pt-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5"/></svg></span>
+                <div><h3>Removes background noise</h3><p>Keyboards, fans, traffic: filtered out in real time by RNNoise (free) or DeepFilterNet (Pro).</p></div>
+              </li>
+              <li>
+                <span class="pt-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+                <div><h3>Works in every app</h3><p>Your clean voice arrives as a microphone, so Teams, Discord, Zoom, Meet and OBS just work.</p></div>
+              </li>
+              <li>
+                <span class="pt-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                <div><h3>Private by design</h3><p>Everything happens on your computer. No account, nothing recorded, nothing uploaded.</p></div>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
@@ -125,21 +137,17 @@
         <div class="wrap">
           <div class="section-head">
             <span class="label">How it works</span>
-            <h2 id="how-title">Your mic in, your clean voice out.</h2>
+            <h2 id="how-title">Your mic in. Your clean voice out.</h2>
             <p>
-              Shuusshy sits between your microphone and your apps. A free virtual audio cable
-              (<span class="os-win">VB-CABLE on Windows</span><span class="os-mac">BlackHole on Mac</span>)
-              carries the cleaned voice to them.
+              A free virtual audio cable (<span class="os-win">VB-CABLE on Windows</span><span class="os-mac">BlackHole on Mac</span>)
+              carries the cleaned voice from Shuusshy to your apps.
             </p>
           </div>
           <ol class="flow" aria-label="Signal path">
-            <li class="glass step"><strong>Your microphone</strong><span>Headset, USB or built-in</span></li>
-            <li class="arrow" aria-hidden="true">→</li>
-            <li class="glass step accent"><strong>Shuusshy</strong><span>Removes the noise, on your computer</span></li>
-            <li class="arrow" aria-hidden="true">→</li>
-            <li class="glass step"><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span></li>
-            <li class="arrow" aria-hidden="true">→</li>
-            <li class="glass step"><strong>Your call app</strong><span>Teams, Discord, Zoom, Meet…</span></li>
+            <li><span class="flow-n">1</span><strong>Your microphone</strong><span>Headset, USB or built-in</span></li>
+            <li class="hot"><span class="flow-n">2</span><strong>Shuusshy</strong><span>Removes the noise, on your computer</span></li>
+            <li><span class="flow-n">3</span><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span></li>
+            <li><span class="flow-n">4</span><strong>Your call app</strong><span>Teams, Discord, Zoom, Meet…</span></li>
           </ol>
         </div>
       </section>
@@ -195,7 +203,7 @@
           <div class="plans">
             <article class="glass plan">
               <h3>Free</h3>
-              <div class="price">Free</div>
+              <p class="price">RNNoise, forever.</p>
               <ul>
                 <li>RNNoise noise cancellation</li>
                 <li>Virtual microphone, live test, level meters</li>
@@ -205,8 +213,8 @@
               <a class="btn" href="#download">Download</a>
             </article>
             <article class="glass plan pro">
-              <h3>Pro <span class="chip pro">Key</span></h3>
-              <div class="price">Pro key</div>
+              <h3>Pro <span class="chip pro">Offline key</span></h3>
+              <p class="price">The strongest engine.</p>
               <ul>
                 <li>Everything in Free</li>
                 <li>DeepFilterNet, the strongest engine</li>
@@ -227,10 +235,10 @@
             <h2 id="measured-title">Light on your computer, quick in your ear.</h2>
           </div>
           <div class="stats">
-            <div class="glass stat"><b>≈ 1 %</b><span>of one CPU core with RNNoise · 10 ms delay</span></div>
-            <div class="glass stat"><b>≈ 3 %</b><span>of one CPU core with DeepFilterNet · 30 ms delay</span></div>
-            <div class="glass stat"><b>≈ 45 ms</b><span>Shuusshy's own share of the delay</span></div>
-            <div class="glass stat"><b>≈ 125 ms</b><span>total, microphone to app, including VB-CABLE (≈ 80 ms)</span></div>
+            <div class="stat"><b>≈ 1 %</b><span>of one CPU core with RNNoise · 10 ms delay</span></div>
+            <div class="stat"><b>≈ 3 %</b><span>of one CPU core with DeepFilterNet · 30 ms delay</span></div>
+            <div class="stat"><b>≈ 45 ms</b><span>Shuusshy's own share of the delay</span></div>
+            <div class="stat"><b>≈ 125 ms</b><span>total, microphone to app, including VB-CABLE (≈ 80 ms)</span></div>
           </div>
           <p class="footnote">
             Measured on the development PC (Windows 10) during release testing. Your figures depend on

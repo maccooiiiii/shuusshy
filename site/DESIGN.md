@@ -4,52 +4,58 @@ The website looks like the app: whoever downloads Shuusshy should recognise it a
 come from the app's design system (`src/index.css`).
 
 ## Principles
-- Dark "liquid glass": translucent panels with a thin light rim over a near-black base and a
-  soft accent light. One accent colour (cyan); violet only for Pro.
-- Real things only: screenshots of the real interface, figures from the QA report labelled as
-  measured, no testimonials, logos or invented numbers.
-- Private like the app: no trackers, cookies, web fonts or third-party scripts. One small local
-  script (OS detection, manual platform switch); the page works without it.
+- **Minimal:** one idea per section, generous space, large type, few boxes. Lists and hairlines
+  instead of cards where a card adds nothing.
+- **Dark liquid glass:** translucent layered panels with a gradient edge (bright top left) over
+  a soft, still colour field. One accent colour (cyan); violet only for Pro; amber only for
+  noise and beta.
+- **Interactive with meaning:** the hero lets visitors flip noise cancellation on a live
+  waveform; screenshots tilt toward the pointer; buttons lean toward it. Every motion answers an
+  input or explains the product.
+- **Real things only:** screenshots of the real interface, figures from the QA report labelled as
+  measured, no testimonials, logos or invented numbers. The waveform is labelled an illustration.
+- **Private like the app:** no trackers, cookies, web fonts or third-party scripts. One local
+  script; the page is complete without it.
 
 ## Colour (dark only, like the app)
 | Token | Value | Role |
 |---|---|---|
-| `--base` | `#07090d` | Page background |
-| `--panel` | `#10151c` | Panels (with transparency) |
-| `--line` | `rgb(255 255 255 / .1)` | Borders, rims |
-| `--ink` | `#f2f6fb` | Text (≥ 15:1 on base) |
-| `--muted` | `#9aa7b6` | Secondary text (≥ 7:1 on base) |
-| `--accent` | `#39d5ff` | Links, primary buttons, highlights |
+| `--base` | `#06080c` | Page background |
+| `--ink` | `#f3f6fa` | Headings, primary text (≥ 15:1) |
+| `--ink-2` | `#c7d0db` | Body text (≥ 11:1) |
+| `--muted` | `#8f9cab` | Secondary text (≥ 6.5:1) |
+| `--line` | `rgb(255 255 255 / .08)` | Hairlines |
+| `--accent` | `#39d5ff` | Links, primary buttons, voice |
 | `--accent-2` | `#a594ff` | Pro |
-| `--warn` | `#ffbd5c` | Beta / caution labels |
+| `--warn` | `#ffbd5c` | Noise, beta |
 
 ## Type
-System fonts: Segoe UI Variable / San Francisco / system-ui. Display headings 600 weight with
-tight tracking; small uppercase "tech" labels with wide tracking (as in the app). Body 16–17 px,
-line height 1.6.
+System fonts: Segoe UI Variable / San Francisco / system-ui. Hero 3–5.6 rem at weight 650 with
+-0.045em tracking; section titles 2–3.2 rem; body 17 px, line height 1.6; small uppercase labels
+with wide tracking (as in the app).
 
 ## Shape and depth
-Radius 14 px for panels, 999 px for buttons and chips. Depth comes from a light top rim and a
-pointer-following glow, not shadows: large soft shadows and backdrop blur on every panel cost
-dropped frames while scrolling (measured), so only the sticky header blurs.
+Radius 20 px for panels, 14 px for inner surfaces, 999 px for buttons and chips. Depth comes from
+the gradient edge, an inner top highlight and a pointer-following glow, not stacked shadows.
 
-## Motion
-Fluid but cheap: only `transform`, `translate` and `opacity` are animated, so motion keeps up
-with 60/120/144 Hz displays.
-- Sections rise into view with CSS scroll-driven animations (run by the compositor, tied to
-  the scroll position). Unsupported browsers show the content directly.
-- The hero enters once on load; the banner screenshot floats and tilts toward the pointer.
-- Panels lift and light up under the pointer; buttons press with a spring.
-- The manual's platform switch slides; manual topics and FAQ answers open with a height
-  animation; the nav underlines the section you are reading; a progress line runs under the
-  header.
-- Pointer and scroll handlers only record values; one `requestAnimationFrame` applies them.
+## Motion: built for 120 Hz
+- Only `transform`, `translate`, `scale` and `opacity` animate.
+- Pointer-driven motion (tilt, magnetic buttons, glow) runs on time-based springs in one
+  `requestAnimationFrame` loop at the display's own rate, never on CSS transitions, so it never
+  trails the pointer. The loop sleeps when nothing moves; the waveform pauses off screen.
+- Sections rise into view with CSS scroll-driven animations (compositor). The hero enters once.
+- Small UI motion (switch knob, platform pill, chevrons, nav underline) uses springy CSS
+  transitions; topics and FAQ answers open with an interruptible height animation.
+- Backdrop blur only on the sticky header. The colour field is one still layer: three drifting
+  layers cost frames (measured).
 - No `content-visibility`: it made jump links land in the wrong place.
-- Everything stops for `prefers-reduced-motion`.
+- Everything stops for `prefers-reduced-motion`; the waveform then shows a still frame.
 
-Measured with headless Edge, scrolling the whole page in 5 s: 59.8 fps with no long frames, and
-58 fps with the CPU slowed 4× (the first version: 55 fps, frames up to 133 ms).
+### Measured (headless Edge, full-page scroll in 5 s)
+- Frame rate uncapped: 212–237 fps; 95 % of frames ≤ 7.2 ms; about 1 % over the 8.3 ms budget
+  of a 120 Hz display. Hero waveform alone: 367–390 fps (about 2.6 ms per frame).
+- At 60 Hz: 59.6 fps; 58 fps with the CPU slowed 4×; no long frames.
 
 ## Components
-Glass panel · primary (accent) and secondary (glass) pill buttons · chip · platform switch ·
-disclosure (`<details>`) · screenshot frame.
+Glass panel · primary, ghost and Pro pill buttons · chip · liquid switch · platform switch with
+sliding pill · disclosure (`<details>`) · screenshot frame with tilt · stepper · stat row.
