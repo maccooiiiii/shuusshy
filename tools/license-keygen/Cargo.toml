@@ -9,5 +9,5 @@ description = "Offline tool to create the Shuusshy license signing key and issue
 [workspace]
 
 [dependencies]
-ed25519-dalek = { version = "2", features = ["rand_core"] }
+ed25519-dalek = { version = "3", features = ["rand_core"] }
 rand_core = { version = "0.6", features = ["getrandom"] }
