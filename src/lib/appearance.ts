@@ -2,6 +2,7 @@
 import type { PointerEvent } from "react";
 import { listen } from "@tauri-apps/api/event";
 import type { Accent } from "./ipc";
+import { P } from "./platform";
 
 /** The accent the emblem frames were rendered in. */
 export const RENDER_ACCENT = "#39d5ff";
@@ -14,7 +15,7 @@ export const ACCENTS: { id: Accent; name: string; hex: string | null }[] = [
   { id: "amber", name: "Amber", hex: "#ffb547" },
   { id: "rose", name: "Rose", hex: "#ff6b9d" },
   { id: "ice", name: "Ice", hex: "#c7d7ea" },
-  { id: "system", name: "Windows accent", hex: null },
+  { id: "system", name: `${P.os} accent`, hex: null },
 ];
 
 export function hexToHsl(hex: string): [number, number, number] {

@@ -1,7 +1,13 @@
 //! Appearance: see-through glass window, accent colours, and accent-tinted tray frames.
 
 use tauri::WebviewWindow;
-use tauri::window::{Color, Effect, EffectsBuilder};
+#[cfg(windows)]
+use tauri::window::Color;
+use tauri::window::{Effect, EffectsBuilder};
+
+/// Matches `.app-shell`'s border radius (index.css), so the vibrancy has the banner's corners.
+#[cfg(target_os = "macos")]
+const MAC_CORNER_RADIUS: f64 = 16.0;
 
 use crate::settings::model::{Accent, AppSettings};
 
@@ -21,7 +27,32 @@ pub fn accent_rgb(accent: Accent) -> [u8; 3] {
     }
 }
 
+/// The macOS accent colour (System Settings > Appearance). `AppleAccentColor` is absent for the
+/// default blue and -1 for graphite.
+#[cfg(target_os = "macos")]
+pub fn system_accent() -> Option<[u8; 3]> {
+    let out = std::process::Command::new("defaults")
+        .args(["read", "-g", "AppleAccentColor"])
+        .output()
+        .ok()?;
+    let value = String::from_utf8_lossy(&out.stdout)
+        .trim()
+        .parse::<i32>()
+        .ok();
+    Some(match value {
+        Some(-1) => [0x8c, 0x8c, 0x8c],
+        Some(0) => [0xff, 0x52, 0x57],
+        Some(1) => [0xf7, 0x82, 0x1b],
+        Some(2) => [0xff, 0xc6, 0x00],
+        Some(3) => [0x62, 0xba, 0x46],
+        Some(5) => [0xa5, 0x50, 0xa7],
+        Some(6) => [0xf7, 0x4f, 0x9e],
+        _ => [0x00, 0x7a, 0xff],
+    })
+}
+
 /// The Windows accent / colorization colour.
+#[cfg(windows)]
 pub fn system_accent() -> Option<[u8; 3]> {
     use windows::Win32::Graphics::Dwm::DwmGetColorizationColor;
     let mut argb = 0u32;
@@ -42,6 +73,7 @@ pub fn hex(rgb: [u8; 3]) -> String {
 }
 
 /// Windows build number (e.g. 19045 = Windows 10 22H2, 22000+ = Windows 11).
+#[cfg(windows)]
 pub fn windows_build() -> u32 {
     use windows::Wdk::System::SystemServices::RtlGetVersion;
     use windows::Win32::System::SystemInformation::OSVERSIONINFOW;
@@ -56,6 +88,7 @@ pub fn windows_build() -> u32 {
 
 /// The best see-through effect for this Windows version: Acrylic where it drags smoothly
 /// (Windows 11 22H2+), Mica on early Windows 11, Blur on Windows 10 (Acrylic lags there).
+#[cfg_attr(not(windows), allow(dead_code))]
 pub fn glass_effect(build: u32) -> Effect {
     match build {
         22621.. => Effect::Acrylic,
@@ -67,13 +100,21 @@ pub fn glass_effect(build: u32) -> Effect {
 /// Applies the glass setting to the window. The page paints its own tint over the effect,
 /// so the "glass tint" slider works the same with every effect.
 pub fn apply_window(w: &WebviewWindow, app: &AppSettings) {
+    #[cfg(windows)]
+    let effects = EffectsBuilder::new()
+        .effect(glass_effect(windows_build()))
+        .color(Color(8, 11, 16, 0))
+        .build();
+    // macOS vibrancy; stays see-through when the banner is not the focused window, with the
+    // banner's rounded corners.
+    #[cfg(target_os = "macos")]
+    let effects = EffectsBuilder::new()
+        .effect(Effect::HudWindow)
+        .state(tauri::window::EffectState::Active)
+        .radius(MAC_CORNER_RADIUS)
+        .build();
     let r = if app.glass {
-        w.set_effects(
-            EffectsBuilder::new()
-                .effect(glass_effect(windows_build()))
-                .color(Color(8, 11, 16, 0))
-                .build(),
-        )
+        w.set_effects(effects)
     } else {
         w.set_effects(None)
     };

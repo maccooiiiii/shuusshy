@@ -294,7 +294,30 @@ fn spawn_animator(app: AppHandle, animating: Arc<AtomicBool>, n: usize) {
         });
 }
 
+/// macOS: System Settings > Accessibility > Display > "Reduce motion". Called every frame, so
+/// the setting is read at most every 5 seconds.
+#[cfg(target_os = "macos")]
+fn animations_enabled() -> bool {
+    use std::sync::Mutex;
+    use std::time::{Duration, Instant};
+    static CACHE: Mutex<Option<(Instant, bool)>> = Mutex::new(None);
+    let mut cache = CACHE.lock().unwrap_or_else(|p| p.into_inner());
+    if let Some((at, on)) = *cache
+        && at.elapsed() < Duration::from_secs(5)
+    {
+        return on;
+    }
+    let on = std::process::Command::new("defaults")
+        .args(["read", "com.apple.universalaccess", "reduceMotion"])
+        .output()
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim() != "1")
+        .unwrap_or(true);
+    *cache = Some((Instant::now(), on));
+    on
+}
+
 /// Windows' "Show animations in Windows" setting (Settings > Accessibility > Visual effects).
+#[cfg(windows)]
 fn animations_enabled() -> bool {
     use windows::Win32::Foundation::TRUE;
     use windows::Win32::UI::WindowsAndMessaging::{

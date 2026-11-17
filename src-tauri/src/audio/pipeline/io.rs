@@ -23,12 +23,22 @@ pub struct StreamFormat {
     pub sample_format: String,
 }
 
+#[cfg(windows)]
+const HOST: HostId = HostId::Wasapi;
+#[cfg(target_os = "macos")]
+const HOST: HostId = HostId::CoreAudio;
+
+/// Opens a device by the ID the device manager reported (WASAPI endpoint ID / CoreAudio UID).
 pub fn open_device(endpoint_id: &str) -> Result<Device, String> {
-    let host =
-        cpal::host_from_id(HostId::Wasapi).map_err(|e| format!("WASAPI unavailable: {e}"))?;
-    host.device_by_id(&DeviceId::new(HostId::Wasapi, endpoint_id))
+    let host = cpal::host_from_id(HOST).map_err(|e| format!("{HOST:?} unavailable: {e}"))?;
+    host.device_by_id(&DeviceId::new(HOST, endpoint_id))
         .ok_or_else(|| "device not found (disconnected?)".to_string())
 }
+
+#[cfg(windows)]
+const CABLE_BUSY: &str = "the virtual cable is busy: another app is playing into \"CABLE Input\" or \"CABLE In 16ch\" (check that no app uses a CABLE device as its speaker/output)";
+#[cfg(target_os = "macos")]
+const CABLE_BUSY: &str = "the virtual cable is busy: another app is using \"BlackHole 2ch\" exclusively (check that no app uses BlackHole as its speaker/output)";
 
 fn describe_stream_error(e: &cpal::Error) -> String {
     match e.kind() {
@@ -175,7 +185,7 @@ pub fn build_output(
         // AUDCLNT_E_DEVICE_IN_USE (0x8889000A): VB-CABLE's "CABLE Input" and "CABLE In 16ch"
         // share one cable, so another app playing into either one locks Shuusshy out.
         if e.kind() == cpal::ErrorKind::DeviceBusy || e.to_string().contains("-2004287478") {
-            "the virtual cable is busy: another app is playing into \"CABLE Input\" or \"CABLE In 16ch\" (check that no app uses a CABLE device as its speaker/output)".to_string()
+            CABLE_BUSY.to_string()
         } else {
             format!("cannot open virtual microphone: {e}")
         }

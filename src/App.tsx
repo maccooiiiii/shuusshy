@@ -75,6 +75,7 @@ import {
   routingSummary,
 } from "./lib/routing";
 import { ENGINE_LOADING, errorText, presentStatus, type Tone } from "./lib/status";
+import { IS_MAC, P } from "./lib/platform";
 import { ACCENTS, accentFilter, glassPointer, watchBannerVisibility } from "./lib/appearance";
 
 type View = "main" | "settings";
@@ -793,7 +794,7 @@ function SettingsView({
             <span className="font-semibold">{conflict.title}.</span> {conflict.detail}
           </p>
         )}
-        {dc.devices?.cable.state === "ready" && (
+        {dc.devices?.cable.state === "ready" && !IS_MAC && (
           <MicNameControl
             current={dc.devices.cable.capture.description ?? dc.devices.cable.capture.name}
             onRename={dc.rename}
@@ -945,17 +946,22 @@ function AboutCard({ version }: { version: string | null }) {
       <p className="text-[11px] leading-snug text-muted">
         Shuusshy removes background noise from your microphone and passes your clean voice to
         Teams, Discord, Zoom and other apps through a virtual microphone. All processing happens
-        on this PC: no account, no audio recorded or uploaded. Shuusshy's own network use is limited
-        to the optional update check (release information from GitHub). Windows' WebView2
-        component, which draws this window, may contact Microsoft services on its own; it receives
-        no audio or settings.
+        on this {IS_MAC ? "Mac" : "PC"}: no account, no audio recorded or uploaded. Shuusshy's own
+        network use is limited to the optional update check (release information from GitHub).
+        {IS_MAC
+          ? " The window is drawn by the WebKit engine built into macOS."
+          : " Windows' WebView2 component, which draws this window, may contact Microsoft services on its own; it receives no audio or settings."}
       </p>
 
       <div className="flex flex-col gap-1">
         <span className="label-tech text-ink/75">Built with</span>
         <ul className="flex flex-col gap-0.5 text-[10.5px] leading-snug text-muted">
           <li>RNNoise (via nnnoiseless) and DeepFilterNet for noise suppression</li>
-          <li>VB-CABLE by VB-Audio for the virtual microphone (installed separately)</li>
+          <li>
+            {IS_MAC
+              ? "BlackHole by Existential Audio for the virtual microphone (installed separately)"
+              : "VB-CABLE by VB-Audio for the virtual microphone (installed separately)"}
+          </li>
           <li>Tauri, React and Rust; emblem and icons rendered in Blender</li>
         </ul>
         <span className="text-[10.5px] text-muted/80">
@@ -1080,7 +1086,7 @@ function LicenseControl({
           disabled={busy}
           className="press self-start text-[10.5px] text-muted hover:text-danger disabled:opacity-40"
         >
-          Remove key from this PC
+          Remove key from this computer
         </button>
       </div>
     );
@@ -1095,7 +1101,7 @@ function LicenseControl({
       )}
       <span className="text-[10.5px] leading-snug text-muted">
         Unlocks DeepFilterNet, voice isolation and the presets built on them. Checked offline on this
-        PC: no account, no internet.
+        computer: no account, no internet.
       </span>
       <label htmlFor="license-key" className="sr-only">
         License key
@@ -1446,7 +1452,9 @@ function RoutingDetails({ routing }: { routing: RoutingStatus }) {
             {st.xruns}
           </span>
           <span className="text-muted/70">
-            VB-CABLE adds its own delay (about 80 ms measured on the development PC).
+            {IS_MAC
+              ? "BlackHole and your Mac's audio buffers add some delay of their own."
+              : "VB-CABLE adds its own delay (about 80 ms measured on the development PC)."}
           </span>
         </>
       )}
@@ -1454,7 +1462,8 @@ function RoutingDetails({ routing }: { routing: RoutingStatus }) {
   );
 }
 
-/** Sign-in start: the switch reflects Windows' own Run entry, not a stored setting. */
+/** Sign-in start: the switch reflects the system's own entry (Windows Run key / macOS
+ * LaunchAgent), not a stored setting. */
 function StartWithWindows({ portable }: { portable: boolean }) {
   const [on, setOn] = useState<boolean | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -1463,10 +1472,10 @@ function StartWithWindows({ portable }: { portable: boolean }) {
   }, []);
   return (
     <>
-      <Row label="Start with Windows">
+      <Row label={P.startAtLogin}>
         <Switch
           size="sm"
-          label="Start with Windows"
+          label={P.startAtLogin}
           checked={on ?? false}
           disabled={on === null}
           onChange={(v) =>
@@ -1483,7 +1492,7 @@ function StartWithWindows({ portable }: { portable: boolean }) {
         {err ??
           (portable
             ? "Starts this portable copy, from its current folder, quietly in the tray at sign-in."
-            : "Starts quietly in the tray when you sign in, so the virtual mic is always ready.")}
+            : `Starts quietly in ${P.tray} when you sign in, so the virtual mic is always ready.`)}
       </span>
     </>
   );
@@ -1493,7 +1502,7 @@ function CableSetupSteps() {
   return (
     <ol className="list-decimal space-y-0.5 pl-4 text-[11px] leading-snug text-muted">
       <li>
-        Download VB-CABLE from the official site:{" "}
+        Download {P.cable} from the official site:{" "}
         <span className="select-text text-ink">{VB_CABLE_URL}</span>{" "}
         <button
           type="button"
@@ -1503,10 +1512,21 @@ function CableSetupSteps() {
           Open in browser
         </button>
       </li>
-      <li>Extract the ZIP and run VBCABLE_Setup_x64.exe as administrator.</li>
-      <li>Restart Windows if the installer asks you to.</li>
-      <li>Shuusshy detects the cable automatically. No restart of Shuusshy is needed.</li>
-      <li>If it stays missing, check that “CABLE Input” and “CABLE Output” are enabled in Windows Sound settings.</li>
+      {IS_MAC ? (
+        <>
+          <li>Choose the free “BlackHole 2ch” edition and open the downloaded installer.</li>
+          <li>Follow the installer; macOS may ask for your password.</li>
+          <li>Shuusshy detects BlackHole automatically. No restart of Shuusshy is needed.</li>
+          <li>If it stays missing, check that “BlackHole 2ch” is listed in Audio MIDI Setup.</li>
+        </>
+      ) : (
+        <>
+          <li>Extract the ZIP and run VBCABLE_Setup_x64.exe as administrator.</li>
+          <li>Restart Windows if the installer asks you to.</li>
+          <li>Shuusshy detects the cable automatically. No restart of Shuusshy is needed.</li>
+          <li>If it stays missing, check that “CABLE Input” and “CABLE Output” are enabled in Windows Sound settings.</li>
+        </>
+      )}
     </ol>
   );
 }

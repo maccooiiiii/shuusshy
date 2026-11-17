@@ -1,7 +1,7 @@
 //! Shuusshy desktop application entry point.
 
-#[cfg(not(windows))]
-compile_error!("Shuusshy currently supports Windows only (see docs/ARCHITECTURE.md).");
+#[cfg(not(any(windows, target_os = "macos")))]
+compile_error!("Shuusshy supports Windows and macOS only (see docs/ARCHITECTURE.md).");
 
 mod appearance;
 /// Public so the hardware verification tools in `examples/` can drive the real pipeline.
@@ -35,6 +35,7 @@ const DB_FILE: &str = "shuusshy.db";
 pub fn run() {
     // Elevated helper mode (renaming the virtual microphone): do the one job and exit before
     // any window, tray icon or audio starts.
+    #[cfg(windows)]
     if let Some(code) = audio::devices::rename::run_helper_from_args() {
         std::process::exit(code);
     }
@@ -169,6 +170,11 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while building Shuusshy")
         .run(|app, event| {
+            // macOS: clicking the Dock icon brings the banner back after it was hidden.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen { .. } = event {
+                tray::show_banner(app);
+            }
             if let tauri::RunEvent::Exit = event
                 && let Some(audio) = app.try_state::<Audio>()
             {

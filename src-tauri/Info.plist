@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- macOS only: merged into Shuusshy.app's Info.plist by the Tauri bundler. -->
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Shuusshy removes background noise from your microphone and passes your voice to other apps through the virtual microphone. Audio stays on this Mac and is never recorded.</string>
+</dict>
+</plist>

@@ -13,7 +13,8 @@ use windows::Win32::Media::Audio::{
 use windows::Win32::System::Com::{COINIT_MULTITHREADED, CoInitializeEx, CoUninitialize};
 use windows::core::{PCWSTR, implement};
 
-use super::wasapi::{Snapshot, Wasapi, describe_error};
+use super::Snapshot;
+use super::wasapi::{Wasapi, describe_error};
 
 /// Notifications often arrive in bursts (one device change fires several callbacks).
 const DEBOUNCE: Duration = Duration::from_millis(250);

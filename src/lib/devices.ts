@@ -2,6 +2,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import type { Tone } from "./status";
+import { P } from "./platform";
 
 export type DeviceKind = "physical" | "vbCable" | "otherVirtual";
 export type EndpointState = "active" | "disabled" | "notPresent" | "unplugged" | "unknown";
@@ -58,7 +59,8 @@ export const selectInputDevice = (id: string) =>
 export const onDevicesChanged = (cb: (s: DeviceState) => void): Promise<UnlistenFn> =>
   listen<DeviceState>("devices-changed", (e) => cb(e.payload));
 
-export const VB_CABLE_URL = "https://vb-audio.com/Cable/";
+/** Official download page of the virtual cable driver (VB-CABLE / BlackHole). */
+export const VB_CABLE_URL = P.cableUrl;
 
 /** Microphones the user may select: physical capture devices only. */
 export const selectableMics = (s: DeviceState) => s.inputs.filter((d) => d.kind === "physical");
@@ -72,7 +74,7 @@ export function formatLabel(f: MixFormat | null): string {
 const reasonText: Record<EndpointState, string> = {
   unplugged: "unplugged",
   notPresent: "not connected",
-  disabled: "disabled in Windows",
+  disabled: `disabled in ${P.os}`,
   active: "unavailable",
   unknown: "unavailable",
 };
@@ -110,16 +112,16 @@ export function cableSummary(cable: CableStatus): Summary {
       };
     case "incomplete":
       return {
-        title: "VB-CABLE is incomplete",
+        title: `${P.cable} is incomplete`,
         detail: !cable.render
-          ? "“CABLE Input” playback device is missing or disabled"
-          : "“CABLE Output” recording device is missing or disabled",
+          ? `“${P.cablePlayback}” playback device is missing or disabled`
+          : `“${P.cableRecording}” recording device is missing or disabled`,
         tone: "warning",
       };
     case "notInstalled":
       return {
         title: "Virtual microphone not installed",
-        detail: "Install VB-CABLE to use Shuusshy in other apps",
+        detail: `Install ${P.cable} to use Shuusshy in other apps`,
         tone: "warning",
       };
   }

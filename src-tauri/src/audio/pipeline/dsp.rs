@@ -215,8 +215,21 @@ pub fn spawn(
         .map_err(|e| format!("could not start DSP thread: {e}"))
 }
 
+/// macOS: no MMCSS. The DSP thread keeps normal priority; the real-time work happens in
+/// CoreAudio's own callbacks, and the ring buffers absorb short scheduling delays.
+#[cfg(not(windows))]
+mod mmcss {
+    pub struct ProAudio;
+    impl ProAudio {
+        pub fn enter() -> Self {
+            Self
+        }
+    }
+}
+
 /// Registers the DSP thread with the Multimedia Class Scheduler ("Pro Audio") for the lifetime of
 /// the guard, so Windows schedules it like other real-time audio threads.
+#[cfg(windows)]
 mod mmcss {
     use windows::Win32::Foundation::HANDLE;
     use windows::Win32::System::Threading::{

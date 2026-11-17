@@ -1,4 +1,5 @@
 import { type DeviceState, formatLabel, selectableMics } from "../lib/devices";
+import { P } from "../lib/platform";
 
 interface Props {
   state: DeviceState;
@@ -41,7 +42,7 @@ export function MicPicker({ state, busy, onSelect, onRefresh }: Props) {
                   <span className="truncate text-[12px]">{d.name}</span>
                   <span className={`text-[10.5px] ${d.formatError ? "text-danger" : "text-muted"}`}>
                     {d.formatError ?? formatLabel(d.format)}
-                    {d.isDefault && " · Windows default"}
+                    {d.isDefault && ` · ${P.os} default`}
                   </span>
                 </span>
               </button>

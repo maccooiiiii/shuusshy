@@ -1,0 +1,57 @@
+name: macOS test build
+
+# Builds an unsigned (ad-hoc signed) universal Shuusshy.app and .dmg for Apple Silicon and Intel
+# Macs, and uploads it as a workflow artifact. Not a release: nothing is published.
+# Runs on pushes to the `macos` branch, or manually from the Actions tab.
+
+on:
+  push:
+    branches: [macos]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin, x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: Rust unit tests (macOS)
+        run: cargo test --lib --manifest-path src-tauri/Cargo.toml
+
+      - name: Build universal app and disk image
+        run: npx tauri build --target universal-apple-darwin
+
+      - name: Checksums
+        run: |
+          cd src-tauri/target/universal-apple-darwin/release/bundle/dmg
+          ls -la
+          shasum -a 256 *.dmg | tee SHA256SUMS.txt
+          codesign -dv --verbose=2 ../macos/Shuusshy.app 2>&1 | head -n 12 || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Shuusshy-macOS-test
+          path: |
+            src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            src-tauri/target/universal-apple-darwin/release/bundle/dmg/SHA256SUMS.txt
+          if-no-files-found: error

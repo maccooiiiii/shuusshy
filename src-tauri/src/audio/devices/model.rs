@@ -96,6 +96,46 @@ pub fn classify(p: &EndpointProps) -> DeviceKind {
     DeviceKind::Physical
 }
 
+/// Virtual or software devices on macOS that must never be used as the "physical" microphone.
+/// Matched against the CoreAudio device name.
+const KNOWN_VIRTUAL_MAC_NAMES: &[&str] = &[
+    "blackhole",
+    "vb-cable",
+    "zoomaudiodevice",
+    "microsoft teams audio",
+    "loopback",
+    "soundflower",
+    "multi-output",
+    "aggregate",
+    "krisp",
+    "ecamm",
+    "obs",
+    "background music",
+];
+
+/// macOS classification. CoreAudio exposes a device under one name for both directions;
+/// [`BLACKHOLE_LABEL`] is the supported virtual cable, `virtual_device` covers aggregate devices.
+pub fn classify_mac(name: &str, virtual_device: bool) -> DeviceKind {
+    let n = name.to_ascii_lowercase();
+    if name.eq_ignore_ascii_case(BLACKHOLE_LABEL) {
+        return DeviceKind::VbCable;
+    }
+    if virtual_device || KNOWN_VIRTUAL_MAC_NAMES.iter().any(|v| n.contains(v)) {
+        return DeviceKind::OtherVirtual;
+    }
+    DeviceKind::Physical
+}
+
+/// The virtual cable Shuusshy uses on macOS (BlackHole, 2-channel edition). One CoreAudio device
+/// with both sides: Shuusshy plays into its output, other apps record from its input.
+pub const BLACKHOLE_LABEL: &str = "BlackHole 2ch";
+
+/// The virtual cable driver's name, for messages.
+#[cfg(windows)]
+pub const CABLE_NAME: &str = "VB-CABLE";
+#[cfg(not(windows))]
+pub const CABLE_NAME: &str = "BlackHole";
+
 /// VB-CABLE's own name for its recording endpoint.
 pub const CABLE_CAPTURE_LABEL: &str = "CABLE Output";
 /// The name Shuusshy can give that endpoint so apps list "Shuusshy Microphone".
@@ -108,6 +148,9 @@ pub fn is_primary_cable_endpoint(d: &AudioDevice) -> bool {
         return false;
     }
     let label = d.description.as_deref().unwrap_or(&d.name);
+    if label.eq_ignore_ascii_case(BLACKHOLE_LABEL) {
+        return true;
+    }
     match d.direction {
         Direction::Render => label.eq_ignore_ascii_case("CABLE Input"),
         Direction::Capture => {
@@ -138,9 +181,15 @@ pub fn cable_status(inputs: &[AudioDevice], outputs: &[AudioDevice]) -> CableSta
         .iter()
         .find(|d| is_primary_cable_endpoint(d))
         .cloned();
-    let render = outputs
-        .iter()
-        .find(|d| is_primary_cable_endpoint(d))
+    // On macOS both sides are one device: prefer the playback side of the same device.
+    let render = capture
+        .as_ref()
+        .and_then(|c| {
+            outputs
+                .iter()
+                .find(|d| d.id == c.id && is_primary_cable_endpoint(d))
+        })
+        .or_else(|| outputs.iter().find(|d| is_primary_cable_endpoint(d)))
         .cloned();
     match (render, capture) {
         (Some(render), Some(capture)) => CableStatus::Ready { render, capture },
@@ -259,6 +308,65 @@ pub(crate) mod tests {
             }),
             format_error: None,
         }
+    }
+
+    fn mac(id: &str, name: &str, direction: Direction, virtual_device: bool) -> AudioDevice {
+        AudioDevice {
+            id: id.into(),
+            name: name.into(),
+            description: Some(name.into()),
+            adapter: None,
+            enumerator: None,
+            direction,
+            kind: classify_mac(name, virtual_device),
+            is_default: false,
+            format: Some(MixFormat {
+                sample_rate: 48_000,
+                channels: 2,
+            }),
+            format_error: None,
+        }
+    }
+
+    #[test]
+    fn mac_classification_and_blackhole_pairing() {
+        assert_eq!(
+            classify_mac("MacBook Pro Microphone", false),
+            DeviceKind::Physical
+        );
+        assert_eq!(classify_mac("BlackHole 2ch", false), DeviceKind::VbCable);
+        assert_eq!(
+            classify_mac("BlackHole 16ch", false),
+            DeviceKind::OtherVirtual
+        );
+        assert_eq!(
+            classify_mac("ZoomAudioDevice", false),
+            DeviceKind::OtherVirtual
+        );
+        assert_eq!(classify_mac("My Combo", true), DeviceKind::OtherVirtual);
+
+        let ins = [
+            mac(
+                "BuiltInMic",
+                "MacBook Pro Microphone",
+                Direction::Capture,
+                false,
+            ),
+            mac("BH16", "BlackHole 16ch", Direction::Capture, false),
+            mac("BH2", "BlackHole 2ch", Direction::Capture, false),
+        ];
+        let outs = [
+            mac("BH16", "BlackHole 16ch", Direction::Render, false),
+            mac("BH2", "BlackHole 2ch", Direction::Render, false),
+        ];
+        match cable_status(&ins, &outs) {
+            CableStatus::Ready { render, capture } => {
+                assert_eq!(render.id, "BH2");
+                assert_eq!(capture.id, "BH2");
+            }
+            other => panic!("expected ready, got {other:?}"),
+        }
+        assert_eq!(auto_select(&ins).map(|d| d.id.as_str()), Some("BuiltInMic"));
     }
 
     // Property values below are copied from the development machine's registry (Milestone 2).

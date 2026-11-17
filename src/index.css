@@ -10,7 +10,7 @@
  * - One accent colour, chosen by the user (--color-accent, set at runtime). Every accent shade
  *   is mixed from it, so the whole UI, the emblem and the tray follow it.
  * - Motion: springy, short, interruptible; everything stops for reduced motion.
- * Fonts are Windows system fonts (Segoe UI Variable): the app makes no network connections.
+ * Fonts are system fonts (Segoe UI Variable on Windows, San Francisco on macOS): no web fonts.
  * Text contrast: ink on the darkest allowed tint >= 12:1, muted >= 5.5:1.
  */
 @theme {
@@ -25,8 +25,8 @@
   --color-warn: #ffbd5c;
   --color-danger: #ff6b78;
   --color-ink: #f2f6fb;
-  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-  --font-display: "Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", -apple-system, system-ui, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI", -apple-system, system-ui, sans-serif;
   --font-mono: "Cascadia Mono", "Consolas", ui-monospace, monospace;
 
   /* Motion tokens. */
@@ -68,6 +68,10 @@ body {
 html.glass-on .app-shell {
   background: rgb(7 9 13 / var(--tint));
   border-radius: 0;
+}
+/* macOS rounds the vibrancy to the same radius (appearance.rs MAC_CORNER_RADIUS). */
+html.mac.glass-on .app-shell {
+  border-radius: 16px;
 }
 
 /* Soft accent light behind the glass: it gives the panels something to refract. Static on

@@ -16,26 +16,11 @@ use windows::Win32::System::Threading::{
 };
 use windows::core::{GUID, HSTRING, Interface, PWSTR};
 
+use super::Snapshot;
 use super::model::{
     AudioDevice, DeviceKind, Direction, EndpointProps, EndpointState, MixFormat, classify,
     conflicting_apps,
 };
-
-/// Everything Shuusshy knows about the system's audio endpoints at one point in time.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub struct Snapshot {
-    /// Active capture endpoints (physical and virtual).
-    pub inputs: Vec<AudioDevice>,
-    /// Active render endpoints.
-    pub outputs: Vec<AudioDevice>,
-    /// State of every capture endpoint Windows knows about, active or not.
-    pub capture_states: HashMap<String, EndpointState>,
-    /// Other apps currently playing into a VB-CABLE playback endpoint ("CABLE Input" /
-    /// "CABLE In 16ch"). They block Shuusshy and loop their sound into the virtual mic.
-    pub cable_users: Vec<String>,
-    /// Set when enumeration itself failed; lists may then be stale or empty.
-    pub error: Option<String>,
-}
 
 const fn pkey(d1: u32, d2: u16, d3: u16, d4: [u8; 8], pid: u32) -> PROPERTYKEY {
     PROPERTYKEY {

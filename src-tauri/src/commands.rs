@@ -12,7 +12,7 @@ use crate::audio::controller::{
 };
 use crate::audio::devices::{
     self, DeviceMonitor, DeviceState, Snapshot,
-    model::{CableStatus, DeviceKind, EndpointState, MicStatus, auto_select},
+    model::{CABLE_NAME, CableStatus, DeviceKind, EndpointState, MicStatus, auto_select},
 };
 use crate::audio::engines::EngineKind;
 use crate::license::{self, LicenseStatus};
@@ -54,6 +54,8 @@ pub struct AppInfo {
     settings_persistent: bool,
     /// Running from the portable ZIP (settings stored next to the executable).
     portable: bool,
+    /// `"windows"` or `"macos"`: the page adapts driver names, setup steps and wording.
+    platform: &'static str,
 }
 
 #[tauri::command]
@@ -63,6 +65,7 @@ pub fn get_app_info(app: AppHandle, state: State<'_, AppState>) -> AppInfo {
         data_dir: state.data_dir.clone(),
         settings_persistent: state.settings_persistent,
         portable: crate::install::portable_data_dir().is_some(),
+        platform: std::env::consts::OS,
     }
 }
 
@@ -322,7 +325,7 @@ pub fn desired_routing(app: &AppHandle) -> Desired {
         }
         MicStatus::Disconnected { reason, .. } => {
             let why = match reason {
-                EndpointState::Disabled => "disabled in Windows",
+                EndpointState::Disabled => "disabled in system settings",
                 EndpointState::Unplugged => "unplugged",
                 _ => "disconnected",
             };
@@ -332,9 +335,11 @@ pub fn desired_routing(app: &AppHandle) -> Desired {
     let render = match state.cable {
         CableStatus::Ready { render, .. } => render,
         CableStatus::Incomplete { .. } => {
-            return Desired::Waiting("VB-CABLE is incomplete".into());
+            return Desired::Waiting(format!("{CABLE_NAME} is incomplete"));
         }
-        CableStatus::NotInstalled => return Desired::Waiting("VB-CABLE is not installed".into()),
+        CableStatus::NotInstalled => {
+            return Desired::Waiting(format!("{CABLE_NAME} is not installed"));
+        }
     };
     Desired::Run(Target {
         input_id: mic.id,
@@ -504,7 +509,9 @@ pub fn start_monitor(
         .find(|d| d.id == device_id)
         .ok_or("That playback device is not available")?;
     if d.kind == DeviceKind::VbCable {
-        return Err("Monitoring on VB-CABLE would loop audio into the virtual microphone".into());
+        return Err(format!(
+            "Monitoring on {CABLE_NAME} would loop audio into the virtual microphone"
+        ));
     }
     audio.0.monitor_start(d.id.clone(), d.name.clone(), source);
     Ok(())
@@ -530,6 +537,15 @@ pub fn get_meters(audio: State<'_, Audio>) -> Option<Meters> {
 /// Shows the virtual microphone as "Shuusshy Microphone" in other apps (`shuusshy: true`) or
 /// restores VB-CABLE's "CABLE Output". May show the Windows administrator prompt; runs on a
 /// worker thread so the banner stays responsive while it waits.
+/// macOS takes device names from the driver; BlackHole's cannot be changed by another app.
+#[cfg(target_os = "macos")]
+#[tauri::command]
+pub async fn set_virtual_mic_name(app: AppHandle, shuusshy: bool) -> Result<DeviceState, String> {
+    let _ = (app, shuusshy);
+    Err("macOS does not let apps rename BlackHole's microphone.".into())
+}
+
+#[cfg(windows)]
 #[tauri::command]
 pub async fn set_virtual_mic_name(app: AppHandle, shuusshy: bool) -> Result<DeviceState, String> {
     use crate::audio::devices::model::{CABLE_CAPTURE_LABEL, SHUUSSHY_MIC_LABEL};

@@ -13,6 +13,7 @@ import {
 } from "../lib/monitor";
 import type { RoutingStatus } from "../lib/routing";
 import { LevelMeter } from "./LevelMeter";
+import { P } from "../lib/platform";
 
 interface Props {
   routing: RoutingStatus | null;
@@ -144,7 +145,7 @@ export function TestPanel({ routing, onClose }: Props) {
           {devices.map((d) => (
             <option key={d.id} value={d.id}>
               {d.name}
-              {d.isDefault ? " (Windows default)" : ""}
+              {d.isDefault ? ` (${P.os} default)` : ""}
             </option>
           ))}
         </select>
