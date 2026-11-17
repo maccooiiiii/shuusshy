@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Shuusshy",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "identifier": "com.shuusshy.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -51,7 +51,7 @@
     "copyright": "© 2026 Ian Musa",
     "category": "Utility",
     "shortDescription": "Local, offline microphone noise cancellation",
-    "longDescription": "Shuusshy removes background noise from your microphone on your PC and passes the clean voice to Teams, Discord, Zoom and other apps through a virtual microphone (VB-CABLE, installed separately).",
+    "longDescription": "Shuusshy removes background noise from your microphone on your PC and passes the clean voice to Teams, Discord, Zoom and other apps through a virtual microphone (VB-CABLE by VB-Audio Software, included and installed only with your consent).",
     "windows": {
       "nsis": {
         "installMode": "currentUser",

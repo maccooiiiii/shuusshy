@@ -54,6 +54,11 @@ jobs:
     environment: release
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      channel: ${{ steps.meta.outputs.channel }}
+      date: ${{ steps.meta.outputs.date }}
+      sig: ${{ steps.sign.outputs.sig }}
     defaults:
       run:
         shell: bash
@@ -183,3 +188,59 @@ jobs:
           PRERELEASE=""
           [ "${{ steps.meta.outputs.channel }}" = "beta" ] && PRERELEASE="--prerelease"
           gh release create "v$V" --draft $PRERELEASE --title "Shuusshy $V" --notes-file body.md dist-release/*
+
+  macos:
+    # The macOS beta: a universal disk image (ad-hoc signed, not notarised) added to the same
+    # draft release. No updater artifacts and no repository link, as in the test builds, so the
+    # Mac app makes no update checks.
+    needs: release
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin, x86_64-apple-darwin
+
+      # No build cache here: release builds always start clean.
+
+      - run: npm ci
+
+      - name: Rust unit tests (macOS)
+        run: cargo test --lib --manifest-path src-tauri/Cargo.toml
+
+      - name: Build universal app and disk image
+        env:
+          SHUUSSHY_RELEASE_CHANNEL: ${{ needs.release.outputs.channel }}
+          SHUUSSHY_RELEASE_DATE: ${{ needs.release.outputs.date }}
+          SHUUSSHY_RELEASE_SIG: ${{ needs.release.outputs.sig }}
+        run: npx tauri build --target universal-apple-darwin
+
+      - name: Check microphone permission setup
+        run: |
+          APP=src-tauri/target/universal-apple-darwin/release/bundle/macos/Shuusshy.app
+          plutil -p "$APP/Contents/Info.plist" | grep -E "NSMicrophoneUsageDescription|LSMinimumSystemVersion"
+          codesign -d --entitlements - "$APP" 2>&1 | tee entitlements.txt
+          grep -q "com.apple.security.device.audio-input" entitlements.txt
+
+      - name: Add the disk image to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V="${{ needs.release.outputs.version }}"
+          cd src-tauri/target/universal-apple-darwin/release/bundle/dmg
+          DMG="Shuusshy_${V}_universal.dmg"
+          ls -la
+          [ -f "$DMG" ] || { echo "::error::$DMG was not built"; exit 1; }
+          shasum -a 256 "$DMG" | tee SHA256SUMS-macOS.txt
+          gh release upload "v$V" "$DMG" SHA256SUMS-macOS.txt --repo "${{ github.repository }}"

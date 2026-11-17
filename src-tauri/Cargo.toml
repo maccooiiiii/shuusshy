@@ -1,6 +1,6 @@
 [package]
 name = "shuusshy"
-version = "1.0.1"
+version = "1.1.0"
 description = "Shuusshy - local, offline microphone noise suppression. Less Noise. More Voice."
 authors = ["Ian Musa"]
 edition = "2024"

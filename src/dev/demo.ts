@@ -128,7 +128,7 @@ const handlers: Record<string, (args: Record<string, unknown>) => unknown> = {
   get_settings: () => settings,
   update_settings: (a) => Object.assign(settings, a.settings as object),
   reset_settings: () => settings,
-  get_app_info: () => ({ version: "1.0.1", dataDir: "(demo)", settingsPersistent: true, portable: false, platform: mac ? "macos" : "windows" }),
+  get_app_info: () => ({ version: "1.1.0", dataDir: "(demo)", settingsPersistent: true, portable: false, platform: mac ? "macos" : "windows" }),
   get_device_state: () => devices,
   refresh_devices: () => devices,
   select_input_device: () => devices,
@@ -137,7 +137,7 @@ const handlers: Record<string, (args: Record<string, unknown>) => unknown> = {
   apply_preset: () => settings,
   get_license: () => (free ? { state: "free" } : { state: "pro", serial: 1, issued: "2026-11-14", expires: null }),
   get_release_info: () => ({
-    version: "1.0.1",
+    version: "1.1.0",
     channel: "stable",
     releaseDate: "2026-11-16",
     expires: "2028-11-16",

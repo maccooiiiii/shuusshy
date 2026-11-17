@@ -5,6 +5,8 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-17
+
 ### Added
 - **User guide** inside the app (the ? button, or Settings → About): an interactive manual for
   Windows and macOS with screenshots. "Getting started" is a live checklist that ticks itself
@@ -17,8 +19,9 @@ versions: [Semantic Versioning](https://semver.org/).
   Settings → Audio Output and the user guide offer an "Install VB-CABLE" button. Skipped for
   updates and when VB-CABLE is already installed. VB-CABLE is a donationware
   (www.vb-cable.com), all participations are welcome.
-- **macOS test build** (untested on a real Mac yet): universal app for Apple Silicon and Intel,
-  BlackHole 2ch as the virtual microphone, start at login, menu bar icon. See docs/MACOS.md.
+- **macOS beta**, attached to the release (not notarised; little tested on real Macs): universal
+  app for Apple Silicon and Intel, BlackHole 2ch as the virtual microphone, start at login,
+  menu bar icon. See docs/MACOS.md.
 
 ## [1.0.1] - 2026-11-16
 
