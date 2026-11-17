@@ -4,7 +4,8 @@ Shuusshy runs on Windows 10 and 11 (64-bit). It needs two things:
 
 1. **Shuusshy itself**: the installer or the portable ZIP (below).
 2. **VB-CABLE**, the free virtual audio driver that carries the cleaned voice to other apps.
-   Shuusshy never installs or modifies drivers itself.
+   From version 1.1.0 it comes with Shuusshy (see below); Shuusshy never installs it without
+   asking and never modifies it.
 
 A macOS test build also exists: see [docs/MACOS.md](docs/MACOS.md).
 
@@ -41,6 +42,15 @@ A macOS test build also exists: see [docs/MACOS.md](docs/MACOS.md).
 
 ## Installing VB-CABLE (once)
 
+**Version 1.1.0 and later:** VB-CABLE is included.
+- The installer asks "Install VB-CABLE now?" at the end (Yes is preselected). VB-Audio's own
+  setup then opens and Windows asks for administrator permission: click **Install Driver**,
+  then restart Windows if asked.
+- Skipped it, or using the portable ZIP? Settings → Audio Output → **Install VB-CABLE**.
+- Updates never ask again, and the step is skipped when VB-CABLE is already installed.
+
+**Earlier versions, or to install it yourself:**
+
 1. Download it from the official site, <https://vb-audio.com/Cable/> (Settings → Audio Output
    → "Open in browser").
 2. Extract the ZIP, right-click `VBCABLE_Setup_x64.exe` → **Run as administrator** →
@@ -49,7 +59,9 @@ A macOS test build also exists: see [docs/MACOS.md](docs/MACOS.md).
 4. In Teams, Discord, Zoom…, choose **CABLE Output** (or **Shuusshy Microphone**, if you
    renamed it) as the microphone.
 
-VB-CABLE is donationware by VB-Audio Software; see their site for its licence.
+VB-CABLE is made by VB-Audio Software (www.vb-cable.com). VB-CABLE is a donationware, all participations are welcome. Its licence: <https://vb-audio.com/Services/licensing.htm>.
+Uninstall it with its own setup (`VBCABLE_Setup_x64.exe` → *Remove Driver*), also found in
+Shuusshy's `vbcable` folder.
 
 ## Checksums
 

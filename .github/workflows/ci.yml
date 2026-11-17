@@ -79,6 +79,10 @@ jobs:
 
       - run: npm ci
 
+      - name: Fetch VB-CABLE (official package, checksum and signature verified)
+        shell: pwsh
+        run: ./scripts/fetch-vbcable.ps1
+
       - name: Build installer
         run: npm run tauri build
 

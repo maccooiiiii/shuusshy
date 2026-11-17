@@ -114,6 +114,10 @@ jobs:
           rm -f "$KEYFILE"
           echo "sig=$SIG" >> "$GITHUB_OUTPUT"
 
+      - name: Fetch VB-CABLE (official package, checksum and signature verified)
+        shell: pwsh
+        run: ./scripts/fetch-vbcable.ps1
+
       - name: Build signed installer
         env:
           SHUUSSHY_GITHUB_REPO: ${{ github.repository }}

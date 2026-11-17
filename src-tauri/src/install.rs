@@ -55,6 +55,29 @@ pub fn open_vb_cable_site() -> Result<(), String> {
 
 pub use platform::{autostart_enabled, open_url, set_autostart};
 
+/// The official VB-CABLE setup shipped with Shuusshy (Windows installer and portable ZIP), as
+/// is. `None` when this build has no bundled package (macOS, development builds without
+/// `scripts/fetch-vbcable.ps1`).
+pub fn bundled_cable_setup(resource_dir: Option<PathBuf>) -> Option<PathBuf> {
+    if !cfg!(windows) {
+        return None;
+    }
+    let setup = resource_dir?.join("vbcable").join("VBCABLE_Setup_x64.exe");
+    setup.is_file().then_some(setup)
+}
+
+/// Opens VB-Audio's own VB-CABLE setup window with Windows' administrator prompt. The user
+/// installs the driver there ("Install Driver"); Shuusshy detects the cable by itself.
+#[cfg(windows)]
+pub fn run_bundled_cable_setup(setup: &std::path::Path) -> Result<(), String> {
+    platform::run_elevated(setup)
+}
+
+#[cfg(not(windows))]
+pub fn run_bundled_cable_setup(_setup: &std::path::Path) -> Result<(), String> {
+    Err("The bundled VB-CABLE installer is for Windows only.".into())
+}
+
 #[cfg(windows)]
 mod platform {
     use windows::Win32::System::Registry::{
@@ -156,6 +179,33 @@ mod platform {
             Ok(())
         } else {
             Err("Windows could not open the browser".into())
+        }
+    }
+
+    /// Starts a program with Windows' administrator prompt ("runas") and returns at once.
+    pub fn run_elevated(exe: &std::path::Path) -> Result<(), String> {
+        let file = HSTRING::from(exe.as_os_str());
+        let dir = exe.parent().map(|d| HSTRING::from(d.as_os_str()));
+        // SAFETY: all strings are valid for the call.
+        let h = unsafe {
+            ShellExecuteW(
+                None,
+                w!("runas"),
+                &file,
+                PCWSTR::null(),
+                dir.as_ref().map_or(PCWSTR::null(), |d| PCWSTR(d.as_ptr())),
+                SW_SHOWNORMAL,
+            )
+        };
+        match h.0 as isize {
+            v if v > 32 => Ok(()),
+            // SE_ERR_ACCESSDENIED: the user declined the administrator prompt.
+            5 => Err(
+                "The Windows permission prompt was declined; VB-CABLE was not installed.".into(),
+            ),
+            v => Err(format!(
+                "Windows could not start the VB-CABLE installer (code {v})."
+            )),
         }
     }
 }
@@ -265,5 +315,30 @@ mod platform {
             assert!(p.contains("<string>--autostart</string>"));
             assert!(p.contains("<key>RunAtLoad</key>"));
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::bundled_cable_setup;
+
+    #[test]
+    fn finds_the_bundled_vb_cable_setup_only_where_it_exists() {
+        let dir = std::env::temp_dir().join(format!("shuusshy-vbcable-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(bundled_cable_setup(Some(dir.clone())), None);
+        assert_eq!(bundled_cable_setup(None), None);
+        std::fs::create_dir_all(dir.join("vbcable")).unwrap();
+        std::fs::write(dir.join("vbcable").join("VBCABLE_Setup_x64.exe"), b"x").unwrap();
+        let found = bundled_cable_setup(Some(dir.clone()));
+        if cfg!(windows) {
+            assert_eq!(
+                found,
+                Some(dir.join("vbcable").join("VBCABLE_Setup_x64.exe"))
+            );
+        } else {
+            assert_eq!(found, None);
+        }
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

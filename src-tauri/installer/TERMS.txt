@@ -24,8 +24,11 @@ Please read these points. Clicking "I Agree" means you accept them.
    them need a Shuusshy Pro license key, checked offline on this PC.
 
 4. Virtual microphone
-   Shuusshy uses VB-CABLE by VB-Audio Software, which you install separately from the
-   VB-Audio website under VB-Audio's own terms. Shuusshy does not install or change drivers.
+   Shuusshy uses VB-CABLE by VB-Audio Software (www.vb-cable.com). VB-CABLE is a
+   donationware, all participations are welcome. The official VB-CABLE package is included,
+   unmodified, under VB-Audio's own terms (vbcable\readme.txt). It is installed only if you
+   agree: this installer asks, then VB-Audio's own setup opens with Windows' administrator
+   prompt. Shuusshy never changes the driver itself.
    If you choose to rename the virtual microphone "Shuusshy Microphone", Windows asks for
    permission first, and the uninstaller offers to undo it.
 

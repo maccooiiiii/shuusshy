@@ -65,7 +65,23 @@ INTERSPEECH 2023.
   installer via Tauri's bundler. The installer's artwork is Shuusshy's own (rendered with
   Blender from `tools/blender/render_emblem.py`).
 
+## Distributed with Shuusshy (Windows), unmodified
+
+- **VB-CABLE** by VB-Audio Software, <https://vb-audio.com/Cable/> (www.vb-cable.com).
+  VB-CABLE is a donationware, all participations are welcome.
+  - From version 1.1.0 the Windows installer and portable ZIP include the official VB-CABLE
+    package **as is** (unmodified, `vbcable` folder), under VB-Audio's distribution terms:
+    <https://vb-audio.com/Services/licensing.htm>. Its own licence is in `vbcable/readme.txt`.
+  - It is installed only if you agree: the Shuusshy installer asks, then VB-Audio's own setup
+    opens with Windows' administrator prompt. It can also be started from Settings → Audio
+    Output.
+  - The package is fetched from VB-Audio's server by `scripts/fetch-vbcable.ps1`, which checks
+    its SHA-256 and VB-Audio's code signature. It is not stored in this repository.
+  - Organisations deploying Shuusshy to staff who cannot identify or support VB-CABLE
+    themselves must buy VB-CABLE licences from VB-Audio (see the licensing page).
+
 ## Not bundled
 
-- **VB-CABLE** (VB-Audio Software) is a separate, donationware virtual audio driver. Users
-  install it themselves from the official site. Shuusshy does not include or redistribute it.
+- **BlackHole** (Existential Audio, GPL-3.0) is the virtual cable for the macOS version. Users
+  install it themselves from <https://existential.audio/blackhole/>. Bundling it with a
+  non-GPL app requires a licence from Existential Audio.

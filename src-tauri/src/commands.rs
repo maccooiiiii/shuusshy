@@ -56,6 +56,8 @@ pub struct AppInfo {
     portable: bool,
     /// `"windows"` or `"macos"`: the page adapts driver names, setup steps and wording.
     platform: &'static str,
+    /// This copy ships the official VB-CABLE setup (Windows installer and portable ZIP).
+    bundled_cable: bool,
 }
 
 #[tauri::command]
@@ -66,6 +68,8 @@ pub fn get_app_info(app: AppHandle, state: State<'_, AppState>) -> AppInfo {
         settings_persistent: state.settings_persistent,
         portable: crate::install::portable_data_dir().is_some(),
         platform: std::env::consts::OS,
+        bundled_cable: crate::install::bundled_cable_setup(app.path().resource_dir().ok())
+            .is_some(),
     }
 }
 
@@ -616,6 +620,15 @@ pub fn set_start_with_windows(enabled: bool) -> Result<bool, String> {
 }
 
 /// Opens the official VB-CABLE download page (fixed URL) in the default browser.
+/// Opens VB-Audio's own VB-CABLE setup (shipped as is with Shuusshy) with Windows' administrator
+/// prompt. Fixed path: the page cannot make Shuusshy run anything else.
+#[tauri::command]
+pub fn install_bundled_cable(app: AppHandle) -> Result<(), String> {
+    let setup = crate::install::bundled_cable_setup(app.path().resource_dir().ok())
+        .ok_or("This copy of Shuusshy does not include the VB-CABLE installer.")?;
+    crate::install::run_bundled_cable_setup(&setup)
+}
+
 #[tauri::command]
 pub fn open_vb_cable_site() -> Result<(), String> {
     crate::install::open_vb_cable_site()

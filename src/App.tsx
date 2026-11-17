@@ -47,6 +47,7 @@ import {
   getAccentColor,
   getLicense,
   getStartWithWindows,
+  installBundledCable,
   openVbCableSite,
   setStartWithWindows,
   presetNeedsPro,
@@ -381,6 +382,12 @@ export default function App() {
             setView("main");
           }}
           onOpenCableSite={() => run(openVbCableSite, () => {})}
+          bundledCable={info?.bundledCable ?? false}
+          onInstallCable={() =>
+            run(installBundledCable, () =>
+              setNote("VB-Audio's installer is open: click “Install Driver”, then restart Windows if it asks."),
+            )
+          }
           onTurnOn={() =>
             settings && save({ ...settings, audio: { ...settings.audio, suppressionEnabled: true } })
           }
@@ -817,7 +824,9 @@ function SettingsView({
             </span>
           </div>
         )}
-        {dc.devices && dc.devices.cable.state !== "ready" && <CableSetupSteps />}
+        {dc.devices && dc.devices.cable.state !== "ready" && (
+          <CableSetupSteps bundled={info?.bundledCable ?? false} />
+        )}
         {conflict && (
           <p className="text-[11px] leading-snug text-warn">
             <span className="font-semibold">{conflict.title}.</span> {conflict.detail}
@@ -996,7 +1005,7 @@ function AboutCard({ version }: { version: string | null }) {
           <li>
             {IS_MAC
               ? "BlackHole by Existential Audio for the virtual microphone (installed separately)"
-              : "VB-CABLE by VB-Audio for the virtual microphone (installed separately)"}
+              : "VB-CABLE by VB-Audio Software for the virtual microphone (www.vb-cable.com) — a donationware, all participations are welcome"}
           </li>
           <li>Tauri, React and Rust; emblem and icons rendered in Blender</li>
         </ul>
@@ -1534,7 +1543,44 @@ function StartWithWindows({ portable }: { portable: boolean }) {
   );
 }
 
-function CableSetupSteps() {
+/** VB-CABLE credit required by VB-Audio when it is distributed with Shuusshy. */
+function VbCableCredit() {
+  return (
+    <span className="text-[10.5px] leading-snug text-muted">
+      VB-CABLE is made by VB-Audio Software (www.vb-cable.com). VB-CABLE is a donationware, all
+      participations are welcome.
+    </span>
+  );
+}
+
+function CableSetupSteps({ bundled }: { bundled: boolean }) {
+  const [state, setState] = useState<"idle" | "opened" | string>("idle");
+  if (bundled && !IS_MAC) {
+    return (
+      <div className="flex flex-col gap-1.5 text-[11px] leading-snug text-muted">
+        <span>VB-CABLE is included with Shuusshy. Install it once:</span>
+        <button
+          type="button"
+          onClick={() =>
+            installBundledCable()
+              .then(() => setState("opened"))
+              .catch((e) => setState(errorText(e)))
+          }
+          className="press glass-btn-accent self-start rounded-full px-3 py-1 text-[11.5px] font-medium text-ink"
+        >
+          Install VB-CABLE
+        </button>
+        <span className={state !== "idle" && state !== "opened" ? "text-danger" : ""}>
+          {state === "opened"
+            ? "VB-Audio's installer is open: click “Install Driver”, then restart Windows if it asks. Shuusshy finds the cable by itself."
+            : state !== "idle"
+              ? state
+              : "VB-Audio's own installer opens and Windows asks for administrator permission."}
+        </span>
+        <VbCableCredit />
+      </div>
+    );
+  }
   return (
     <ol className="list-decimal space-y-0.5 pl-4 text-[11px] leading-snug text-muted">
       <li>

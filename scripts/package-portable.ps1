@@ -22,6 +22,12 @@ New-Item -ItemType Directory -Force $stage | Out-Null
 
 Copy-Item $exe (Join-Path $stage "shuusshy.exe")
 Copy-Item (Join-Path $root "THIRD_PARTY_LICENSES.md") $stage
+# The official VB-CABLE package, unmodified (scripts\fetch-vbcable.ps1 fetches and verifies it).
+$vbcable = Join-Path $root "src-tauri\vbcable"
+if (-not (Test-Path (Join-Path $vbcable "VBCABLE_Setup_x64.exe"))) {
+    throw "VB-CABLE package missing: run scripts\fetch-vbcable.ps1 first"
+}
+Copy-Item -Recurse $vbcable (Join-Path $stage "vbcable")
 
 Set-Content -Encoding utf8 (Join-Path $stage "shuusshy.portable") @"
 This file switches Shuusshy to portable mode: settings are kept in the "data" folder next to
@@ -35,8 +41,10 @@ Less Noise. More Voice.
 1. Extract this folder anywhere you can write to (for example a USB drive or Documents).
    Do not run it from inside the ZIP, and avoid C:\Program Files (not writable).
 2. Run shuusshy.exe. Settings are stored in the "data" folder next to it.
-3. Shuusshy needs the free VB-CABLE virtual audio driver (installed separately, once):
-   https://vb-audio.com/Cable/  -  Settings > Audio Output shows the steps.
+3. Shuusshy needs the free VB-CABLE virtual audio driver (once). It is included in the
+   "vbcable" folder, unmodified: Settings > Audio Output > "Install VB-CABLE" opens VB-Audio's
+   own setup. VB-CABLE is made by VB-Audio Software (www.vb-cable.com). VB-CABLE is a
+   donationware, all participations are welcome.
 4. Requires Windows 10 or 11 (64-bit) with the Microsoft Edge WebView2 Runtime, which
    Windows 10/11 normally include.
 

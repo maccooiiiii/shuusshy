@@ -68,6 +68,9 @@ export interface AppInfo {
   settingsPersistent: boolean;
   /** Running from the portable ZIP (settings stored next to the executable). */
   portable: boolean;
+  platform?: string;
+  /** This copy ships VB-Audio's official VB-CABLE setup (Windows installer and portable ZIP). */
+  bundledCable?: boolean;
 }
 
 /** True when running inside the Shuusshy desktop shell (not a plain browser tab). */
@@ -137,6 +140,8 @@ export const setStartWithWindows = (enabled: boolean) =>
   invoke<boolean>("set_start_with_windows", { enabled });
 /** Opens the official VB-CABLE page in the browser. */
 export const openVbCableSite = () => invoke<void>("open_vb_cable_site");
+/** Opens VB-Audio's own VB-CABLE setup (included with Shuusshy) with the administrator prompt. */
+export const installBundledCable = () => invoke<void>("install_bundled_cable");
 
 export interface ReleaseInfo {
   version: string;

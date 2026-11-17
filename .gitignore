@@ -30,3 +30,6 @@ dist-ssr
 
 # Built release artifacts (published as GitHub release assets, not committed)
 release/
+
+# Official VB-CABLE package, fetched and verified by scripts/fetch-vbcable.ps1 (shipped as is, not committed)
+src-tauri/vbcable/

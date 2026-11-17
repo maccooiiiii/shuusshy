@@ -164,6 +164,7 @@ pub fn run() {
             commands::get_start_with_windows,
             commands::set_start_with_windows,
             commands::open_vb_cable_site,
+            commands::install_bundled_cable,
             commands::activate_license,
             commands::remove_license,
         ])

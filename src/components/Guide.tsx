@@ -30,6 +30,9 @@ interface Props {
   onOpenSettings: () => void;
   onOpenTest: () => void;
   onOpenCableSite: () => void;
+  /** This copy includes VB-Audio's VB-CABLE setup (Windows). */
+  bundledCable: boolean;
+  onInstallCable: () => void;
   onTurnOn: () => void;
 }
 
@@ -149,9 +152,16 @@ function checks(c: Ctx): Check[] {
       how:
         c.os === "macos"
           ? "Download the free “BlackHole 2ch” installer and run it once. It adds the virtual cable that carries your voice to other apps."
-          : "Download VB-CABLE (free), extract the ZIP and run VBCABLE_Setup_x64.exe as administrator. Restart if asked.",
+          : c.bundledCable
+            ? "VB-CABLE (by VB-Audio, www.vb-cable.com, donationware) comes with Shuusshy. Install it once, then restart Windows if asked."
+            : "Download VB-CABLE (free), extract the ZIP and run VBCABLE_Setup_x64.exe as administrator. Restart if asked.",
       live: cableReady,
-      action: <ActionButton onClick={c.onOpenCableSite}>Open {t.cable} download page</ActionButton>,
+      action:
+        c.here && c.os === "windows" && c.bundledCable ? (
+          <ActionButton onClick={c.onInstallCable}>Install VB-CABLE (included)</ActionButton>
+        ) : (
+          <ActionButton onClick={c.onOpenCableSite}>Open {t.cable} download page</ActionButton>
+        ),
     },
     {
       id: "mic",

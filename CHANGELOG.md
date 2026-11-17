@@ -11,6 +11,12 @@ versions: [Semantic Versioning](https://semver.org/).
   when Shuusshy detects the virtual cable, the microphone and active noise cancellation, with
   buttons that jump to the fix. Includes installing, the banner, live test, using it in call
   apps, a settings tour, tray/menu bar, Pro, updates and troubleshooting.
+- **VB-CABLE included (Windows).** The installer and portable ZIP include the official
+  VB-CABLE package by VB-Audio Software, unmodified. At the end of installation Shuusshy asks
+  whether to install it (VB-Audio's own setup then opens with the administrator prompt);
+  Settings → Audio Output and the user guide offer an "Install VB-CABLE" button. Skipped for
+  updates and when VB-CABLE is already installed. VB-CABLE is a donationware
+  (www.vb-cable.com), all participations are welcome.
 - **macOS test build** (untested on a real Mac yet): universal app for Apple Silicon and Intel,
   BlackHole 2ch as the virtual microphone, start at login, menu bar icon. See docs/MACOS.md.
 
