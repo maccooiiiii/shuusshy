@@ -38,6 +38,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+      - name: Fetch VB-CABLE (official package, checksum and signature verified)
+        shell: pwsh
+        run: ./scripts/fetch-vbcable.ps1
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
       - run: cargo test --manifest-path src-tauri/Cargo.toml
 

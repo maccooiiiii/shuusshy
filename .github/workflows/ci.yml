@@ -49,6 +49,10 @@ jobs:
       - name: Rust format
         run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
 
+      - name: Fetch VB-CABLE (official package, checksum and signature verified)
+        shell: pwsh
+        run: ./scripts/fetch-vbcable.ps1
+
       - name: Clippy
         run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 
