@@ -70,3 +70,10 @@ export const ExpandIcon = ({ expanded }: { expanded: boolean }) => (
     )}
   </svg>
 );
+
+export const HelpIcon = () => (
+  <svg {...base} width={15} height={15}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.8-2.5 2.3-2.5 3.9M12 17.2v.1" />
+  </svg>
+);

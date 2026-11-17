@@ -7,6 +7,7 @@ import { MicPicker } from "./components/MicPicker";
 import { RangeSlider, Slider, formatDb } from "./components/Slider";
 import { Switch } from "./components/Switch";
 import { TestPanel } from "./components/TestPanel";
+import { Guide } from "./components/Guide";
 import { getMeters, meterPercent } from "./lib/monitor";
 import {
   BackIcon,
@@ -14,6 +15,7 @@ import {
   ChevronIcon,
   CloseIcon,
   ExpandIcon,
+  HelpIcon,
   GearIcon,
   MicIcon,
   MinusIcon,
@@ -78,7 +80,7 @@ import { ENGINE_LOADING, errorText, presentStatus, type Tone } from "./lib/statu
 import { IS_MAC, P } from "./lib/platform";
 import { ACCENTS, accentFilter, glassPointer, watchBannerVisibility } from "./lib/appearance";
 
-type View = "main" | "settings";
+type View = "main" | "settings" | "guide";
 
 /** True with a valid Shuusshy Pro key. Gating is enforced in the backend; this drives the UI. */
 const ProContext = createContext(false);
@@ -253,7 +255,7 @@ export default function App() {
           className={`pointer-events-none absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-accent to-transparent
             transition-opacity duration-500 ${status.tone === "active" ? "opacity-80" : "opacity-0"}`}
         />
-        {view === "settings" ? (
+        {view !== "main" ? (
           <IconButton label="Back" onClick={() => setView("main")}>
             <BackIcon />
           </IconButton>
@@ -261,7 +263,7 @@ export default function App() {
           <Logo />
         )}
         <span className="font-display pointer-events-none text-[15px] font-semibold tracking-tight">
-          {view === "settings" ? "Settings" : "Shuusshy"}
+          {view === "settings" ? "Settings" : view === "guide" ? "User guide" : "Shuusshy"}
         </span>
         {view === "main" && (
           <span
@@ -288,6 +290,9 @@ export default function App() {
             >
               <ExpandIcon expanded={!compact} />
             </IconButton>
+            <IconButton label="User guide" onClick={() => setView("guide")}>
+              <HelpIcon />
+            </IconButton>
             <IconButton label="Settings" onClick={() => setView("settings")}>
               <GearIcon />
             </IconButton>
@@ -301,7 +306,13 @@ export default function App() {
           <MinusIcon />
         </IconButton>
         <IconButton
-          label={toTray ? "Close to tray (keeps processing)" : "Exit Shuusshy"}
+          label={
+            toTray
+              ? `Close to ${IS_MAC ? "menu bar" : "tray"} (keeps processing)`
+              : IS_MAC
+                ? "Quit Shuusshy"
+                : "Exit Shuusshy"
+          }
           disabled={!desktop}
           onClick={() => getCurrentWindow().close()}
           danger
@@ -359,9 +370,25 @@ export default function App() {
           setTestOpen={setTestOpen}
           onActivate={openActivation}
         />
+      ) : view === "guide" ? (
+        <Guide
+          devices={devices}
+          routing={routing}
+          suppressionOn={settings?.audio.suppressionEnabled ?? false}
+          onOpenSettings={() => setView("settings")}
+          onOpenTest={() => {
+            setTestOpen(true);
+            setView("main");
+          }}
+          onOpenCableSite={() => run(openVbCableSite, () => {})}
+          onTurnOn={() =>
+            settings && save({ ...settings, audio: { ...settings.audio, suppressionEnabled: true } })
+          }
+        />
       ) : (
         <SettingsView
           key="settings"
+          onOpenGuide={() => setView("guide")}
           onOpenTest={() => {
             setTestOpen(true);
             setView("main");
@@ -707,6 +734,7 @@ function SettingsView({
   onChange,
   onReset,
   onOpenTest,
+  onOpenGuide,
   license,
   focusLicense,
   onLicenseFocused,
@@ -733,6 +761,7 @@ function SettingsView({
   onChange: (s: Settings) => void;
   onReset: () => void;
   onOpenTest: () => void;
+  onOpenGuide: () => void;
 }) {
   const cable = dc.devices ? cableSummary(dc.devices.cable) : null;
   const conflict = dc.devices ? cableConflict(dc.devices.cableUsers) : null;
@@ -868,10 +897,10 @@ function SettingsView({
             onChange={(v) => setApp({ compact: v })}
           />
         </Row>
-        <Row label="Keep running in the tray when closed">
+        <Row label={`Keep running in ${P.tray} when closed`}>
           <Switch
             size="sm"
-            label="Keep running in the tray when closed"
+            label={`Keep running in ${P.tray} when closed`}
             checked={settings?.app.keepRunningInTray ?? false}
             disabled={!settings}
             onChange={(v) => setApp({ keepRunningInTray: v })}
@@ -879,7 +908,7 @@ function SettingsView({
         </Row>
         <span className="text-[10.5px] leading-snug text-muted">
           {settings?.app.keepRunningInTray
-            ? "Closing the banner hides it; your virtual microphone keeps working. Use the tray icon to bring it back or to exit."
+            ? `Closing the banner hides it; your virtual microphone keeps working. Use the ${IS_MAC ? "menu bar" : "tray"} icon to bring it back or to quit.`
             : "Closing the banner exits Shuusshy and the virtual microphone goes silent."}
         </span>
       </Section>
@@ -924,6 +953,13 @@ function SettingsView({
       </Section>
 
       <Section title="About Shuusshy">
+        <button
+          type="button"
+          onClick={onOpenGuide}
+          className="press glass-btn-accent self-start rounded-full px-3.5 py-1.5 text-[12px] font-medium text-ink"
+        >
+          Open the user guide
+        </button>
         <AboutCard version={info?.version ?? null} />
       </Section>
     </main>
@@ -1037,7 +1073,7 @@ function AppearanceSettings({
         </div>
         <span className="text-[10.5px] text-muted">
           {ACCENTS.find((a) => a.id === app.accent)?.name}. Colours the highlights, the emblem and
-          the tray icon.
+          the {IS_MAC ? "menu bar" : "tray"} icon.
         </span>
       </div>
     </div>

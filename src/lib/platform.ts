@@ -1,7 +1,10 @@
 // Platform-specific names and wording. Shuusshy runs on Windows (VB-CABLE) and macOS (BlackHole).
 // WKWebView on macOS reports a "Macintosh" user agent; WebView2 on Windows does not.
 
-export const IS_MAC = typeof navigator !== "undefined" && /Macintosh|Mac OS X/.test(navigator.userAgent);
+export const IS_MAC =
+  (typeof navigator !== "undefined" && /Macintosh|Mac OS X/.test(navigator.userAgent)) ||
+  // Development demo for the guide's macOS screenshots (src/dev/demo.ts).
+  (import.meta.env.DEV && typeof location !== "undefined" && new URLSearchParams(location.search).get("demo") === "mac");
 
 export interface PlatformText {
   /** "Windows" / "macOS" */

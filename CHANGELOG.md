@@ -5,6 +5,15 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **User guide** inside the app (the ? button, or Settings → About): an interactive manual for
+  Windows and macOS with screenshots. "Getting started" is a live checklist that ticks itself
+  when Shuusshy detects the virtual cable, the microphone and active noise cancellation, with
+  buttons that jump to the fix. Includes installing, the banner, live test, using it in call
+  apps, a settings tour, tray/menu bar, Pro, updates and troubleshooting.
+- **macOS test build** (untested on a real Mac yet): universal app for Apple Silicon and Intel,
+  BlackHole 2ch as the virtual microphone, start at login, menu bar icon. See docs/MACOS.md.
+
 ## [1.0.1] - 2026-11-16
 
 ### Changed
