@@ -63,7 +63,7 @@ windows = { version = "0.62", features = [
     "Win32_UI_Shell_PropertiesSystem",
     "Win32_UI_WindowsAndMessaging",
 ] }
-windows-core = "0.62"
+windows-core = "0.100"
 
 # Optimize the heavy audio libraries even in development builds. Unoptimized, DeepFilterNet is
 # far slower than real time (its overload watchdog trips) and RNNoise/resampling can drop audio
