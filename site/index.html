@@ -12,8 +12,8 @@
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="Ian Musa" />
     <meta name="application-name" content="Shuusshy" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#06080c" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#eceef0" />
     <meta name="format-detection" content="telephone=no" />
 
     <!-- Link previews (Open Graph: Facebook, LinkedIn, WhatsApp, Discord, Slack, iMessage) -->
@@ -63,11 +63,11 @@
             "applicationCategory": "MultimediaApplication",
             "applicationSubCategory": "Noise cancellation",
             "operatingSystem": "Windows 10, Windows 11, macOS 11 or later (beta)",
-            "softwareVersion": "1.0.1",
+            "softwareVersion": "1.1.0",
             "datePublished": "2026-11-16",
             "downloadUrl": "https://github.com/maccooiiiii/shuusshy/releases/latest",
             "installUrl": "https://github.com/maccooiiiii/shuusshy/releases/latest",
-            "releaseNotes": "https://github.com/maccooiiiii/shuusshy/releases/tag/v1.0.1",
+            "releaseNotes": "https://github.com/maccooiiiii/shuusshy/releases/tag/v1.1.0",
             "screenshot": "https://maccooiiiii.github.io/shuusshy/assets/shots/win-main.webp",
             "image": "https://maccooiiiii.github.io/shuusshy/assets/og-image.png",
             "featureList": [
@@ -108,11 +108,10 @@
     <script src="site.js" defer></script>
   </head>
   <body data-os="windows">
-    <div class="field" aria-hidden="true"></div>
     <div class="field-noise" aria-hidden="true"></div>
     <a class="skip" href="#main">Skip to content</a>
 
-    <header class="site-header">
+    <header class="site-header tone-light">
       <div class="wrap">
         <a class="brand" href="#top" aria-label="Shuusshy home">
           <img src="assets/icon-256.png" alt="" width="32" height="32" />
@@ -134,7 +133,7 @@
 
     <main tabindex="-1" id="main">
       <!-- ============================================================ HERO -->
-      <section class="hero" id="top" aria-labelledby="hero-title">
+      <section class="hero band tone-light" data-shade="0" id="top" aria-labelledby="hero-title">
         <div class="wrap">
           <div class="hero-copy">
             <a class="eyebrow" href="#download">
@@ -148,23 +147,20 @@
               your clean voice to Teams, Discord, Zoom and every other app.
             </p>
             <div class="cta-row">
-              <a class="btn btn-primary os-win" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64-setup.exe">
+              <a class="btn btn-os btn-win" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.1.0/Shuusshy_1.1.0_x64-setup.exe">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13 7.5 1.1v-7H3v5.9Zm8.4 1.2L21 21v-8.4h-9.6v7.1Zm0-15.4v7.2H21V3l-9.6 1.3Z"/></svg>
                 Download for Windows
               </a>
-              <a class="btn btn-primary os-mac" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">
+              <a class="btn btn-os btn-mac" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.1.0/Shuusshy_1.1.0_universal.dmg">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8s-1.9-.8-3-.8C6.9 7.2 5.4 8.1 4.6 9.6c-1.7 2.9-.4 7.3 1.2 9.6.8 1.1 1.7 2.4 3 2.4 1.2-.1 1.6-.8 3.1-.8s1.8.8 3.1.8c1.3 0 2.1-1.2 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.7-1-2.8-4ZM14.1 5.6c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4Z"/></svg>
                 Download for Mac
               </a>
-              <a class="btn btn-ghost" href="#manual">How it works</a>
+              <a class="btn btn-ghost" href="#how">How it works</a>
             </div>
-            <p class="cta-note">
-              <span class="os-win">Free · v1.0.1 · Windows 10 and 11 · <a href="#download">macOS beta</a></span>
-              <span class="os-mac">Free · test build · macOS 11+ · <a href="#download">Windows</a></span>
-            </p>
+            <p class="cta-note">Free · version 1.1.0 · Windows 10 and 11 · macOS 11 or later (beta)</p>
           </div>
 
-          <figure class="demo glass" aria-labelledby="demo-caption">
+          <figure class="demo glass tone-dark" aria-labelledby="demo-caption">
             <div class="demo-head">
               <span class="demo-mic">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
@@ -185,7 +181,7 @@
       </section>
 
       <!-- ============================================================ WHAT -->
-      <section class="block" id="what" aria-labelledby="what-title">
+      <section class="block band tone-dark" data-shade="0.97" id="what" aria-labelledby="what-title">
         <div class="wrap split">
           <figure class="shot-tilt">
             <div class="tilt">
@@ -220,7 +216,7 @@
       </section>
 
       <!-- ============================================================ HOW -->
-      <section class="block" id="how" aria-labelledby="how-title">
+      <section class="block band tone-light" data-shade="0.03" id="how" aria-labelledby="how-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">How it works</span>
@@ -248,7 +244,7 @@
                 <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="false">
                   <span class="flow-n">3</span><strong>Virtual mic</strong><span><span class="os-win">VB-CABLE</span><span class="os-mac">BlackHole 2ch</span></span>
                 </button>
-                <p class="flow-detail"><span class="os-win">VB-CABLE hands your clean voice to other apps as a microphone. From version 1.1.0 it comes with the Windows installer.</span><span class="os-mac">BlackHole 2ch hands your clean voice to other apps as a microphone. Install it once from Existential Audio.</span></p>
+                <p class="flow-detail"><span class="os-win">VB-CABLE hands your clean voice to other apps as a microphone. It comes with the Windows installer: say Yes at the end of setup.</span><span class="os-mac">BlackHole 2ch hands your clean voice to other apps as a microphone. Install it once from Existential Audio.</span></p>
               </li>
               <li data-step="app">
                 <button class="flow-step" type="button" aria-controls="flow-panel" aria-pressed="false">
@@ -264,7 +260,7 @@
       </section>
 
       <!-- ============================================================ FEATURES -->
-      <section class="block" id="features" aria-labelledby="features-title">
+      <section class="block band tone-dark" data-shade="1" id="features" aria-labelledby="features-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">Features</span>
@@ -272,7 +268,7 @@
           </div>
           <div class="showcase">
             <div class="sc-tabs" role="tablist" aria-label="Features" aria-orientation="vertical">
-              <span class="sc-ink" aria-hidden="true"></span>
+              <span class="sc-ink lens" aria-hidden="true"></span>
               <button class="sc-tab" type="button" role="tab" id="sc-tab-test" aria-controls="sc-stage" aria-selected="true" data-shot="test">
                 <strong>Live test with real meters</strong>
                 <span>Hear yourself before and after on your headphones, with level meters measured from the real audio. Nothing is recorded.</span>
@@ -307,7 +303,7 @@
       </section>
 
       <!-- ============================================================ PRO -->
-      <section class="block" id="pro" aria-labelledby="pro-title">
+      <section class="block band tone-light" data-shade="0.05" id="pro" aria-labelledby="pro-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">Free and Pro</span>
@@ -342,7 +338,7 @@
       </section>
 
       <!-- ============================================================ MEASURED -->
-      <section class="block" id="measured" aria-labelledby="measured-title">
+      <section class="block band tone-dark" data-shade="0.96" id="measured" aria-labelledby="measured-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">Measured, not claimed</span>
@@ -362,7 +358,7 @@
       </section>
 
       <!-- ============================================================ DOWNLOAD -->
-      <section class="block" id="download" aria-labelledby="download-title">
+      <section class="block band tone-light" data-shade="0.02" id="download" aria-labelledby="download-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">Download</span>
@@ -372,36 +368,34 @@
           <div class="downloads">
             <article class="glass dl recommended">
               <h3>Windows installer</h3>
-              <p class="meta">Version 1.0.1 · Windows 10 and 11 (64-bit) · no administrator rights needed</p>
-              <p class="muted">Recommended. Checks for updates (you can turn it off).</p>
-              <a class="btn btn-primary" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64-setup.exe">Download .exe</a>
+              <p class="meta">Version 1.1.0 · Windows 10 and 11 (64-bit) · VB-CABLE included</p>
+              <p class="muted">Recommended. Offers to install VB-CABLE at the end and checks for updates (you can turn it off).</p>
+              <a class="btn btn-primary" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.1.0/Shuusshy_1.1.0_x64-setup.exe">Download .exe</a>
             </article>
             <article class="glass dl">
               <h3>Windows portable</h3>
-              <p class="meta">Version 1.0.1 · ZIP · runs from any folder</p>
-              <p class="muted">No installation; settings stay in a <code>data</code> folder next to the app.</p>
-              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.0.1/Shuusshy_1.0.1_x64_portable.zip">Download .zip</a>
+              <p class="meta">Version 1.1.0 · ZIP · runs from any folder</p>
+              <p class="muted">No installation; settings stay in a <code>data</code> folder next to the app. VB-CABLE's setup is in the <code>vbcable</code> folder.</p>
+              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.1.0/Shuusshy_1.1.0_x64_portable.zip">Download .zip</a>
             </article>
             <article class="glass dl">
               <h3>macOS <span class="chip beta">Beta</span></h3>
-              <p class="meta">Test build · macOS 11+ · Apple Silicon and Intel · .dmg</p>
-              <p class="muted">Built and tested automatically, but not yet tried on a real Mac. Please tell us how it goes.</p>
-              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/macos-test-1/Shuusshy_1.0.1_universal.dmg">Download .dmg</a>
+              <p class="meta">Version 1.1.0 · macOS 11+ · Apple Silicon and Intel · .dmg</p>
+              <p class="muted">Built and tested automatically, but little tried on real Macs yet. Needs BlackHole 2ch. Please tell us how it goes.</p>
+              <a class="btn" href="https://github.com/maccooiiiii/shuusshy/releases/download/v1.1.0/Shuusshy_1.1.0_universal.dmg">Download .dmg</a>
             </article>
           </div>
           <div class="glass needs cable-box">
             <div class="cable-row">
-              <span class="chip new">Coming in 1.1.0</span>
+              <span class="chip new">Included</span>
               <p>
-                <strong>VB-CABLE included in the Windows installer.</strong> The next Windows release
-                brings the free virtual cable inside the installer: one click at the end of setup
-                installs it (Windows asks for permission). No separate download.
+                <strong>VB-CABLE comes with the Windows installer.</strong> At the end of setup Shuusshy
+                asks “Install VB-CABLE now?”. Say Yes and Windows asks for permission once. No separate
+                download, and nothing is installed without your OK.
               </p>
             </div>
             <p class="muted">
-              Version 1.1.0 is not out yet. With today's version 1.0.1, install
-              <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a> once yourself.
-              On a Mac, install <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a>.
+              On a Mac, install <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a> once.
               <a href="https://github.com/maccooiiiii/shuusshy/releases" rel="noopener">All releases and checksums</a>.
             </p>
             <p class="credit">VB-CABLE is made by VB-Audio Software (<a href="https://vb-audio.com/Cable/" rel="noopener">www.vb-cable.com</a>). VB-CABLE is a donationware, all participations are welcome.</p>
@@ -415,7 +409,7 @@
       </section>
 
       <!-- ============================================================ MANUAL -->
-      <section class="block" id="manual" aria-labelledby="manual-title">
+      <section class="block band tone-dark" data-shade="0.98" id="manual" aria-labelledby="manual-title">
         <div class="wrap guide">
           <aside class="guide-rail">
             <div class="section-head">
@@ -425,7 +419,7 @@
             </div>
 
             <div class="switch" role="group" aria-label="Show the manual for">
-              <span class="pill" aria-hidden="true"></span>
+              <span class="pill lens" aria-hidden="true"></span>
               <button type="button" data-set-os="windows" aria-pressed="true">Windows</button>
               <button type="button" data-set-os="mac" aria-pressed="false">macOS</button>
             </div>
@@ -448,7 +442,7 @@
                 <div class="text">
                   <ol>
                     <li><strong>Install the virtual cable.</strong>
-                      <span class="os-win">Download <a href="https://vb-audio.com/Cable/" rel="noopener">VB-CABLE</a>, extract the ZIP and run <code>VBCABLE_Setup_x64.exe</code> as administrator. Restart if asked. From version 1.1.0 the installer includes it: just say Yes at the end of setup.</span>
+                      <span class="os-win">VB-CABLE comes with Shuusshy: say Yes when the installer asks “Install VB-CABLE now?”, click <strong>Install Driver</strong>, and restart if asked.</span>
                       <span class="os-mac">Download <a href="https://existential.audio/blackhole/" rel="noopener">BlackHole 2ch</a> (free) and run its installer once.</span>
                     </li>
                     <li><strong>Choose your microphone.</strong> Tap the microphone line at the top of the banner and pick your headset or built-in mic.</li>
@@ -478,11 +472,11 @@
               <div class="topic-body">
                 <div class="text">
                   <ol class="os-win">
-                    <li>Run <code>Shuusshy_1.0.1_x64-setup.exe</code>, accept the terms and finish. No administrator rights needed.</li>
+                    <li>Run <code>Shuusshy_1.1.0_x64-setup.exe</code>, accept the terms and finish. Shuusshy itself needs no administrator rights.</li>
                     <li>If SmartScreen warns (the installer is not code-signed yet), choose <strong>More info → Run anyway</strong>.</li>
-                    <li>Install <strong>VB-CABLE</strong> as administrator and restart if asked. Shuusshy finds it by itself.</li>
+                    <li>When asked “Install VB-CABLE now?”, say <strong>Yes</strong>, click <strong>Install Driver</strong> in VB-Audio's window (Windows asks for permission), and restart if asked. Shuusshy finds it by itself.</li>
                   </ol>
-                  <p class="tip os-win"><strong>Coming in 1.1.0:</strong> VB-CABLE comes inside the installer. At the end of setup Shuusshy asks “Install VB-CABLE now?”; say Yes, click <strong>Install Driver</strong> in VB-Audio's window, and restart if asked. Skipped it? Settings → Audio Output → <strong>Install VB-CABLE</strong>. VB-CABLE is made by VB-Audio Software (<a href="https://vb-audio.com/Cable/" rel="noopener">www.vb-cable.com</a>). VB-CABLE is a donationware, all participations are welcome.</p>
+                  <p class="tip os-win">Skipped it? Settings → Audio Output → <strong>Install VB-CABLE</strong>. Updates never ask again. VB-CABLE is made by VB-Audio Software (<a href="https://vb-audio.com/Cable/" rel="noopener">www.vb-cable.com</a>). VB-CABLE is a donationware, all participations are welcome.</p>
                   <p class="tip os-win">Prefer no installation? The portable ZIP runs from any folder and keeps settings in a <code>data</code> folder beside <code>shuusshy.exe</code>.</p>
                   <ol class="os-mac">
                     <li>Open the <strong>.dmg</strong> and drag <strong>Shuusshy</strong> onto <strong>Applications</strong>.</li>
@@ -679,7 +673,7 @@
                     <li>Windows Settings → Apps → Shuusshy → Uninstall.</li>
                     <li>Tick “Delete the application data” to remove your settings too.</li>
                     <li>If you renamed the virtual mic, the uninstaller offers to rename it back.</li>
-                    <li>VB-CABLE stays installed for other apps. To remove it, run <code>VBCABLE_Setup_x64.exe</code> → <strong>Remove Driver</strong> (in its download, or from 1.1.0 in Shuusshy's <code>vbcable</code> folder).</li>
+                    <li>VB-CABLE stays installed for other apps. To remove it, run <code>VBCABLE_Setup_x64.exe</code> → <strong>Remove Driver</strong> (in Shuusshy's <code>vbcable</code> folder).</li>
                   </ol>
                   <ol class="os-mac">
                     <li>Quit Shuusshy (menu bar icon → Quit Shuusshy).</li>
@@ -695,14 +689,35 @@
       </section>
 
       <!-- ============================================================ FAQ -->
-      <section class="block" id="faq" aria-labelledby="faq-title">
+      <section class="block band tone-light" data-shade="0.04" id="faq" aria-labelledby="faq-title">
         <div class="wrap">
           <div class="section-head">
             <span class="label">FAQ</span>
             <h2 id="faq-title">Questions and fixes.</h2>
           </div>
+
+          <!-- Built by site.js from the questions below, which stay the content (and the layout on
+               phones and without JavaScript). -->
+          <div class="mag" hidden>
+            <div class="mag-filters" role="group" aria-label="Show questions about">
+              <span class="mag-lens lens" aria-hidden="true"></span>
+              <button type="button" data-cat="all" aria-pressed="true">Everything</button>
+              <button type="button" data-cat="privacy" aria-pressed="false">Privacy</button>
+              <button type="button" data-cat="setup" aria-pressed="false">Setup</button>
+              <button type="button" data-cat="fixes" aria-pressed="false">Fixes</button>
+              <button type="button" data-cat="versions" aria-pressed="false">Versions and Pro</button>
+            </div>
+            <div class="mag-spread">
+              <div class="mag-list" role="tablist" aria-label="Questions" aria-orientation="vertical"></div>
+              <article class="mag-page glass" id="mag-page" role="tabpanel" tabindex="0">
+                <div class="mag-body"></div>
+                <button class="mag-next" type="button">Next question</button>
+              </article>
+            </div>
+          </div>
+
           <div class="faq">
-            <details class="glass">
+            <details class="glass" data-cat="privacy">
               <summary>Is it really offline? Does it record me?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Yes. All audio is processed on your computer and nothing is recorded or uploaded. The only
@@ -711,19 +726,18 @@
                 never receives audio. Details in the <a href="privacy.html">privacy policy</a>.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="setup">
               <summary>Why do I need VB-CABLE or BlackHole?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Apps can only record from a microphone device. The free virtual cable gives Shuusshy a
                 microphone device to deliver your cleaned voice to. You install it once.
-                <span class="os-win">From version 1.1.0 the Windows installer includes VB-CABLE and offers to
-                install it (nothing is installed without your OK). Until then, get it from
-                <a href="https://vb-audio.com/Cable/" rel="noopener">vb-audio.com</a>.</span>
+                <span class="os-win">The Windows installer includes VB-CABLE and offers to install it at the
+                end (nothing is installed without your OK).</span>
                 <span class="os-mac">On a Mac, get BlackHole 2ch from
                 <a href="https://existential.audio/blackhole/" rel="noopener">existential.audio</a>.</span>
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="fixes">
               <summary>Other apps don't hear me<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Check that the app's microphone is <span class="os-win">CABLE Output / Shuusshy Microphone</span><span class="os-mac">BlackHole 2ch</span>,
@@ -731,7 +745,7 @@
                 says “Virtual mic live”.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="fixes">
               <summary>My voice sounds robotic or choppy<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Lower the strength or try Speech Priority. Keep Shuusshy's gains near 0 dB and set the
@@ -739,14 +753,14 @@
                 A distorted microphone stays distorted after noise removal.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="fixes">
               <summary>I hear an echo, or people hear themselves<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 An app is playing into the virtual cable. Set every app's speaker or output to your
                 headphones, never to <span class="os-win">a CABLE device</span><span class="os-mac">BlackHole</span>.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="setup">
               <summary>Why does Windows SmartScreen or macOS Gatekeeper warn me?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Shuusshy is not code-signed with a paid certificate yet, so your system can't confirm the
@@ -754,15 +768,15 @@
                 first-launch steps in the manual (topic 2).
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="versions">
               <summary>What does “valid for two years” mean?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Each official release works for two years from its release date, so old versions don't
                 linger. You are reminded 30 days before; installing a newer release restarts the period.
-                Your settings are always kept. Version 1.0.1 is valid until 16 November 2028.
+                Your settings are always kept. Version 1.1.0 is valid until 17 November 2028.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="versions">
               <summary>Is the Mac version ready?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 It is a beta. It is built and tested automatically on Apple's platform, but has not yet
@@ -770,7 +784,7 @@
                 <a href="https://github.com/maccooiiiii/shuusshy/issues" rel="noopener">report what you find</a>.
               </div>
             </details>
-            <details class="glass">
+            <details class="glass" data-cat="versions">
               <summary>How do I get a Pro key?<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="answer">
                 Email <a href="mailto:shush_support@ianmusa.com?subject=Shuusshy%20Pro%20key">shush_support@ianmusa.com</a>.
@@ -782,7 +796,7 @@
       </section>
 
       <!-- ============================================================ CREATOR -->
-      <section class="block" id="creator" aria-labelledby="creator-title">
+      <section class="block band tone-dark" data-shade="1" id="creator" aria-labelledby="creator-title">
         <div class="wrap">
           <div class="glass creator">
             <img src="assets/icon-256.png" width="120" height="120" alt="The Shuusshy app icon, a silent sushi" />
@@ -801,7 +815,7 @@
       </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer band tone-dark" data-shade="1">
       <div class="wrap">
         <div class="cols">
           <div>
