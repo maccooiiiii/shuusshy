@@ -5,6 +5,11 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-18
+
+### Changed
+- Settings → Application and Updates names the kind of key on this computer.
+
 ## [1.1.0] - 2026-11-17
 
 ### Added

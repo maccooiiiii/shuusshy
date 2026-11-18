@@ -4,7 +4,15 @@
 //! ```text
 //! cargo run --release -- init                         # create the signing key (once)
 //! cargo run --release -- pubkey                       # print the public key for the app
-//! cargo run --release -- issue <serial> [YYYY-MM-DD]  # issue a Pro key (optional expiry)
+//! cargo run --release -- issue-pro <serial> [YYYY-MM-DD]  # Pro key; expires in two years
+//!                                                          # unless a date is given
+//! cargo run --release -- issue-master <serial>           # master key: never expires
+//! cargo run --release -- issue <serial> [YYYY-MM-DD]      # older form (no record kept)
+//!
+//! issue-pro and issue-master refuse a serial that is already in the record and append the new
+//! key to `issued-keys.txt` (next to the signing key) as
+//! `KEY<TAB>serial N<TAB>tag pro|master<TAB>issued YYYY-MM-DD<TAB>expires YYYY-MM-DD|never`.
+//! Both kinds unlock the same features; the app names them "Master key" and "Pro key".
 //!
 //! cargo run --release -- release-init                 # create the release signing key (once)
 //! cargo run --release -- release-pubkey               # public key for src-tauri/src/release.rs
@@ -27,7 +35,9 @@ use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use ed25519_dalek::{Signer, SigningKey};
-use format::{EDITION_PRO, Payload, day_from_unix, day_of_date, format_key, signed_message};
+use format::{
+    EDITION_PRO, Payload, date_of_day, day_from_unix, day_of_date, format_key, signed_message,
+};
 use rand_core::OsRng;
 
 fn key_path() -> PathBuf {
@@ -37,15 +47,16 @@ fn key_path() -> PathBuf {
     let home = std::env::var_os("USERPROFILE")
         .or_else(|| std::env::var_os("HOME"))
         .expect("no home directory");
-    PathBuf::from(home).join(".shuusshy").join("license-signing.key")
+    PathBuf::from(home)
+        .join(".shuusshy")
+        .join("license-signing.key")
 }
 
 fn release_key_path() -> PathBuf {
     if let Some(p) = std::env::var_os("SHUUSSHY_RELEASE_KEY") {
         return p.into();
     }
-    key_path()
-        .with_file_name("release-signing.key")
+    key_path().with_file_name("release-signing.key")
 }
 
 fn hex(b: &[u8]) -> String {
@@ -66,6 +77,77 @@ fn load_from(path: PathBuf) -> SigningKey {
     SigningKey::from_bytes(&bytes.try_into().expect("bad key length"))
 }
 
+fn ledger_path() -> PathBuf {
+    key_path().with_file_name("issued-keys.txt")
+}
+
+fn ymd(day: i64) -> String {
+    let (y, m, d) = date_of_day(day);
+    format!("{y:04}-{m:02}-{d:02}")
+}
+
+fn parse_date(d: &str) -> i64 {
+    let p: Vec<&str> = d.split('-').collect();
+    if p.len() != 3 {
+        panic!("date must be YYYY-MM-DD");
+    }
+    day_of_date(
+        p[0].parse().expect("year"),
+        p[1].parse().expect("month"),
+        p[2].parse().expect("day"),
+    )
+}
+
+/// Issues a key (expires = 0: never), refusing serials already on record, and appends it to the
+/// record. Returns the key.
+fn issue_recorded(serial: u32, expires: i64, tag: &str) -> String {
+    let ledger = ledger_path();
+    let existing = std::fs::read_to_string(&ledger).unwrap_or_default();
+    let needle = format!("\tserial {serial}\t");
+    if existing.lines().any(|l| l.contains(&needle)) {
+        eprintln!(
+            "Serial {serial} is already in {}; choose another.",
+            ledger.display()
+        );
+        std::process::exit(1);
+    }
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64;
+    let issued = day_from_unix(now);
+    if expires != 0 && expires <= issued {
+        eprintln!("The expiry date must be after today.");
+        std::process::exit(1);
+    }
+    let payload = Payload {
+        edition: EDITION_PRO,
+        serial,
+        issued: issued as u16,
+        expires: u16::try_from(expires).expect("expiry out of range"),
+    }
+    .to_bytes();
+    let sig = load().sign(&signed_message(&payload)).to_bytes();
+    let key = format_key(&payload, &sig);
+    let line = format!(
+        "{key}\tserial {serial}\ttag {tag}\tissued {}\texpires {}\n",
+        ymd(issued),
+        if expires == 0 {
+            "never".to_string()
+        } else {
+            ymd(expires)
+        }
+    );
+    use std::io::Write;
+    std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&ledger)
+        .and_then(|mut f| f.write_all(line.as_bytes()))
+        .unwrap_or_else(|e| panic!("cannot write {}: {e}", ledger.display()));
+    key
+}
+
 fn rust_array(b: &[u8]) -> String {
     let items: Vec<String> = b.iter().map(|x| format!("0x{x:02x}")).collect();
     format!("[{}]", items.join(", "))
@@ -77,22 +159,31 @@ fn main() {
         Some("release-init") => {
             let path = release_key_path();
             if path.exists() {
-                eprintln!("{} already exists; refusing to overwrite it.", path.display());
+                eprintln!(
+                    "{} already exists; refusing to overwrite it.",
+                    path.display()
+                );
                 std::process::exit(1);
             }
             std::fs::create_dir_all(path.parent().unwrap()).unwrap();
             let key = SigningKey::generate(&mut OsRng);
             std::fs::write(&path, hex(&key.to_bytes())).unwrap();
             println!("Release signing key written to {}", path.display());
-            println!("Store it as the GitHub secret SHUUSSHY_RELEASE_SIGNING_KEY (hex) and back it up.");
+            println!(
+                "Store it as the GitHub secret SHUUSSHY_RELEASE_SIGNING_KEY (hex) and back it up."
+            );
             println!("Public key for src-tauri/src/release.rs:");
             println!("{}", rust_array(key.verifying_key().as_bytes()));
         }
         Some("release-pubkey") => {
-            println!("{}", rust_array(load_from(release_key_path()).verifying_key().as_bytes()))
+            println!(
+                "{}",
+                rust_array(load_from(release_key_path()).verifying_key().as_bytes())
+            )
         }
         Some("release-sign") => {
-            let (Some(version), Some(channel), Some(date)) = (args.get(1), args.get(2), args.get(3))
+            let (Some(version), Some(channel), Some(date)) =
+                (args.get(1), args.get(2), args.get(3))
             else {
                 eprintln!("usage: release-sign <version> <channel> <YYYY-MM-DD>");
                 std::process::exit(2);
@@ -104,7 +195,10 @@ fn main() {
         Some("init") => {
             let path = key_path();
             if path.exists() {
-                eprintln!("{} already exists; refusing to overwrite it.", path.display());
+                eprintln!(
+                    "{} already exists; refusing to overwrite it.",
+                    path.display()
+                );
                 std::process::exit(1);
             }
             std::fs::create_dir_all(path.parent().unwrap()).unwrap();
@@ -116,12 +210,42 @@ fn main() {
             println!("{}", rust_array(key.verifying_key().as_bytes()));
         }
         Some("pubkey") => println!("{}", rust_array(load().verifying_key().as_bytes())),
+        Some("issue-master") => {
+            let serial: u32 = args
+                .get(1)
+                .and_then(|s| s.parse().ok())
+                .expect("usage: issue-master <serial>");
+            println!("{}", issue_recorded(serial, 0, "master"));
+        }
+        Some("issue-pro") => {
+            let serial: u32 = args
+                .get(1)
+                .and_then(|s| s.parse().ok())
+                .expect("usage: issue-pro <serial> [YYYY-MM-DD]");
+            let expires = match args.get(2) {
+                Some(d) => parse_date(d),
+                None => {
+                    // Two years from today, same calendar day.
+                    let now = SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .unwrap()
+                        .as_secs() as i64;
+                    let (y, m, d) = date_of_day(day_from_unix(now));
+                    let d = if m == 2 && d == 29 { 28 } else { d };
+                    day_of_date(y + 2, m, d)
+                }
+            };
+            println!("{}", issue_recorded(serial, expires, "pro"));
+        }
         Some("issue") => {
             let serial: u32 = args
                 .get(1)
                 .and_then(|s| s.parse().ok())
                 .expect("usage: issue <serial> [YYYY-MM-DD]");
-            let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64;
+            let now = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs() as i64;
             let issued = day_from_unix(now) as u16;
             let expires = args.get(2).map_or(0, |d| {
                 let p: Vec<&str> = d.split('-').collect();
@@ -143,7 +267,9 @@ fn main() {
             println!("{}", format_key(&payload, &sig));
         }
         _ => {
-            eprintln!("usage: init | pubkey | issue <serial> [YYYY-MM-DD]");
+            eprintln!(
+                "usage: init | pubkey | issue-pro <serial> [YYYY-MM-DD] | issue-master <serial> | issue <serial> [YYYY-MM-DD]"
+            );
             std::process::exit(2);
         }
     }

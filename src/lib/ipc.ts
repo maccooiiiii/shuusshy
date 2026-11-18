@@ -116,6 +116,8 @@ export const onSettingsChanged = (cb: (s: Settings) => void) =>
 export const onOpenSettings = (cb: () => void) => listen("open-settings", () => cb());
 
 export interface LicenseInfo {
+  /** Master keys never expire; Pro keys have an expiry date. Same features. */
+  kind: "master" | "pro";
   serial: number;
   issued: string;
   expires: string | null;

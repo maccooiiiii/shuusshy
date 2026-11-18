@@ -22,11 +22,20 @@ pub const PUBLIC_KEY: [u8; 32] = [
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LicenseInfo {
+    /// Master keys never expire; Pro keys have an expiry date. Both unlock the same features.
+    pub kind: LicenseKind,
     pub serial: u32,
     /// YYYY-MM-DD.
     pub issued: String,
     /// YYYY-MM-DD, or None for a perpetual key.
     pub expires: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum LicenseKind {
+    Master,
+    Pro,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -90,6 +99,11 @@ pub fn verify_with(
         return Err(LicenseError::WrongEdition);
     }
     let info = LicenseInfo {
+        kind: if p.expires == 0 {
+            LicenseKind::Master
+        } else {
+            LicenseKind::Pro
+        },
         serial: p.serial,
         issued: ymd(p.issued as i64),
         expires: (p.expires != 0).then(|| ymd(p.expires as i64)),
@@ -147,6 +161,21 @@ mod tests {
         assert_eq!(info.serial, 7);
         assert_eq!(info.issued, "2026-11-14");
         assert_eq!(info.expires, None);
+    }
+
+    #[test]
+    fn keys_without_expiry_are_master_keys_and_others_pro_keys() {
+        let sk = SigningKey::from_bytes(&[9; 32]);
+        let pk = sk.verifying_key().to_bytes();
+        let master = verify_with(&issue(&sk, EDITION_PRO, 0), &pk, 2600).unwrap();
+        assert_eq!(master.kind, LicenseKind::Master);
+        let pro = verify_with(&issue(&sk, EDITION_PRO, 3000), &pk, 2600).unwrap();
+        assert_eq!(pro.kind, LicenseKind::Pro);
+        assert!(pro.expires.is_some());
+        // The app receives the kind as "master" / "pro".
+        let json = serde_json::to_value(LicenseStatus::Pro(master)).unwrap();
+        assert_eq!(json["kind"], "master");
+        assert_eq!(json["state"], "pro");
     }
 
     #[test]

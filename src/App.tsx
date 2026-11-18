@@ -1122,8 +1122,8 @@ function LicenseControl({
           Shuusshy Pro active <ProBadge />
         </span>
         <span className="num text-[11px] text-muted">
-          Licence #{license.serial} · issued {license.issued}
-          {license.expires ? ` · valid until ${license.expires}` : " · no expiry"}
+          {license.kind === "master" ? "Master" : "Pro"} key #{license.serial} · issued {license.issued}
+          {license.expires ? ` · valid until ${license.expires}` : ""}
         </span>
         <button
           type="button"
@@ -1142,7 +1142,7 @@ function LicenseControl({
         Shuusshy Pro <ProBadge />
       </span>
       {license.state === "expired" && (
-        <span className="text-[11px] text-warn">Your key #{license.serial} expired on {license.expires}.</span>
+        <span className="text-[11px] text-warn">Your Pro key #{license.serial} expired on {license.expires}.</span>
       )}
       <span className="text-[10.5px] leading-snug text-muted">
         Unlocks DeepFilterNet, voice isolation and the presets built on them. Checked offline on this
