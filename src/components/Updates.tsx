@@ -165,7 +165,9 @@ export function UpdatePanel({
       </span>
       {!configured ? (
         <span className="text-[10.5px] leading-snug text-muted">
-          {release?.validity === "unofficial"
+          {release?.store
+            ? "Updates come from the Microsoft Store; your settings are kept. Shuusshy itself makes no network connections."
+            : release?.validity === "unofficial"
             ? "Update checks are not set up in this build, so Shuusshy itself makes no network connections."
             : "This release has no automatic update channel; Shuusshy itself makes no network connections. Install newer versions from where you downloaded Shuusshy; your settings are kept."}
         </span>

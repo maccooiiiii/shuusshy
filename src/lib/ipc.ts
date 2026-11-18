@@ -71,6 +71,8 @@ export interface AppInfo {
   platform?: string;
   /** This copy ships VB-Audio's official VB-CABLE setup (Windows installer and portable ZIP). */
   bundledCable?: boolean;
+  /** Microsoft Store edition: updates come from the Store; no virtual mic rename. */
+  store?: boolean;
 }
 
 /** True when running inside the Shuusshy desktop shell (not a plain browser tab). */
@@ -156,6 +158,8 @@ export interface ReleaseInfo {
   releasesUrl: string | null;
   /** Update checks are possible in this build. */
   updatesEnabled: boolean;
+  /** Microsoft Store edition: the Store delivers updates. */
+  store?: boolean;
 }
 
 export interface UpdateInfo {

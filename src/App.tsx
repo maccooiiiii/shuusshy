@@ -832,7 +832,7 @@ function SettingsView({
             <span className="font-semibold">{conflict.title}.</span> {conflict.detail}
           </p>
         )}
-        {dc.devices?.cable.state === "ready" && !IS_MAC && (
+        {dc.devices?.cable.state === "ready" && !IS_MAC && !info?.store && (
           <MicNameControl
             current={dc.devices.cable.capture.description ?? dc.devices.cable.capture.name}
             onRename={dc.rename}

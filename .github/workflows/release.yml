@@ -217,7 +217,9 @@ jobs:
       - run: npm ci
 
       - name: Rust unit tests (macOS)
-        run: cargo test --lib --manifest-path src-tauri/Cargo.toml
+        # The real-time speed check depends on the machine; GitHub's shared Mac runners are often
+        # too slow for an unoptimised test build. It runs in the Windows checks.
+        run: cargo test --lib --manifest-path src-tauri/Cargo.toml -- --skip runs_in_real_time_in_development_builds
 
       - name: Build universal app and disk image
         env:

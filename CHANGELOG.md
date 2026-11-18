@@ -5,6 +5,16 @@ versions: [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **Microsoft Store edition** (MSIX, built by `.github/workflows/store.yml`, see
+  docs/MICROSOFT_STORE.md). In the package, updates come from the Store, start at sign-in uses
+  the package's startup task, VB-CABLE is not included (Settings links to VB-Audio), and the
+  virtual mic rename is not offered.
+
+### Changed
+- The macOS release job skips the machine-dependent real-time speed test, which GitHub's shared
+  Mac runners often miss in unoptimised test builds; it still runs in the Windows checks.
+
 ## [1.1.1] - 2026-11-18
 
 ### Changed

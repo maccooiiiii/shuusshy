@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Microsoft Store edition (MSIX). Built by .github/workflows/store.yml, which fills in the
+  values in {{…}}:
+  - {{IDENTITY_NAME}}, {{PUBLISHER}}, {{PUBLISHER_DISPLAY_NAME}}: Partner Center → the app →
+    Product management → Product identity (repository variables STORE_IDENTITY_NAME,
+    STORE_PUBLISHER, STORE_PUBLISHER_DISPLAY_NAME);
+  - {{VERSION}}: the app version with a fourth part of 0 (the Store requires it).
+  The Store signs the package on upload. VB-CABLE is not included (Store policy 10.2.3); the app
+  links to VB-Audio's page instead, and the listing discloses the dependency (policy 10.2.4).
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap desktop rescap">
+
+  <Identity
+    Name="{{IDENTITY_NAME}}"
+    Publisher="{{PUBLISHER}}"
+    Version="{{VERSION}}"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Shuusshy</DisplayName>
+    <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>Local, offline microphone noise cancellation</Description>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="Shuusshy" Executable="shuusshy.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Shuusshy"
+        Description="Removes background noise from your microphone, on your computer."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile
+          Wide310x150Logo="Assets\Wide310x150Logo.png"
+          Square310x310Logo="Assets\Square310x310Logo.png"
+          Square71x71Logo="Assets\Square71x71Logo.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <!-- Start at sign-in (Settings → Application and Updates); off until the user turns it on. -->
+        <desktop:Extension Category="windows.startupTask" Executable="shuusshy.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="ShuusshyStartup" Enabled="false" DisplayName="Shuusshy" />
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <DeviceCapability Name="microphone" />
+  </Capabilities>
+</Package>

@@ -59,6 +59,10 @@ fn qa_endpoint() -> Option<Url> {
 
 /// `latest.json` of the official repository, if this build knows it.
 pub fn endpoint() -> Option<Url> {
+    // The Microsoft Store edition is updated by the Store.
+    if crate::install::is_store_package() {
+        return None;
+    }
     if let Some(url) = qa_endpoint() {
         return Some(url);
     }

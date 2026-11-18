@@ -1,0 +1,127 @@
+name: Microsoft Store package
+
+# Builds the Microsoft Store edition: an MSIX package for upload in Partner Center. The Store
+# signs it on upload, so nothing here is signed with a certificate.
+#
+# Run it from the Actions tab (Run workflow) or `gh workflow run store.yml --ref vX.Y.Z`:
+# - on a release tag (vX.Y.Z), the app carries signed release metadata like the other builds;
+# - on a branch, it is a test package ("unofficial build" in Settings).
+#
+# The package identity comes from Partner Center → the app → Product management → Product
+# identity, stored as repository variables (Settings → Secrets and variables → Actions →
+# Variables): STORE_IDENTITY_NAME, STORE_PUBLISHER, STORE_PUBLISHER_DISPLAY_NAME. Without
+# them the package uses placeholders and cannot be uploaded.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  msix:
+    runs-on: windows-latest
+    # Signing secrets live in the `release` environment, which accepts v* tags only; branch runs
+    # build without them.
+    environment: ${{ startsWith(github.ref, 'refs/tags/v') && 'release' || 'store-test' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+
+      # No build cache: release packages always start clean.
+
+      - run: npm ci
+
+      - name: Version and release metadata
+        id: meta
+        env:
+          RELEASE_KEY: ${{ secrets.SHUUSSHY_RELEASE_SIGNING_KEY }}
+        run: |
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          # The Store needs four numbers with a last part of 0.
+          echo "msix_version=${VERSION%%-*}.0" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ -n "$RELEASE_KEY" ]; then
+            if [ "${GITHUB_REF_NAME#v}" != "$VERSION" ]; then
+              echo "::error::Tag $GITHUB_REF_NAME does not match version $VERSION"; exit 1
+            fi
+            case "$VERSION" in *-*) CHANNEL=beta ;; *) CHANNEL=stable ;; esac
+            DATE=$(date -u +%F)
+            KEYFILE="$RUNNER_TEMP/release-signing.key"
+            printf '%s' "$RELEASE_KEY" > "$KEYFILE"
+            SIG=$(SHUUSSHY_RELEASE_KEY="$KEYFILE" cargo run --quiet --release \
+              --manifest-path tools/license-keygen/Cargo.toml -- release-sign "$VERSION" "$CHANNEL" "$DATE")
+            rm -f "$KEYFILE"
+            {
+              echo "channel=$CHANNEL"
+              echo "date=$DATE"
+              echo "sig=$SIG"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Test package: no signed release metadata (run on a vX.Y.Z tag for a Store upload)."
+          fi
+
+      - name: Build the app (no installer, no updater, no VB-CABLE)
+        env:
+          SHUUSSHY_RELEASE_CHANNEL: ${{ steps.meta.outputs.channel }}
+          SHUUSSHY_RELEASE_DATE: ${{ steps.meta.outputs.date }}
+          SHUUSSHY_RELEASE_SIG: ${{ steps.meta.outputs.sig }}
+        run: npx tauri build --no-bundle
+
+      - name: Assemble and pack the MSIX
+        shell: pwsh
+        env:
+          IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+          PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+          PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+          MSIX_VERSION: ${{ steps.meta.outputs.msix_version }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          if (-not $env:IDENTITY_NAME) {
+            Write-Output "::warning::STORE_IDENTITY_NAME is not set: using placeholders (this package cannot be uploaded)."
+            $env:IDENTITY_NAME = "Shuusshy.Test"
+            $env:PUBLISHER = "CN=00000000-0000-0000-0000-000000000000"
+            $env:PUBLISHER_DISPLAY_NAME = "Ian Musa"
+          }
+          $layout = "msix-layout"
+          New-Item -ItemType Directory -Force $layout | Out-Null
+          Copy-Item src-tauri/target/release/shuusshy.exe $layout
+          Copy-Item -Recurse src-tauri/store/Assets "$layout/Assets"
+          $m = Get-Content -Raw src-tauri/store/AppxManifest.xml
+          # XML-escape the values (a publisher can contain characters such as &).
+          function Esc($v) { [System.Security.SecurityElement]::Escape($v) }
+          $m = $m.Replace("{{IDENTITY_NAME}}", (Esc $env:IDENTITY_NAME)).
+                  Replace("{{PUBLISHER}}", (Esc $env:PUBLISHER)).
+                  Replace("{{PUBLISHER_DISPLAY_NAME}}", (Esc $env:PUBLISHER_DISPLAY_NAME)).
+                  Replace("{{VERSION}}", $env:MSIX_VERSION)
+          if ($m -match "\{\{") { throw "A placeholder was not filled in" }
+          Set-Content -Path "$layout/AppxManifest.xml" -Value $m -Encoding utf8
+          $makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\makeappx.exe" |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          if (-not $makeappx) { throw "makeappx.exe not found (Windows SDK)" }
+          New-Item -ItemType Directory -Force dist-store | Out-Null
+          $out = "dist-store/Shuusshy_$($env:MSIX_VERSION)_x64.msix"
+          & $makeappx.FullName pack /v /o /h SHA256 /d $layout /p $out
+          if ($LASTEXITCODE -ne 0) { throw "makeappx failed" }
+          (Get-FileHash $out -Algorithm SHA256).Hash.ToLower() + "  " + (Split-Path $out -Leaf) |
+            Set-Content dist-store/SHA256SUMS-store.txt
+          Get-ChildItem dist-store
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Shuusshy-MicrosoftStore-${{ steps.meta.outputs.msix_version }}
+          path: dist-store/*
+          if-no-files-found: error

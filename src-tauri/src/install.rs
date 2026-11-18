@@ -6,6 +6,11 @@
 //!
 //! **Start at sign-in** is the per-user `Run` registry entry on Windows and a LaunchAgent in
 //! `~/Library/LaunchAgents` on macOS. Neither needs administrator rights.
+//!
+//! **Microsoft Store edition** (Windows, MSIX package): [`is_store_package`] is true. Sign-in
+//! start then uses the package's StartupTask (declared in `store/AppxManifest.xml`), because a
+//! packaged app's registry `Run` entry is not honoured; the Store delivers updates, so the
+//! built-in updater is off (updates.rs).
 
 use std::path::PathBuf;
 
@@ -44,7 +49,12 @@ pub fn prepare_portable_webview() {
 }
 
 pub fn launched_by_autostart() -> bool {
-    std::env::args().any(|a| a == AUTOSTART_FLAG)
+    std::env::args().any(|a| a == AUTOSTART_FLAG) || platform::started_by_startup_task()
+}
+
+/// True when this copy runs from the Microsoft Store package (MSIX).
+pub fn is_store_package() -> bool {
+    platform::is_store_package()
 }
 
 /// Opens the official virtual cable download page. The URL is fixed: the frontend cannot make
@@ -90,6 +100,87 @@ mod platform {
     use super::AUTOSTART_FLAG;
 
     const RUN_KEY: PCWSTR = w!(r"Software\Microsoft\Windows\CurrentVersion\Run");
+    /// The StartupTask declared in the Store package's manifest.
+    const STARTUP_TASK_ID: &str = "ShuusshyStartup";
+
+    /// True when the process has package identity (installed from the Microsoft Store).
+    pub fn is_store_package() -> bool {
+        use std::sync::OnceLock;
+        use windows::Win32::Foundation::APPMODEL_ERROR_NO_PACKAGE;
+        use windows::Win32::Storage::Packaging::Appx::GetCurrentPackageFullName;
+        static PACKAGED: OnceLock<bool> = OnceLock::new();
+        *PACKAGED.get_or_init(|| {
+            let mut len = 0u32;
+            // SAFETY: asks only for the length; no buffer is written.
+            let r = unsafe { GetCurrentPackageFullName(&mut len, None) };
+            r != APPMODEL_ERROR_NO_PACKAGE
+        })
+    }
+
+    /// Runs WinRT calls on a thread of their own with COM initialised (multithreaded).
+    fn with_winrt<T: Send + 'static>(
+        f: impl FnOnce() -> windows::core::Result<T> + Send + 'static,
+    ) -> Result<T, String> {
+        use windows::Win32::System::Com::{COINIT_MULTITHREADED, CoInitializeEx, CoUninitialize};
+        std::thread::spawn(move || {
+            // SAFETY: balanced with CoUninitialize on this thread.
+            let init = unsafe { CoInitializeEx(None, COINIT_MULTITHREADED) };
+            let r = f();
+            if init.is_ok() {
+                unsafe { CoUninitialize() };
+            }
+            r
+        })
+        .join()
+        .map_err(|_| "Windows sign-in task failed".to_string())?
+        .map_err(|e| e.message())
+    }
+
+    fn startup_task() -> windows::core::Result<windows::ApplicationModel::StartupTask> {
+        windows::ApplicationModel::StartupTask::GetAsync(&HSTRING::from(STARTUP_TASK_ID))?.join()
+    }
+
+    /// The Store package was started by its sign-in task.
+    pub fn started_by_startup_task() -> bool {
+        use windows::ApplicationModel::Activation::ActivationKind;
+        use windows::ApplicationModel::AppInstance;
+        if !is_store_package() {
+            return false;
+        }
+        with_winrt(|| AppInstance::GetActivatedEventArgs()?.Kind())
+            .is_ok_and(|k| k == ActivationKind::StartupTask)
+    }
+
+    fn store_autostart_enabled() -> bool {
+        use windows::ApplicationModel::StartupTaskState;
+        with_winrt(|| startup_task()?.State())
+            .is_ok_and(|s| s == StartupTaskState::Enabled || s == StartupTaskState::EnabledByPolicy)
+    }
+
+    fn set_store_autostart(on: bool) -> Result<(), String> {
+        use windows::ApplicationModel::StartupTaskState;
+        let state = with_winrt(move || {
+            let task = startup_task()?;
+            if on {
+                task.RequestEnableAsync()?.join()
+            } else {
+                task.Disable()?;
+                task.State()
+            }
+        })?;
+        match state {
+            StartupTaskState::Enabled | StartupTaskState::EnabledByPolicy if on => Ok(()),
+            _ if !on => Ok(()),
+            StartupTaskState::DisabledByUser => Err(
+                "Start at sign-in is turned off for Shuusshy in Windows Settings → Apps → Startup. Turn it on there."
+                    .into(),
+            ),
+            StartupTaskState::DisabledByPolicy => {
+                Err("Your organisation's settings do not allow apps to start at sign-in.".into())
+            }
+            _ => Err("Windows did not turn on start at sign-in.".into()),
+        }
+    }
     const RUN_VALUE: PCWSTR = w!("Shuusshy");
 
     /// The command line Windows runs at sign-in.
@@ -122,6 +213,9 @@ mod platform {
 
     /// True if Windows starts *this* copy of Shuusshy at sign-in.
     pub fn autostart_enabled() -> bool {
+        if is_store_package() {
+            return store_autostart_enabled();
+        }
         read_run_value()
             .zip(autostart_command())
             .is_some_and(|(v, c)| v.eq_ignore_ascii_case(&c))
@@ -129,6 +223,9 @@ mod platform {
 
     /// Adds or removes the per-user sign-in entry (HKCU\…\Run, no admin rights needed).
     pub fn set_autostart(on: bool) -> Result<(), String> {
+        if is_store_package() {
+            return set_store_autostart(on);
+        }
         if on {
             let cmd = autostart_command().ok_or("cannot find Shuusshy's own location")?;
             let wide: Vec<u16> = cmd.encode_utf16().chain(Some(0)).collect();
@@ -212,6 +309,15 @@ mod platform {
 
 #[cfg(target_os = "macos")]
 mod platform {
+    /// Only the Windows Store edition is packaged.
+    pub fn is_store_package() -> bool {
+        false
+    }
+
+    pub fn started_by_startup_task() -> bool {
+        false
+    }
+
     use std::path::PathBuf;
 
     use super::AUTOSTART_FLAG;

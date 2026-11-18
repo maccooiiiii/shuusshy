@@ -63,6 +63,8 @@ pub struct ReleaseInfo {
     pub releases_url: Option<String>,
     /// Update checks are possible in this build (set by the command, see updates.rs).
     pub updates_enabled: bool,
+    /// Microsoft Store edition: the Store delivers updates (set by the command).
+    pub store: bool,
 }
 
 impl ReleaseInfo {
@@ -99,6 +101,7 @@ pub fn evaluate(
             .map(|r| format!("https://github.com/{r}/releases/latest")),
         repo,
         updates_enabled: false,
+        store: false,
     };
     let (Some(channel), Some(date), Some(sig)) = (channel, date, sig) else {
         return info;

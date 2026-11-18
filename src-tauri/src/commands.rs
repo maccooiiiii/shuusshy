@@ -58,6 +58,8 @@ pub struct AppInfo {
     platform: &'static str,
     /// This copy ships the official VB-CABLE setup (Windows installer and portable ZIP).
     bundled_cable: bool,
+    /// Microsoft Store edition (MSIX package).
+    store: bool,
 }
 
 #[tauri::command]
@@ -70,6 +72,7 @@ pub fn get_app_info(app: AppHandle, state: State<'_, AppState>) -> AppInfo {
         platform: std::env::consts::OS,
         bundled_cable: crate::install::bundled_cable_setup(app.path().resource_dir().ok())
             .is_some(),
+        store: crate::install::is_store_package(),
     }
 }
 
@@ -553,6 +556,12 @@ pub async fn set_virtual_mic_name(app: AppHandle, shuusshy: bool) -> Result<Devi
 #[tauri::command]
 pub async fn set_virtual_mic_name(app: AppHandle, shuusshy: bool) -> Result<DeviceState, String> {
     use crate::audio::devices::model::{CABLE_CAPTURE_LABEL, SHUUSSHY_MIC_LABEL};
+    // The Store edition does not change another driver's settings.
+    if crate::install::is_store_package() {
+        return Err(
+            "Renaming the virtual mic is not available in the Microsoft Store edition.".into(),
+        );
+    }
     let capture_id = match current_device_state(&app, false).cable {
         CableStatus::Ready { capture, .. } => capture.id,
         _ => return Err("VB-CABLE's recording device was not found".into()),
@@ -638,6 +647,7 @@ pub fn open_vb_cable_site() -> Result<(), String> {
 pub fn get_release_info(app: AppHandle) -> crate::release::ReleaseInfo {
     let mut info = crate::release::current(&app.package_info().version.to_string());
     info.updates_enabled = crate::updates::endpoint().is_some();
+    info.store = crate::install::is_store_package();
     info
 }
 
